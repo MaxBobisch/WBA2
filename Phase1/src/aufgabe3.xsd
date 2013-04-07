@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+elementFormDefault="qualified">
+
+<!-- definition of simple elements -->
+<xs:element name="tag">
+  <xs:simpleType>
+    <xs:restriction base="xs:integer">
+      <xs:pattern value="[0-3][0-9]"/>
+      <xs:minInclusive value="1"/>
+      <xs:maxInclusive value="31"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:element>
+
+<xs:element name="monat">
+  <xs:simpleType>
+    <xs:restriction base="xs:integer">
+      <xs:pattern value="[0-1][0-9]"/>
+      <xs:minInclusive value="1"/>
+      <xs:maxInclusive value="12"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:element>
+
+<xs:element name="jahr">
+  <xs:simpleType>
+    <xs:restriction base="xs:integer">
+      <xs:pattern value="[0-9][0-9][0-9][0-9]"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:element>
+
+<xs:element name="name" type="xs:string"/>
+<xs:element name="url" type="xs:string"/>
+<xs:element name="anzahl_personen" type="xs:integer"/>
+<xs:element name="menge" type="xs:decimal"/>
+<xs:element name="einheit" type="xs:string"/>
+<xs:element name="nummer" type="xs:integer"/>
+<xs:element name="inhalt" type="xs:string"/>
+<xs:element name="schwierigkeitsgrad" type="xs:string"/>
+
+
+<!-- definition of complex elements -->
+<xs:element name="datum">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="tag"/>
+      <xs:element ref="monat"/>
+      <xs:element ref="jahr"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="autor">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="name"/>
+      <xs:element ref="datum"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- 
+<xs:element name="bild">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="autor"/>
+      <xs:element ref="nummer"/>
+      <xs:element ref="url"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+ -->
+ 
+ <!-- 
+<xs:element name="bilder">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="bild" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+ -->
+
+<xs:element name="zutat">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="name"/>
+      <xs:element ref="menge" minOccurs="0"/>
+      <xs:element ref="einheit" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="zutaten">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="anzahl_personen"/>
+      <xs:element ref="zutat" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="schritt">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="nummer"/>
+      <xs:element ref="inhalt"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="zubereitung">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="arbeitszeit"/>
+      <xs:element ref="schwierigkeitsgrad"/>
+      <xs:element ref="brennwert"/>
+      <xs:element ref="anleitung"/>
+      <xs:element ref="weitere_rezepte" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="brennwert">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="menge"/>
+      <xs:element ref="einheit"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="anleitung">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="schritt" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="arbeitszeit">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="menge"/>
+      <xs:element ref="einheit"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+<!-- 
+<xs:element name="quelle">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="name"/>
+      <xs:element ref="datum"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+-->
+
+<!--  
+<xs:element name="kommentar">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="beschreibung"/>
+      <xs:element ref="quelle"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+-->
+
+<!--  
+<xs:element name="kommentare">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="kommentar" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+-->
+
+
+<!-- KANN EIN REZEPT AUF EIN ANDERES VERWEISEN? -->
+<xs:element name="weitere_rezepte">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="url" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- root-Element 'rezept' -->
+<xs:element name="rezept">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="name"/>
+      <xs:element ref="zutaten"/>
+      <xs:element ref="zubereitung"/>
+      <!-- <xs:element ref="bilder"/> -->
+      <!-- <xs:element ref="kommentare"/> -->
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+</xs:schema>

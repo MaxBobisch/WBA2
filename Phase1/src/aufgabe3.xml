@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rezept>
+
+<rezept
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="aufgabe3.xsd">
 	<name>Lenchen’s Schokoladenkuchen</name>
 	<zutaten>
+		<anzahl_personen>16</anzahl_personen>
 		<zutat>
 			<name>Butter</name>
 			<menge>200</menge>
@@ -24,7 +28,7 @@
 		</zutat>
 		<zutat>
 			<name>Backpulver</name>
-			<menge>1/2</menge>
+			<menge>0.5</menge>
 			<einheit>Teeloeffel</einheit>
 		</zutat>
 		<zutat>
@@ -39,16 +43,16 @@
 		</zutat>
 	</zutaten>
 	<zubereitung>
-	<arbeitszeit>
-		<dauer>1</dauer>
+	  <arbeitszeit>
+		<menge>1</menge>
 		<einheit>Stunde</einheit>
-	</arbeitszeit>
-	<schwierigkeitsgrad>normal</schwierigkeitsgrad>
-	<brennwert>
+	  </arbeitszeit>
+	  <schwierigkeitsgrad>normal</schwierigkeitsgrad>
+	  <brennwert>
 		<menge>295</menge>
 		<einheit>kcal</einheit>
-	</brennwert>
-	<beschreibung>
+	  </brennwert>
+	<anleitung>
 	<schritt>
 		<nummer>1</nummer>
 		<inhalt>Butter und Schokolade im Wasserbad schmelzen.</inhalt>
@@ -79,8 +83,8 @@
 	</schritt>
 	<schritt>
 		<nummer>8</nummer>
-		<inhalt>
-			<backvorgang>
+		<inhalt>Bei 180°Grad 40 – 50 Minuten backen. 
+			<!-- <backvorgang>
 				<temperatur>
 					<menge>180</menge>
 					<einheit>°C</einheit>
@@ -94,10 +98,9 @@
 					</hoechstens>
 				<einheit>minuten</einheit>
 				</dauer>
-			</backvorgang>
+			</backvorgang> -->
 		</inhalt>
 	</schritt> 
-	</beschreibung>
+	</anleitung>
 	</zubereitung>
-	<portionen>16</portionen>
 </rezept>
