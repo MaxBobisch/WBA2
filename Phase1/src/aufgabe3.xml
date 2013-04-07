@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rezept>
+	<name>Lenchen’s Schokoladenkuchen</name>
+	<zutaten>
+		<zutat>
+			<name>Butter</name>
+			<menge>200</menge>
+			<einheit>g</einheit>
+		</zutat>
+		<zutat>
+			<name>Zucker</name>
+			<menge>200</menge>
+			<einheit>g</einheit>
+		</zutat>
+		<zutat>
+			<name>Schokolade, Blockschokolade</name>
+			<menge>200</menge>
+			<einheit>g</einheit>
+		</zutat>
+		<zutat>
+			<name>Mehl</name>
+			<menge>120</menge>
+			<einheit>g</einheit>
+		</zutat>
+		<zutat>
+			<name>Backpulver</name>
+			<menge>1/2</menge>
+			<einheit>Teeloeffel</einheit>
+		</zutat>
+		<zutat>
+			<name>Vanillezucker</name>
+			<menge>1</menge>
+			<einheit>Paket</einheit>
+		</zutat>
+		<zutat>
+			<name>Ei</name>
+			<menge>4</menge>
+			<einheit>Stueck</einheit>
+		</zutat>
+	</zutaten>
+	<zubereitung>
+	<arbeitszeit>
+		<dauer>1</dauer>
+		<einheit>Stunde</einheit>
+	</arbeitszeit>
+	<schwierigkeitsgrad>normal</schwierigkeitsgrad>
+	<brennwert>
+		<menge>295</menge>
+		<einheit>kcal</einheit>
+	</brennwert>
+	<beschreibung>
+	<schritt>
+		<nummer>1</nummer>
+		<inhalt>Butter und Schokolade im Wasserbad schmelzen.</inhalt>
+	</schritt>
+	<schritt>
+		<nummer>2</nummer>
+		<inhalt>Eier trennen.</inhalt>
+	</schritt>
+	<schritt>
+		<nummer>3</nummer>
+		<inhalt>Eiweiß steif schlagen.</inhalt>
+	</schritt>
+	<schritt>
+		<nummer>4</nummer>
+		<inhalt>Eigelbe, Zucker und Vanillezucker verrühren.</inhalt>
+	</schritt>
+	<schritt>
+		<nummer>5</nummer>
+		<inhalt>Geschmolzene Butter-Schokomasse hinzufügen und mischen.</inhalt>
+	</schritt>
+	<schritt>
+		<nummer>6</nummer>
+		<inhalt>Mehl mit dem Backpulver in die Masse sieben und zum Schluss die steifen Eiweiße vorsichtig unterheben.</inhalt>
+	</schritt>
+	<schritt>
+		<nummer>7</nummer>
+		<inhalt>In eine gut gefettete Form geben.</inhalt>
+	</schritt>
+	<schritt>
+		<nummer>8</nummer>
+		<inhalt>
+			<backvorgang>
+				<temperatur>
+					<menge>180</menge>
+					<einheit>°C</einheit>
+				</temperatur>
+				<dauer>
+					<mindestens>
+						<menge>40</menge>
+					</mindestens>
+					<hoechstens>
+						<menge>50</menge>
+					</hoechstens>
+				<einheit>minuten</einheit>
+				</dauer>
+			</backvorgang>
+		</inhalt>
+	</schritt> 
+	</beschreibung>
+	</zubereitung>
+	<portionen>16</portionen>
+</rezept>
