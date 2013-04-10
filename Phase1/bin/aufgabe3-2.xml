@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rezeptsammlung xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../bin/aufgabe3.xsd">
+  <rezept rezeptid="202">
+    <name>Russischer Zupfkuchen</name>
+    <zutaten>
+      <anzahl_personen>6</anzahl_personen>
+      <zutat einheit="g" menge="300">
+        <name>Mehl</name>
+      </zutat>
+      <zutat einheit="kg" menge="0.375">
+        <name>Butter</name>
+      </zutat>
+      <zutat einheit="g" menge="600">
+        <name>Zucker</name>
+      </zutat>
+      <zutat einheit="Päckchen" menge="0.5">
+        <name>Backpulver</name>
+      </zutat>
+      <zutat einheit="Esslöffel" menge="5">
+        <name>Kakao</name>
+      </zutat>
+      <zutat einheit="Spritzer" menge="1">
+        <name>Zitronensaft</name>
+      </zutat>
+      <zutat einheit="Päckchen" menge="1">
+        <name>Vanillepudding</name>
+      </zutat>
+      <zutat einheit="Stück" menge="3">
+        <name>Ei</name>
+      </zutat>
+    </zutaten>
+    <zubereitung>
+      <arbeitszeit einheit="Stunde" menge="1"/>
+      <schwierigkeitsgrad>leicht</schwierigkeitsgrad>
+      <brennwert einheit="kcal" menge="3000"/>
+      <anleitung>
+        <schritt nummer="1">
+          <inhalt>Füllung: Quark, Vanillepuddingpulver, 125g Butter, 300g Zucker, Eier und den Spritzer Zitrone in einer Schüssel glatt rühren.</inhalt>
+        </schritt>
+        <schritt nummer="2">
+          <inhalt>Streusel: 300g Zucker, Mehl, Kakao und 250g Butter zu einem Teig kneten.</inhalt>
+        </schritt>
+        <schritt nummer="3">
+          <inhalt>Die Hälfte der Streusel auf dem Blech verteilen, die Füllung darauf verteilen und mit den restlichen Streuseln verzieren.</inhalt>
+        </schritt>
+        <schritt nummer="4">
+          <inhalt>Bei 180° C 45 Minuten Backen.</inhalt>
+        </schritt>
+        <schritt nummer="5">
+          <inhalt>Komplett abkühlen lassen.</inhalt>
+        </schritt>
+      </anleitung>
+    </zubereitung>
+    <bilder>
+	  <bild nummer="34">
+	    <bildbesitzer>ralf12345</bildbesitzer>
+	      <url>http://static.chefkoch-cdn.de/ck.de/rezepte/2/2464/42942-960x7ralf12345.jpg</url>
+	  </bild>
+	</bilder>
+	<kommentare>
+	  <kommentar>
+	    <inhalt>Lecker, aber etwas mächtig. Nix für Zwischendurch.</inhalt>
+	    <quelle>
+	      <name>ralf12345</name>
+	      <avatar>http://static.chefkoch-cdn.de/ck.de/avatar/mypic2.jpg</avatar>
+	      <datum>2013-03-17T08:29:00</datum>
+	    </quelle>
+	  </kommentar>
+	</kommentare> 
+  </rezept>
+</rezeptsammlung>

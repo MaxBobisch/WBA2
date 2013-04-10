@@ -1,0 +1,8 @@
+
+GEMEINSAMKEITEN
+Ein Rezept für ein Gericht / Getränk hat immer einen Namen, eine Zutatenliste, die eine oder meist mehrere Zutaten beinhaltet und eine Zubereitungsanleitung.
+
+UNTERSCHIEDE
+Ruhezeit it z.B. ein optionaler Bestandteil von Zubereitung.
+Manche Zutaten werden ohne Einheit angegeben.
+Es gibt auch "Menüs", welche einen Zusammenschluss mehrerer Rezepte darstellen; u.a. sind Rezepte untereinander verlinkt, und ein Rezept kann mehrere Rezepte beinhalten.

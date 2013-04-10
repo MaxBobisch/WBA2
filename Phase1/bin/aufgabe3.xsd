@@ -4,7 +4,7 @@
 elementFormDefault="qualified">
 
 <!-- definition of simple elements -->
-<xs:element name="tag">
+<!--  <xs:element name="tag">
   <xs:simpleType>
     <xs:restriction base="xs:integer">
       <xs:pattern value="[0-3][0-9]"/>
@@ -30,20 +30,26 @@ elementFormDefault="qualified">
       <xs:pattern value="[0-9][0-9][0-9][0-9]"/>
     </xs:restriction>
   </xs:simpleType>
-</xs:element>
+</xs:element>   -->
 
 <xs:element name="name" type="xs:string"/>
 <xs:element name="url" type="xs:string"/>
+<xs:element name="avatar" type="xs:string"/>
 <xs:element name="anzahl_personen" type="xs:integer"/>
-<xs:element name="menge" type="xs:decimal"/>
-<xs:element name="einheit" type="xs:string"/>
-<xs:element name="nummer" type="xs:integer"/>
 <xs:element name="inhalt" type="xs:string"/>
 <xs:element name="schwierigkeitsgrad" type="xs:string"/>
+<xs:element name="datum" type="xs:dateTime"/>
+<xs:element name="bildbesitzer" type="xs:string"/>
+
+<!-- Attribute -->
+<xs:attribute name="menge" type="xs:decimal"/>
+<xs:attribute name="einheit" type="xs:string"/>
+<xs:attribute name="nummer" type="xs:integer"/>
+<xs:attribute name="rezeptid" type="xs:integer"/>
 
 
 <!-- definition of complex elements -->
-<xs:element name="datum">
+<!--  <xs:element name="datum">
   <xs:complexType>
     <xs:sequence>
       <xs:element ref="tag"/>
@@ -51,7 +57,7 @@ elementFormDefault="qualified">
       <xs:element ref="jahr"/>
     </xs:sequence>
   </xs:complexType>
-</xs:element>
+</xs:element>-->
 
 <xs:element name="autor">
   <xs:complexType>
@@ -62,19 +68,17 @@ elementFormDefault="qualified">
   </xs:complexType>
 </xs:element>
 
-<!-- 
+
 <xs:element name="bild">
   <xs:complexType>
     <xs:sequence>
-      <xs:element ref="autor"/>
-      <xs:element ref="nummer"/>
+      <xs:element ref="bildbesitzer"/>
       <xs:element ref="url"/>
     </xs:sequence>
+    <xs:attribute ref="nummer"/>
   </xs:complexType>
 </xs:element>
- -->
  
- <!-- 
 <xs:element name="bilder">
   <xs:complexType>
     <xs:sequence>
@@ -82,15 +86,15 @@ elementFormDefault="qualified">
     </xs:sequence>
   </xs:complexType>
 </xs:element>
- -->
+
 
 <xs:element name="zutat">
   <xs:complexType>
     <xs:sequence>
       <xs:element ref="name"/>
-      <xs:element ref="menge" minOccurs="0"/>
-      <xs:element ref="einheit" minOccurs="0"/>
     </xs:sequence>
+    <xs:attribute ref="menge"/>
+    <xs:attribute ref="einheit"/>
   </xs:complexType>
 </xs:element>
 
@@ -103,12 +107,13 @@ elementFormDefault="qualified">
   </xs:complexType>
 </xs:element>
 
+
 <xs:element name="schritt">
   <xs:complexType>
     <xs:sequence>
-      <xs:element ref="nummer"/>
       <xs:element ref="inhalt"/>
     </xs:sequence>
+    <xs:attribute ref="nummer"/>
   </xs:complexType>
 </xs:element>
 
@@ -119,7 +124,6 @@ elementFormDefault="qualified">
       <xs:element ref="schwierigkeitsgrad"/>
       <xs:element ref="brennwert"/>
       <xs:element ref="anleitung"/>
-      <xs:element ref="weitere_rezepte" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
 </xs:element>
@@ -127,9 +131,9 @@ elementFormDefault="qualified">
 <xs:element name="brennwert">
   <xs:complexType>
     <xs:sequence>
-      <xs:element ref="menge"/>
-      <xs:element ref="einheit"/>
     </xs:sequence>
+    <xs:attribute ref="menge"/>
+    <xs:attribute ref="einheit"/>
   </xs:complexType>
 </xs:element>
 
@@ -144,34 +148,32 @@ elementFormDefault="qualified">
 <xs:element name="arbeitszeit">
   <xs:complexType>
     <xs:sequence>
-      <xs:element ref="menge"/>
-      <xs:element ref="einheit"/>
     </xs:sequence>
+    <xs:attribute ref="menge"/>
+    <xs:attribute ref="einheit"/>
   </xs:complexType>
 </xs:element>
-<!-- 
+
+
 <xs:element name="quelle">
   <xs:complexType>
     <xs:sequence>
       <xs:element ref="name"/>
+      <xs:element ref="avatar"/>
       <xs:element ref="datum"/>
     </xs:sequence>
   </xs:complexType>
 </xs:element>
--->
 
-<!--  
 <xs:element name="kommentar">
   <xs:complexType>
     <xs:sequence>
-      <xs:element ref="beschreibung"/>
+      <xs:element ref="inhalt"/>
       <xs:element ref="quelle"/>
     </xs:sequence>
   </xs:complexType>
 </xs:element>
--->
-
-<!--  
+ 
 <xs:element name="kommentare">
   <xs:complexType>
     <xs:sequence>
@@ -179,27 +181,27 @@ elementFormDefault="qualified">
     </xs:sequence>
   </xs:complexType>
 </xs:element>
--->
-
 
 <!-- KANN EIN REZEPT AUF EIN ANDERES VERWEISEN? -->
-<xs:element name="weitere_rezepte">
-  <xs:complexType>
-    <xs:sequence>
-      <xs:element ref="url" maxOccurs="unbounded"/>
-    </xs:sequence>
-  </xs:complexType>
-</xs:element>
 
-<!-- root-Element 'rezept' -->
 <xs:element name="rezept">
   <xs:complexType>
     <xs:sequence>
       <xs:element ref="name"/>
       <xs:element ref="zutaten"/>
       <xs:element ref="zubereitung"/>
-      <!-- <xs:element ref="bilder"/> -->
-      <!-- <xs:element ref="kommentare"/> -->
+      <xs:element ref="bilder"/>
+      <xs:element ref="kommentare"/>
+    </xs:sequence>
+    <xs:attribute ref="rezeptid"/>
+  </xs:complexType>
+</xs:element>
+
+<!-- root-Element 'rezeptsammlung' -->
+<xs:element name="rezeptsammlung">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="rezept" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
 </xs:element>
