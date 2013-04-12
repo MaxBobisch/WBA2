@@ -4,7 +4,7 @@
 <rezeptsammlung
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:noNamespaceSchemaLocation="aufgabe3.xsd">
-<rezept>
+<rezept rezeptid="200">
 	<name>Lenchen’s Schokoladenkuchen</name>
 	<zutaten>
 		<anzahl_personen>16</anzahl_personen>

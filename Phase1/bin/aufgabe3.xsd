@@ -193,7 +193,7 @@ elementFormDefault="qualified">
       <xs:element ref="bilder"/>
       <xs:element ref="kommentare"/>
     </xs:sequence>
-    <xs:attribute ref="rezeptid"/>
+    <xs:attribute ref="rezeptid" use="required"/>
   </xs:complexType>
 </xs:element>
 
