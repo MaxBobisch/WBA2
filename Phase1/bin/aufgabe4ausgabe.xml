@@ -73,6 +73,14 @@
                     <datum>2010-08-08T20:00:00</datum>
                 </quelle>
             </kommentar>
+            <kommentar>
+                <inhalt>lecker</inhalt>
+                <quelle>
+                    <name>Horst</name>
+                    <avatar>http://bild.jpg</avatar>
+                    <datum>2010-06-06T12:00:00</datum>
+                </quelle>
+            </kommentar>
         </kommentare>
     </rezept>
 </rezeptsammlung>
