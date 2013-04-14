@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rezeptsammlung xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../bin/aufgabe3.xsd">
+  <rezept rezeptid="203">
+    <name>Mizza</name>
+    <zutaten>
+      <anzahl_personen>4</anzahl_personen>
+      <zutat einheit="kg" menge="1">
+        <name>Mehl</name>
+      </zutat>
+      <zutat>
+        <name>Salz</name>
+      </zutat>
+      <zutat einheit="ml" menge="625">
+        <name>Wasser</name>
+      </zutat>
+      <zutat einheit="Schuss" menge="1">
+        <name>Olivenoel</name>
+      </zutat>
+      <zutat einheit="Packung" menge="0.3">
+        <name>Hefe</name>
+      </zutat>
+    </zutaten>
+    <zubereitung>
+      <arbeitszeit einheit="Stunde" menge="2"/>
+      <schwierigkeitsgrad>fortgeschritten</schwierigkeitsgrad>
+      <brennwert einheit="kcal" menge="1000"/>
+      <anleitung>
+        <schritt nummer="1">
+          <inhalt>alles (außer 400g des Mehls) mischen in einer Schuessel.</inhalt>
+        </schritt>
+        <schritt nummer="2">
+          <inhalt>20 min. gehen lassen</inhalt>
+        </schritt>
+        <schritt nummer="3">
+          <inhalt>Rest des Mehls hinzugeben, alles kneten und nochmals 20 min. gehen lassen.</inhalt>
+        </schritt>
+        <schritt nummer="4">
+          <inhalt>mit Belag deiner Wahl belegen. mit viel Liebe :)</inhalt>
+        </schritt>
+        <schritt nummer="5">
+          <inhalt>Im auf 250°C erhitzten Backofen (je heißer desto besser!) ca. 10 min. backen.</inhalt>
+        </schritt>
+      </anleitung>
+    </zubereitung>
+    <bilder>
+	  <bild nummer="1">
+	    <bildbesitzer>Mario</bildbesitzer>
+	    <url>http://static.chefkoch-cdn.de/ck.de/rezepte/2/2464/42942-960x7mario.jpg</url>
+	  </bild>
+	</bilder>
+	<kommentare>
+	  <kommentar>
+	    <inhalt>Die beste Pizza von der ganzen Welt, das hat auch meine Mama gesagt! Bist du Italieren?</inhalt>
+	    <quelle>
+	      <name>Lieschen</name>
+	      <avatar>http://static.chefkoch-cdn.de/ck.de/avatar/alligator.jpg</avatar>
+	      <datum>2013-04-07T18:49:00</datum>
+	    </quelle>
+	  </kommentar>
+	</kommentare> 
+  </rezept>
+</rezeptsammlung>

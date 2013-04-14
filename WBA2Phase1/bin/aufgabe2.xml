@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gruppe>
+	<gruppenleiter>
+		<person>
+			<vorname>Michael</vorname>
+			<nachname>Holm</nachname>
+			<email>ich@google.de</email>
+			<geburtsdatum>
+				<tag>03</tag>
+				<monat>09</monat>
+				<jahr>1976</jahr>
+			</geburtsdatum>
+			<erfahrung>Fortgeschrittener</erfahrung>
+			<schlagzeug>vorhanden</schlagzeug>
+		</person>
+		<anmerkungen>Dabei sein ist alles.</anmerkungen>
+	</gruppenleiter>
+	<person>
+		<vorname>Bernd</vorname>
+		<nachname>Brot</nachname>
+		<email>bernd@google.de</email>
+		<geburtsdatum>
+			<tag>01</tag>
+			<monat>12</monat>
+			<jahr>1981</jahr>
+		</geburtsdatum>
+		<erfahrung>Amateur</erfahrung>
+		<schlagzeug>nicht vorhanden</schlagzeug>
+		</person>
+</gruppe>
