@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+elementFormDefault="qualified">
+
+<xs:include schemaLocation="Sticker.xsd"/>
+<xs:include schemaLocation="Endnutzer.xsd"/>
+
+
+<!-- definition of simple elements -->
+
+<xs:element name="Aufzeichnungsdatum" type="xs:date"/>
+<xs:element name="Einstellungsdatum" type="xs:date"/>
+<xs:element name="Laengengrad" type="xs:decimal"/>
+<xs:element name="Breitengrad" type="xs:decimal"/>
+
+<!-- definition of attributes -->
+
+<xs:attribute name="Foto_ID" type="xs:integer"/>
+<xs:attribute name="Sticker_ID" type="Sticker_ID"/>
+<xs:attribute name="Benutzer_ID" type="Benutzer_ID"/>
+
+
+<!-- definition of complex elements -->
+
+<xs:element name="Kommentar">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Text"/>
+      <xs:element ref="Datum"/>
+      <xs:element ref="liker"/>
+    </xs:sequence>
+    <xs:attribute ref="Benutzer_ID"/>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="Kommentare">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Kommentar" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="liker">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Benutzer_ID" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- ?????????????????? -->
+<xs:element name="follower">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Benutzer_ID" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="Ort">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Laengengrad"/>
+      <xs:element ref="Breitengrad"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- 
+root-Element: FOTO
+ -->
+
+<xs:element name="Foto">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Kommentare"/>
+      <xs:element ref="Aufzeichnungsdatum" minOccurs="0"/>
+      <xs:element ref="Einstellungsdatum"/>
+      <xs:element ref="Ort"/>
+      <xs:element ref="liker"/>
+    </xs:sequence>
+    <xs:attribute ref="Foto_ID" use="required"/>
+    <xs:attribute ref="Sticker_ID" use="required"/>
+    <xs:attribute ref="Benutzer_ID" use="required"/>
+  </xs:complexType>
+</xs:element>
+
+</xs:schema>
