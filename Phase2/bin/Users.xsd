@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+elementFormDefault="qualified">
+
+<!-- definition of simple elements -->
+
+<xs:element name="Anmeldedatum" type="xs:date"/>
+<xs:element name="Name" type="xs:string"/>
+<xs:element name="Nickname" type="xs:string"/>
+<xs:element name="Passwort" type="xs:string"/>
+<xs:element name="Nachname" type="xs:string"/>
+<xs:element name="Vorname" type="xs:string"/>
+<xs:element name="Strasse" type="xs:string"/>
+<xs:element name="Hausnummer" type="xs:string"/>
+<xs:element name="Ort" type="xs:string"/>
+<xs:element name="Provinz" type="xs:string"/>
+<xs:element name="Land" type="xs:string"/>
+<xs:element name="Gewerbenummer" type="xs:string"/>
+<xs:element name="Telefon" type="xs:integer"/>
+<xs:element name="Kontonummer" type="xs:integer"/>
+<xs:element name="BLZ" type="xs:integer"/>
+<xs:element name="SWIFT" type="xs:integer"/>
+<xs:element name="IBAN" type="xs:integer"/>
+<xs:element name="Inhaber" type="xs:string"/>
+<xs:element name="Kreditinstitut" type="xs:string"/>
+<xs:element name="Kreditkartennummer" type="xs:integer"/>
+<!-- <xs:element name="Ausstellungsdatum" type="xs:date"/>
+<xs:element name="Ablaufdatum" type="xs:date"/> -->
+<xs:element name="Benutzer_ID" type="xs:integer"/>
+<xs:element name="Sammlung" type="Sammlung"/>
+
+<xs:element name="email">
+  <xs:simpleType>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="*[@]*[.]*"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:element>
+
+
+
+
+<xs:element name="Rechte">
+<xs:simpleType>
+  <xs:restriction base="xs:string">
+    <xs:enumeration value="Freund"/>
+    <xs:enumeration value="Neutral"/>
+    <xs:enumeration value="Block"/>
+  </xs:restriction>
+</xs:simpleType> 
+</xs:element>
+
+<xs:element name="Geschlecht" default="keine Angabe">
+<xs:simpleType>
+  <xs:restriction base="xs:string">
+    <xs:enumeration value="männlich"/>
+    <xs:enumeration value="weiblich"/>
+    <xs:enumeration value="keine Angabe"/>
+  </xs:restriction>
+</xs:simpleType> 
+</xs:element>
+
+<!-- 
+<xs:element name="Kreditkartentyp">
+<xs:simpleType>
+  <xs:restriction base="xs:string">
+    <xs:enumeration value="VISA"/>
+    <xs:enumeration value="MASTERCARD"/>
+    <xs:enumeration value="AMERICAN EXPRESS"/>
+    <xs:enumeration value="DINERS"/>
+  </xs:restriction>
+</xs:simpleType> 
+</xs:element>
+ -->
+
+<!-- definition of attributes -->
+
+<xs:attribute name="Benutzer_ID" type="xs:integer"/>
+<xs:attribute name="is_a_shop" type="xs:boolean"/>
+
+
+<!-- definition of complex elements -->
+
+
+<!-- 
+RECHTEBEREICH
+ -->
+<xs:element name="Rechteliste">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="global"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="global">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Rechte"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- MUSS NOCH VERSCHOBEN WERDEN !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+<xs:element name="Userrecht">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Rechte"/>
+    </xs:sequence>
+    <xs:attribute ref="Benutzer_ID"/>
+  </xs:complexType>
+</xs:element>
+<!-- MUSS NOCH VERSCHOBEN WERDEN !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+
+
+<!-- 
+ADRESSENBEREICH
+ -->
+<xs:element name="Privatanschrift">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Nachname"/>
+      <xs:element ref="Vorname"/>
+      <xs:element ref="Strasse"/>
+      <xs:element ref="Hausnummer"/>
+      <xs:element ref="PLZ"/>
+      <xs:element ref="Ort"/>
+      <xs:element ref="Provinz"/>
+      <xs:element ref="Land"/>
+      <xs:element ref="Telefon"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="Geschaeftsanschrift">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Nachname"/>
+      <xs:element ref="Vorname"/>
+      <xs:element ref="Strasse"/>
+      <xs:element ref="Hausnummer"/>
+      <xs:element ref="PLZ"/>
+      <xs:element ref="Ort"/>
+      <xs:element ref="Provinz"/>
+      <xs:element ref="Land"/>
+      <xs:element ref="Telefon"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="Rechnungsanschrift">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Nachname"/>
+      <xs:element ref="Vorname"/>
+      <xs:element ref="Strasse"/>
+      <xs:element ref="Hausnummer"/>
+      <xs:element ref="PLZ"/>
+      <xs:element ref="Ort"/>
+      <xs:element ref="Provinz"/>
+      <xs:element ref="Land"/>
+      <xs:element ref="Telefon"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="Lieferanschrift">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Nachname"/>
+      <xs:element ref="Vorname"/>
+      <xs:element ref="Strasse"/>
+      <xs:element ref="Hausnummer"/>
+      <xs:element ref="PLZ"/>
+      <xs:element ref="Ort"/>
+      <xs:element ref="Provinz"/>
+      <xs:element ref="Land"/>
+      <xs:element ref="Telefon"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="Vorkasse-Anschrift">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Nachname"/>
+      <xs:element ref="Vorname"/>
+      <xs:element ref="Strasse"/>
+      <xs:element ref="Hausnummer"/>
+      <xs:element ref="PLZ"/>
+      <xs:element ref="Ort"/>
+      <xs:element ref="Provinz"/>
+      <xs:element ref="Land"/>
+      <xs:element ref="Telefon"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- 
+BEZAHLBEREICH
+ -->
+<xsd:complexType name="Zahlungsinformationenen">
+  <xsd:sequence>
+    <xsd:choice minOccurs="0" maxOccurs="4">
+      <xs:element ref="Kontodaten"/>
+      <xs:element ref="Kreditkarte"/>
+      <xs:element ref="Paypal"/>
+      <xs:element ref="Vorkasse-Anschrift"/>
+    </xsd:choice>
+  </xsd:sequence>
+</xsd:complexType>
+
+<xs:element name="Kontodaten">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Kontonummer"/>
+      <xs:element ref="BLZ"/>
+      <xs:element ref="Laendercode"/>
+      <xs:element ref="Inhaber"/>
+      <xs:element ref="Kreditinstitut"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="Laendercode">
+  <xs:complexType>
+    <xs:sequence>
+       <xsd:choice minOccurs="0" maxOccurs="2">
+      	 <xs:element ref="SWIFT"/>
+      	 <xs:element ref="IBAN"/>
+   	   </xsd:choice>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="Kreditkarte">
+  <xs:complexType>
+    <xs:sequence>
+   	  <!-- <xs:element ref="Kreditkartentyp"/> -->
+      <xs:element ref="Kreditkartennummer"/>
+      <!-- <xs:element ref="Ausstellungsdatum"/>
+      <xs:element ref="Ablaufdatum"/> -->
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="Paypal">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="email"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+
+<xs:element name="Warenkoerbe">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Warenkorb" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="Kommentar">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Text"/>
+      <xs:element ref="Datum"/>
+      <xs:element ref="liker"/>
+    </xs:sequence>
+    <xs:attribute ref="Benutzer_ID"/>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="Kommentare">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Kommentar" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="Sammlungen">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Sammlung" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="liker">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Benutzer_ID" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="follower">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Benutzer_ID" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- 
+root-Element: ENDNUTER
+ -->
+
+<xs:element name="Endnutzer">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Anmeldedatum"/>
+      <xs:element ref="Name"/>
+      <xs:element ref="Nickname"/>
+      <xs:element ref="Passwort"/>
+      <xs:element ref="Rechteliste"/>
+      <xs:element ref="Privatanschrift" minOccurs="0"/>
+      <xs:element ref="Geschaeftsanschrift" minOccurs="0"/>
+      <xs:element ref="Rechnungsanschrift" minOccurs="0"/>
+      <xs:element ref="Lieferanschrift" minOccurs="0"/>
+      <xs:element ref="Gewerbenummer" minOccurs="0"/>
+      <xs:element ref="email" minOccurs="0"/>
+      <xs:element ref="Zahlungsinformationen"/>
+      <xs:element ref="Warenkoerbe"/>
+      <xs:element ref="Kommentare"/>
+      <xs:element ref="Sammlungen"/>
+      <xs:element ref="liker"/>
+      <xs:element ref="follower"/>
+    </xs:sequence>
+    <xs:attribute ref="Benutzer_ID" use="required"/>
+    <xs:attribute ref="is_a_shop" use="required"/>
+  </xs:complexType>
+</xs:element>
+
+</xs:schema>

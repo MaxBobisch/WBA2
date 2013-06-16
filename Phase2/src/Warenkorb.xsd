@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
 elementFormDefault="qualified">
 
@@ -61,16 +60,16 @@ elementFormDefault="qualified">
 <!-- 
 BEZAHLBEREICH
  -->
-<xsd:complexType name="Zahlungsinformationenen">
-  <xsd:sequence>
-    <xsd:choice minOccurs="1" maxOccurs="1"> <!-- ist default-wert, nur zur Verdeutlichung -->
+<xs:complexType name="Zahlungsinformationenen">
+  <xs:sequence>
+    <xs:choice minOccurs="1" maxOccurs="1"> <!-- ist default-wert, nur zur Verdeutlichung -->
       <xs:element ref="Kontodaten"/>
       <xs:element ref="Kreditkarte"/>
       <xs:element ref="Paypal"/>
       <xs:element ref="Vorkasse-Anschrift"/>
-    </xsd:choice>
-  </xsd:sequence>
-</xsd:complexType>
+    </xs:choice>
+  </xs:sequence>
+</xs:complexType>
 
 <xs:element name="Kontodaten">
   <xs:complexType>

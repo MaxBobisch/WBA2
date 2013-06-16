@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+elementFormDefault="qualified">
+
+<!-- definition of simple elements -->
+
+<xs:element name="Einstellungsdatum" type="xs:date"/>
+<xs:element name="Angebotbeschreibung" type="xs:string"/>
+<xs:element name="verfuegbar" type="xs:boolean"/>
+<xs:element name="Waehrung" type="xs:string"/>
+<xs:element name="item" type="xs:anyURI"/>
+
+<xs:element name="Summe">
+  <xs:simpleType>
+    <xs:restriction base="xs:decimal">
+      <xs:minInclusive value="0.0"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:element> 
+
+<xs:element name="Menge_verfuegbar" default="0">
+  <xs:simpleType>
+    <xs:restriction base="xs:integer">
+      <xs:minInclusive value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:element>
+
+<!-- definition of attributes -->
+
+<xs:attribute name="Offer_ID" type="xs:integer"/>
+<xs:attribute name="User_ID" type="xs:integer"/>
+<xs:attribute name="Status" type="xs:boolean"/>
+
+
+<!-- definition of complex elements -->
+
+<xs:element name="Verfuegbarkeit">
+  <xs:simpleType>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="verfuegbar"/>
+      <xs:enumeration value="kann bestellt werden"/>
+      <xs:enumeration value="nicht vefuegbar"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:element>
+
+<xs:element name="Gesamtpreis">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Waehrung"/>
+      <xs:element ref="Summe"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="items">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="item" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- 
+Einzelelement OFFER
+ -->
+
+<xs:element name="Offer">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="items"/>
+      <xs:element ref="Angebotbeschreibung"/>
+      <xs:element ref="Einstellungsdatum"/>
+      <xs:element ref="Gesamtpreis"/>
+      <xs:element ref="Verfuegbarkeit"/>
+      <xs:element ref="Menge_verfuegbar"/>
+    </xs:sequence>
+    <xs:attribute ref="Offer_ID" use="required"/>
+    <xs:attribute ref="User_ID" use="required"/>
+    <xs:attribute ref="Status" use="required"/>
+  </xs:complexType>
+</xs:element>
+
+<!-- 
+root-Element: OFFERS
+ -->
+
+<xs:element name="Offers">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Offer" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+</xs:schema>

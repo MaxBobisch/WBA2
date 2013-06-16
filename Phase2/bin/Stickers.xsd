@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+elementFormDefault="qualified">
+
+<xs:include schemaLocation="Foto.xsd"/>
+<xs:include schemaLocation="Comments.xsd"/>
+
+<!-- definition of simple elements -->
+
+<xs:element name="Name" type="xs:string"/>
+<xs:element name="Beschreibung" type="xs:string"/>
+<xs:element name="Hersteller" type="xs:string"/>
+<xs:element name="Erscheinungsdatum" type="xs:date"/>
+<xs:element name="Text" type="xs:string"/>
+<xs:element name="Datum" type="xs:date"/>
+<xs:element name="Benutzer_ID" type="Benutzer_ID"/>
+
+
+
+<!-- definition of attributes -->
+
+<xs:attribute name="User_ID" type="Benutzer_ID"/>
+<xs:attribute name="Sticker_ID" type="xs:integer"/>
+
+
+
+<!-- definition of complex elements -->
+
+<xs:element name="Fotos">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Foto" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+<!-- 
+root-Element: STICKER
+ -->
+
+<xs:element name="Sticker">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Name"/>
+      <xs:element ref="Beschreibung"/>
+      <xs:element ref="Hersteller"/>
+      <xs:element ref="Erscheinungsdatum"/>
+      <xs:element ref="Fotos"/>
+      <xs:element ref="Kommentare"/>
+      <xs:element ref="follower"/>
+      <xs:element ref="liker"/>
+    </xs:sequence>
+    <xs:attribute ref="Sticker_ID" use="required"/>
+  </xs:complexType>
+</xs:element>
+
+</xs:schema>

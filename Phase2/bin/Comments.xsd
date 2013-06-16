@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+elementFormDefault="qualified">
+
+<!-- definition of simple elements -->
+
+<xs:element name="Text" type="xs:string"/>
+<xs:element name="Datum" type="xs:string"/>
+
+<!-- definition of complex elements -->
+
+<xs:element name="Kommentar">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Text"/>
+      <xs:element ref="Datum"/>
+      <xs:element ref="likers"/>
+    </xs:sequence>
+    <xs:attribute ref="User_ID"/>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="Kommentare">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Kommentar" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>

@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+elementFormDefault="qualified">
+
+<xs:include schemaLocation="Collection.xsd"/>
+<xs:include schemaLocation="Sticker.xsd"/>
+<xs:include schemaLocation="ShoppingCart.xsd"/>
+<xs:include schemaLocation="Photo.xsd"/>
+<xs:include schemaLocation="Offer.xsd"/>
+
+
+<!-- START ANSCHRIFT -->
+<!-- definition of simple elements -->
+<xs:element name="FirstName" type="xs:string"/>
+<xs:element name="FamilyName" type="xs:string"/>
+<xs:element name="Street" type="xs:string"/>
+<xs:element name="Number" type="xs:string"/>
+<xs:element name="City" type="xs:string"/>
+<xs:element name="Province" type="xs:string"/>
+<xs:element name="Country" type="xs:string"/>
+<xs:element name="Telephone" type="xs:integer"/>
+<xs:element name="PostalCode" type="xs:string"/>
+<xs:element name="email">
+  <xs:simpleType>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[*][@][*][.][*]"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:element>
+
+<!-- definition of complex elements -->
+<xs:complexType name="Adress">
+  <xs:sequence>
+    <xs:element ref="FamilyName"/>
+    <xs:element ref="FirstName"/>
+    <xs:element ref="Street"/>
+    <xs:element ref="Number"/>
+    <xs:element ref="PostalCode" />
+    <xs:element ref="City"/>
+    <xs:element ref="Province" minOccurs="0"/>
+    <xs:element ref="Country"/>
+    <xs:element ref="Telephone" minOccurs="0"/>
+    <xs:element ref="email" minOccurs="0"/>
+  </xs:sequence>
+</xs:complexType>
+<!-- ENDE ANSCHRIFT -->
+
+
+<!-- definition of simple elements -->
+<xs:element name="Nickname" type="xs:string"/>
+<xs:element name="Gender" default="not specified">
+<xs:simpleType>
+  <xs:restriction base="xs:string">
+    <xs:enumeration value="male"/>
+    <xs:enumeration value="female"/>
+    <xs:enumeration value="not specified"/>
+  </xs:restriction>
+</xs:simpleType> 
+</xs:element>
+
+<!-- definition of attributes -->
+<xs:attribute name="User_ID" type="xs:integer"/>
+<xs:attribute name="Self" type="xs:anyURI"/>
+
+
+<!-- definition of complex elements -->
+
+<!-- KOMMENTAR -->
+<xs:element name="Text" type="xs:string" />
+<xs:element name="Date" type="xs:date" />
+<xs:element name="Comment">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Text"/>
+      <xs:element ref="Date"/>
+      <xs:element ref="Liker"/>
+    </xs:sequence>
+    <xs:attribute ref="User_ID" use="required"/>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="Comments">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Comment" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+<!-- ENDE KOMMENTAR -->
+
+<xs:element name="Collections">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Collection" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="Stickers">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Sticker" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="Offers">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Offer" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="ShoppingCarts">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="ShoppingCart" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="Photos">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Photo" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="Liker">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Link" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="Follower">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Link" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="Inventory">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Item" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- 
+root-Einzel-Element: USER
+ -->
+
+<xs:element name="User">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Nickname"/>
+      <xs:element name="HomeAdress" type="Adress" minOccurs="0"/>
+      <xs:element name="ShopAdress" type="Adress" minOccurs="0"/>
+      <xs:element ref="Stickers"/>
+      <xs:element ref="Collections"/>
+      <xs:element ref="Photos"/>
+      <xs:element ref="Offers"/>
+      <xs:element ref="Inventory"/>
+      <xs:element ref="Liker"/>
+      <xs:element ref="Follower"/>
+      <xs:element ref="Comments"/>
+    </xs:sequence>
+    <xs:attribute ref="User_ID" use="required"/>
+    <xs:attribute ref="Self" use="required"/>
+  </xs:complexType>
+</xs:element>
+
+<!-- 
+root-Ober-Element: USERS
+ -->
+ 
+ <xs:element name="Users">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="User" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+ 
+
+</xs:schema>
