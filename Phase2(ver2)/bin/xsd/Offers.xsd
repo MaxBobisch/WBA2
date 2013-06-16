@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+elementFormDefault="qualified">
+
+<xs:include schemaLocation="Collections.xsd"/>
+<xs:include schemaLocation="Stickers.xsd"/>
+<xs:include schemaLocation="ShoppingCarts.xsd"/>
+<xs:include schemaLocation="Photos.xsd"/>
+<xs:include schemaLocation="Users.xsd"/>
+
+<xs:element name="Item" type="xs:anyURI" />
+<xs:element name="Price" type="xs:decimal" />
+
+<xs:attribute name="Offer_ID" type="xs:integer" />
+<xs:attribute name="Currency" type="xs:string" />
+
+<xs:element name="Offer">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Title" />
+      <xs:element ref="Description" />
+      <xs:element ref="Item" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element ref="Price"/>
+      <xs:element ref="Liker"/>
+      <xs:element ref="Follower"/>
+      <xs:element ref="Comments"/>
+    </xs:sequence>
+    <xs:attribute ref="Currency" use="required"/>
+    <xs:attribute ref="Offer_ID" use="required"/>
+    <xs:attribute ref="Self" use="required"/>
+    <xs:attribute ref="User_ID" use="required" />
+    <xs:attribute ref="Owner" use="required" />
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="Offers">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Offer" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+</xs:schema>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Users xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../xsd/Users.xsd">
+  <User Self="http://tempuri.org" User_ID="0">
+    <Nickname>Nickname</Nickname>
+    <HomeAdress>
+      <FamilyName>FamilyName</FamilyName>
+      <FirstName>FirstName</FirstName>
+      <Street>Street</Street>
+      <Number>Number</Number>
+      <PostalCode>PostalCode</PostalCode>
+      <City>City</City>
+      <Province>Province</Province>
+      <Country>Country</Country>
+      <Telephone>0</Telephone>
+      <email>email</email>
+    </HomeAdress>
+    <ShopAdress>
+      <FamilyName>FamilyName</FamilyName>
+      <FirstName>FirstName</FirstName>
+      <Street>Street</Street>
+      <Number>Number</Number>
+      <PostalCode>PostalCode</PostalCode>
+      <City>City</City>
+      <Province>Province</Province>
+      <Country>Country</Country>
+      <Telephone>0</Telephone>
+      <email>email</email>
+    </ShopAdress>
+    <StickerContainer>
+      <Reference>
+        <Title>Title</Title>
+        <Link>http://tempuri.org</Link>
+      </Reference>
+    </StickerContainer>
+    <CollectionContainer>
+      <Reference>
+        <Title>Title</Title>
+        <Link>http://tempuri.org</Link>
+      </Reference>
+    </CollectionContainer>
+    <PhotoContainer>
+      <SinglePhoto>
+        <Title>Title</Title>
+        <PhotoLink>http://tempuri.org</PhotoLink>
+        <Link>http://tempuri.org</Link>
+      </SinglePhoto>
+    </PhotoContainer>
+    <OfferContainer>
+      <SingleOffer Currency="">
+        <Title>Title</Title>
+        <Price>0.0</Price>
+        <Link>http://tempuri.org</Link>
+      </SingleOffer>
+    </OfferContainer>
+    <ShoppingCartContainer>
+      <SingleShoppingCart Currency="">
+        <Item>http://tempuri.org</Item>
+        <Count>0</Count>
+        <Price>0.0</Price>
+        <Link>http://tempuri.org</Link>
+      </SingleShoppingCart>
+    </ShoppingCartContainer>
+    <Liker>
+      <Link>http://tempuri.org</Link>
+    </Liker>
+    <Follower>
+      <Link>http://tempuri.org</Link>
+    </Follower>
+    <Comments>
+      <Comment Owner="http://tempuri.org" User_ID="0">
+        <Text>Text</Text>
+        <Date>2001-01-01</Date>
+        <Liker/>
+      </Comment>
+    </Comments>
+  </User>
+</Users>

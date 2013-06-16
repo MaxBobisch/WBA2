@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ShoppingCarts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../xsd/Users.xsd">
+  <ShoppingCart Currency="" Customer="http://tempuri.org" Customer_ID="0" Self="http://tempuri.org" Shop="http://tempuri.org" Shop_ID="0" ShoppingCart_ID="">
+    <Products>
+      <Item>http://tempuri.org</Item>
+    </Products>
+    <ShipTo>
+      <FamilyName>FamilyName</FamilyName>
+      <FirstName>FirstName</FirstName>
+      <Street>Street</Street>
+      <Number>Number</Number>
+      <PostalCode>PostalCode</PostalCode>
+      <City>City</City>
+      <Province>Province</Province>
+      <Country>Country</Country>
+      <Telephone>0</Telephone>
+      <email>email</email>
+    </ShipTo>
+    <Price>0.0</Price>
+    <Payment>n.a.</Payment>
+  </ShoppingCart>
+</ShoppingCarts>

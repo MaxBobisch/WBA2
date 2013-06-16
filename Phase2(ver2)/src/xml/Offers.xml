@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Offers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../xsd/Users.xsd">
+  <Offer Currency="" Offer_ID="0" Owner="http://tempuri.org" Self="http://tempuri.org" User_ID="0">
+    <Title>Title</Title>
+    <Description>Description</Description>
+    <Item>http://tempuri.org</Item>
+    <Price>0.0</Price>
+    <Liker>
+      <Link>http://tempuri.org</Link>
+    </Liker>
+    <Follower>
+      <Link>http://tempuri.org</Link>
+    </Follower>
+    <Comments>
+      <Comment Owner="http://tempuri.org" User_ID="0">
+        <Text>Text</Text>
+        <Date>2001-01-01</Date>
+        <Liker/>
+      </Comment>
+    </Comments>
+  </Offer>
+</Offers>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+elementFormDefault="qualified">
+
+<xs:include schemaLocation="Collections.xsd"/>
+<xs:include schemaLocation="Stickers.xsd"/>
+<xs:include schemaLocation="Users.xsd"/>
+<xs:include schemaLocation="Photos.xsd"/>
+<xs:include schemaLocation="Offers.xsd"/>
+
+<xs:attribute name="ShoppingCart_ID" type="xs:integer" />
+<xs:attribute name="Customer_ID" type="xs:integer" />
+<xs:attribute name="Shop_ID" type="xs:integer" />
+<xs:attribute name="Customer" type="xs:anyURI" />
+<xs:attribute name="Shop" type="xs:anyURI" />
+
+<xs:element name="Payment" default="n.a.">
+<xs:simpleType>
+  <xs:restriction base="xs:string">
+    <xs:enumeration value="Bank Account"/>
+    <xs:enumeration value="Credit Card"/>
+    <xs:enumeration value="Paypal"/>
+    <xs:enumeration value="n.a." />
+  </xs:restriction>
+</xs:simpleType> 
+</xs:element>
+
+<xs:element name="Products">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Item" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="ShoppingCart">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Products" />
+      <xs:element name="ShipTo" type="Adress" />
+      <xs:element ref="Price"/>
+      <xs:element ref="Payment"/>
+    </xs:sequence>
+    <xs:attribute ref="Currency" use="required"/>
+    <xs:attribute ref="ShoppingCart_ID" use="required" />
+    <xs:attribute ref="Self" use="required"/>
+    <xs:attribute ref="Customer_ID" use="required" />
+    <xs:attribute ref="Customer"  use="required" />
+	<xs:attribute ref="Shop_ID"  use="required" />
+	<xs:attribute ref="Shop" use="required" />
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="ShoppingCarts">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="ShoppingCart" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+
+</xs:schema>
