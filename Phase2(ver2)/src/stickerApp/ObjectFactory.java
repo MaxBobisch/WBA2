@@ -2,7 +2,7 @@
 // Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.6 generiert 
 // Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
-// Generiert: 2013.06.15 um 10:30:59 PM CEST 
+// Generiert: 2013.06.16 um 10:44:43 PM CEST 
 //
 
 
@@ -34,24 +34,24 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
+    private final static QName _PhotoLink_QNAME = new QName("", "PhotoLink");
     private final static QName _Street_QNAME = new QName("", "Street");
+    private final static QName _Count_QNAME = new QName("", "Count");
     private final static QName _Telephone_QNAME = new QName("", "Telephone");
     private final static QName _Payment_QNAME = new QName("", "Payment");
+    private final static QName _Datetime_QNAME = new QName("", "Datetime");
     private final static QName _Item_QNAME = new QName("", "Item");
     private final static QName _Nickname_QNAME = new QName("", "Nickname");
     private final static QName _RelatedSticker_QNAME = new QName("", "RelatedSticker");
-    private final static QName _Date_QNAME = new QName("", "Date");
     private final static QName _FirstName_QNAME = new QName("", "FirstName");
     private final static QName _Longitude_QNAME = new QName("", "longitude");
     private final static QName _FamilyName_QNAME = new QName("", "FamilyName");
-    private final static QName _Currency_QNAME = new QName("", "Currency");
     private final static QName _Description_QNAME = new QName("", "Description");
     private final static QName _Number_QNAME = new QName("", "Number");
     private final static QName _Country_QNAME = new QName("", "Country");
     private final static QName _Province_QNAME = new QName("", "Province");
     private final static QName _Title_QNAME = new QName("", "Title");
     private final static QName _City_QNAME = new QName("", "City");
-    private final static QName _Name_QNAME = new QName("", "Name");
     private final static QName _Text_QNAME = new QName("", "Text");
     private final static QName _Link_QNAME = new QName("", "Link");
     private final static QName _PostalCode_QNAME = new QName("", "PostalCode");
@@ -84,27 +84,75 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Stickers }
+     * Create an instance of {@link StickerContainer }
      * 
      */
-    public Stickers createStickers() {
-        return new Stickers();
+    public StickerContainer createStickerContainer() {
+        return new StickerContainer();
     }
 
     /**
-     * Create an instance of {@link Sticker }
+     * Create an instance of {@link Reference }
      * 
      */
-    public Sticker createSticker() {
-        return new Sticker();
+    public Reference createReference() {
+        return new Reference();
     }
 
     /**
-     * Create an instance of {@link RelatedPhotos }
+     * Create an instance of {@link CollectionContainer }
      * 
      */
-    public RelatedPhotos createRelatedPhotos() {
-        return new RelatedPhotos();
+    public CollectionContainer createCollectionContainer() {
+        return new CollectionContainer();
+    }
+
+    /**
+     * Create an instance of {@link PhotoContainer }
+     * 
+     */
+    public PhotoContainer createPhotoContainer() {
+        return new PhotoContainer();
+    }
+
+    /**
+     * Create an instance of {@link SinglePhoto }
+     * 
+     */
+    public SinglePhoto createSinglePhoto() {
+        return new SinglePhoto();
+    }
+
+    /**
+     * Create an instance of {@link OfferContainer }
+     * 
+     */
+    public OfferContainer createOfferContainer() {
+        return new OfferContainer();
+    }
+
+    /**
+     * Create an instance of {@link SingleOffer }
+     * 
+     */
+    public SingleOffer createSingleOffer() {
+        return new SingleOffer();
+    }
+
+    /**
+     * Create an instance of {@link ShoppingCartContainer }
+     * 
+     */
+    public ShoppingCartContainer createShoppingCartContainer() {
+        return new ShoppingCartContainer();
+    }
+
+    /**
+     * Create an instance of {@link SingleShoppingCart }
+     * 
+     */
+    public SingleShoppingCart createSingleShoppingCart() {
+        return new SingleShoppingCart();
     }
 
     /**
@@ -140,6 +188,46 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link Users }
+     * 
+     */
+    public Users createUsers() {
+        return new Users();
+    }
+
+    /**
+     * Create an instance of {@link Products }
+     * 
+     */
+    public Products createProducts() {
+        return new Products();
+    }
+
+    /**
+     * Create an instance of {@link Sticker }
+     * 
+     */
+    public Sticker createSticker() {
+        return new Sticker();
+    }
+
+    /**
+     * Create an instance of {@link RelatedPhotos }
+     * 
+     */
+    public RelatedPhotos createRelatedPhotos() {
+        return new RelatedPhotos();
+    }
+
+    /**
+     * Create an instance of {@link Offer }
+     * 
+     */
+    public Offer createOffer() {
+        return new Offer();
+    }
+
+    /**
      * Create an instance of {@link Collections }
      * 
      */
@@ -153,14 +241,6 @@ public class ObjectFactory {
      */
     public Collection createCollection() {
         return new Collection();
-    }
-
-    /**
-     * Create an instance of {@link Photos }
-     * 
-     */
-    public Photos createPhotos() {
-        return new Photos();
     }
 
     /**
@@ -188,43 +268,27 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Offer }
-     * 
-     */
-    public Offer createOffer() {
-        return new Offer();
-    }
-
-    /**
-     * Create an instance of {@link Inventory }
-     * 
-     */
-    public Inventory createInventory() {
-        return new Inventory();
-    }
-
-    /**
-     * Create an instance of {@link Users }
-     * 
-     */
-    public Users createUsers() {
-        return new Users();
-    }
-
-    /**
-     * Create an instance of {@link Products }
-     * 
-     */
-    public Products createProducts() {
-        return new Products();
-    }
-
-    /**
      * Create an instance of {@link ShoppingCart }
      * 
      */
     public ShoppingCart createShoppingCart() {
         return new ShoppingCart();
+    }
+
+    /**
+     * Create an instance of {@link Stickers }
+     * 
+     */
+    public Stickers createStickers() {
+        return new Stickers();
+    }
+
+    /**
+     * Create an instance of {@link Photos }
+     * 
+     */
+    public Photos createPhotos() {
+        return new Photos();
     }
 
     /**
@@ -239,9 +303,27 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
      * 
      */
+    @XmlElementDecl(namespace = "", name = "PhotoLink")
+    public JAXBElement<String> createPhotoLink(String value) {
+        return new JAXBElement<String>(_PhotoLink_QNAME, String.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
+     * 
+     */
     @XmlElementDecl(namespace = "", name = "Street")
     public JAXBElement<String> createStreet(String value) {
         return new JAXBElement<String>(_Street_QNAME, String.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link BigInteger }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "", name = "Count")
+    public JAXBElement<BigInteger> createCount(BigInteger value) {
+        return new JAXBElement<BigInteger>(_Count_QNAME, BigInteger.class, null, value);
     }
 
     /**
@@ -260,6 +342,15 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "", name = "Payment", defaultValue = "n.a.")
     public JAXBElement<String> createPayment(String value) {
         return new JAXBElement<String>(_Payment_QNAME, String.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link XMLGregorianCalendar }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "", name = "Datetime")
+    public JAXBElement<XMLGregorianCalendar> createDatetime(XMLGregorianCalendar value) {
+        return new JAXBElement<XMLGregorianCalendar>(_Datetime_QNAME, XMLGregorianCalendar.class, null, value);
     }
 
     /**
@@ -290,15 +381,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link XMLGregorianCalendar }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "", name = "Date")
-    public JAXBElement<XMLGregorianCalendar> createDate(XMLGregorianCalendar value) {
-        return new JAXBElement<XMLGregorianCalendar>(_Date_QNAME, XMLGregorianCalendar.class, null, value);
-    }
-
-    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
      * 
      */
@@ -323,15 +405,6 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "", name = "FamilyName")
     public JAXBElement<String> createFamilyName(String value) {
         return new JAXBElement<String>(_FamilyName_QNAME, String.class, null, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "", name = "Currency")
-    public JAXBElement<String> createCurrency(String value) {
-        return new JAXBElement<String>(_Currency_QNAME, String.class, null, value);
     }
 
     /**
@@ -386,15 +459,6 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "", name = "City")
     public JAXBElement<String> createCity(String value) {
         return new JAXBElement<String>(_City_QNAME, String.class, null, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "", name = "Name")
-    public JAXBElement<String> createName(String value) {
-        return new JAXBElement<String>(_Name_QNAME, String.class, null, value);
     }
 
     /**

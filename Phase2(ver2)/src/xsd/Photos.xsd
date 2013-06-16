@@ -2,15 +2,14 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
 elementFormDefault="qualified">
 
-<xs:include schemaLocation="Collection.xsd"/>
-<xs:include schemaLocation="Sticker.xsd"/>
-<xs:include schemaLocation="ShoppingCart.xsd"/>
+<xs:include schemaLocation="Collections.xsd"/>
+<xs:include schemaLocation="Stickers.xsd"/>
+<xs:include schemaLocation="ShoppingCarts.xsd"/>
 <xs:include schemaLocation="Users.xsd"/>
-<xs:include schemaLocation="Offer.xsd"/>
+<xs:include schemaLocation="Offers.xsd"/>
 
-<xs:element name="Title" type="xs:string" />
 <xs:element name="RelatedSticker" type="xs:anyURI" />
-<xs:element name="Link" type="xs:anyURI" />
+<xs:element name="PhotoLink" type="xs:anyURI" />
 
 <xs:attribute name="Photo_ID" type="xs:integer" />
 
@@ -32,10 +31,10 @@ elementFormDefault="qualified">
   <xs:complexType>
     <xs:sequence>
       <xs:element ref="Title" />
-      <xs:element ref="Description" />
-      <xs:element ref="Date" />
-      <xs:element ref="Link" />
-      <xs:element ref="Location" />
+      <xs:element ref="Description" minOccurs="0"/>
+      <xs:element ref="Datetime"/>
+      <xs:element ref="PhotoLink" />
+      <xs:element ref="Location" minOccurs="0"/>
       <xs:element ref="RelatedSticker" minOccurs="0"/>
       <xs:element ref="Liker"/>
       <xs:element ref="Follower"/>
@@ -48,5 +47,12 @@ elementFormDefault="qualified">
   </xs:complexType>
 </xs:element>
 
+<xs:element name="Photos">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Photo" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
 
 </xs:schema>

@@ -2,15 +2,15 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
 elementFormDefault="qualified">
 
-<xs:include schemaLocation="Collection.xsd"/>
+<xs:include schemaLocation="Collections.xsd"/>
 <xs:include schemaLocation="Users.xsd"/>
-<xs:include schemaLocation="ShoppingCart.xsd"/>
-<xs:include schemaLocation="Photo.xsd"/>
-<xs:include schemaLocation="Offer.xsd"/>
+<xs:include schemaLocation="ShoppingCarts.xsd"/>
+<xs:include schemaLocation="Photos.xsd"/>
+<xs:include schemaLocation="Offers.xsd"/>
 
 <!-- definition of simple elements -->
 
-<xs:element name="Name" type="xs:string"/>
+<xs:element name="Title" type="xs:string"/>
 <xs:element name="Description" type="xs:string"/>
 
 <!-- definition of attributes -->
@@ -30,9 +30,9 @@ elementFormDefault="qualified">
 <xs:element name="Sticker">
   <xs:complexType>
     <xs:sequence>
-      <xs:element ref="Name" minOccurs="0"/>
+      <xs:element ref="Title" minOccurs="0"/>
       <xs:element ref="Description" minOccurs="0"/>
-      <xs:element ref="Date" minOccurs="0"/>
+      <xs:element ref="Datetime" />
       <xs:element ref="RelatedPhotos"/>
       <xs:element ref="Liker"/>
       <xs:element ref="Follower"/>
@@ -44,5 +44,14 @@ elementFormDefault="qualified">
     <xs:attribute ref="Owner" use="required" />
   </xs:complexType>
 </xs:element>
+
+<xs:element name="Stickers">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Sticker" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
 
 </xs:schema>

@@ -2,11 +2,11 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
 elementFormDefault="qualified">
 
-<xs:include schemaLocation="Collection.xsd"/>
-<xs:include schemaLocation="Sticker.xsd"/>
-<xs:include schemaLocation="ShoppingCart.xsd"/>
-<xs:include schemaLocation="Photo.xsd"/>
-<xs:include schemaLocation="Offer.xsd"/>
+<xs:include schemaLocation="Collections.xsd"/>
+<xs:include schemaLocation="Stickers.xsd"/>
+<xs:include schemaLocation="ShoppingCarts.xsd"/>
+<xs:include schemaLocation="Photos.xsd"/>
+<xs:include schemaLocation="Offers.xsd"/>
 
 
 <!-- START ANSCHRIFT -->
@@ -32,7 +32,7 @@ elementFormDefault="qualified">
 <xs:complexType name="Adress">
   <xs:sequence>
     <xs:element ref="FamilyName"/>
-    <xs:element ref="FirstName"/>
+    <xs:element ref="FirstName" />
     <xs:element ref="Street"/>
     <xs:element ref="Number"/>
     <xs:element ref="PostalCode" />
@@ -57,6 +57,8 @@ elementFormDefault="qualified">
   </xs:restriction>
 </xs:simpleType> 
 </xs:element>
+<xs:element name="Count" type="xs:integer"/>
+<xs:element name="Link" type="xs:anyURI" />
 
 <!-- definition of attributes -->
 <xs:attribute name="User_ID" type="xs:integer"/>
@@ -67,15 +69,16 @@ elementFormDefault="qualified">
 
 <!-- KOMMENTAR -->
 <xs:element name="Text" type="xs:string" />
-<xs:element name="Date" type="xs:date" />
+<xs:element name="Datetime" type="xs:date" />
 <xs:element name="Comment">
   <xs:complexType>
     <xs:sequence>
       <xs:element ref="Text"/>
-      <xs:element ref="Date"/>
+      <xs:element ref="Datetime"/>
       <xs:element ref="Liker"/>
     </xs:sequence>
     <xs:attribute ref="User_ID" use="required"/>
+    <xs:attribute ref="Owner" use="required"/>
   </xs:complexType>
 </xs:element>
 
@@ -88,42 +91,84 @@ elementFormDefault="qualified">
 </xs:element>
 <!-- ENDE KOMMENTAR -->
 
-<xs:element name="Collections">
+<xs:element name="Reference">
   <xs:complexType>
     <xs:sequence>
-      <xs:element ref="Collection" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="Title" />
+      <xs:element ref="Link" />
     </xs:sequence>
   </xs:complexType>
 </xs:element>
 
-<xs:element name="Stickers">
+<xs:element name="CollectionContainer">
   <xs:complexType>
     <xs:sequence>
-      <xs:element ref="Sticker" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="Reference" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
 </xs:element>
 
-<xs:element name="Offers">
+<xs:element name="StickerContainer">
   <xs:complexType>
     <xs:sequence>
-      <xs:element ref="Offer" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="Reference" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
 </xs:element>
 
-<xs:element name="ShoppingCarts">
+<xs:element name="SingleOffer">
   <xs:complexType>
     <xs:sequence>
-      <xs:element ref="ShoppingCart" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="Title"/>
+      <xs:element ref="Price"/>
+      <xs:element ref="Link" />
+    </xs:sequence>
+    <xs:attribute ref="Currency" />
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="OfferContainer">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="SingleOffer" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
 </xs:element>
 
-<xs:element name="Photos">
+<xs:element name="SingleShoppingCart">
   <xs:complexType>
     <xs:sequence>
-      <xs:element ref="Photo" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="Item" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="Count" />
+      <xs:element ref="Price" />
+      <xs:element ref="Link" />
+    </xs:sequence>
+    <xs:attribute ref="Currency" />
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="ShoppingCartContainer">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="SingleShoppingCart" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="SinglePhoto">
+<xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Title" minOccurs="0" />
+      <xs:element ref="PhotoLink" />
+      <xs:element ref="Link" />
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="PhotoContainer">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="SinglePhoto" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
 </xs:element>
@@ -144,14 +189,6 @@ elementFormDefault="qualified">
   </xs:complexType>
 </xs:element>
 
-<xs:element name="Inventory">
-  <xs:complexType>
-    <xs:sequence>
-      <xs:element ref="Item" minOccurs="0" maxOccurs="unbounded"/>
-    </xs:sequence>
-  </xs:complexType>
-</xs:element>
-
 <!-- 
 root-Einzel-Element: USER
  -->
@@ -162,11 +199,11 @@ root-Einzel-Element: USER
       <xs:element ref="Nickname"/>
       <xs:element name="HomeAdress" type="Adress" minOccurs="0"/>
       <xs:element name="ShopAdress" type="Adress" minOccurs="0"/>
-      <xs:element ref="Stickers"/>
-      <xs:element ref="Collections"/>
-      <xs:element ref="Photos"/>
-      <xs:element ref="Offers"/>
-      <xs:element ref="Inventory"/>
+      <xs:element ref="StickerContainer"/>
+      <xs:element ref="CollectionContainer"/>
+      <xs:element ref="PhotoContainer"/>
+      <xs:element ref="OfferContainer"/>
+      <xs:element ref="ShoppingCartContainer"/>
       <xs:element ref="Liker"/>
       <xs:element ref="Follower"/>
       <xs:element ref="Comments"/>

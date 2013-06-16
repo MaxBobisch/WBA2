@@ -2,7 +2,7 @@
 // Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.6 generiert 
 // Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
-// Generiert: 2013.06.15 um 10:30:59 PM CEST 
+// Generiert: 2013.06.16 um 10:44:43 PM CEST 
 //
 
 
@@ -29,17 +29,18 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element ref="{}Name" minOccurs="0"/>
+ *         &lt;element ref="{}Title" minOccurs="0"/>
  *         &lt;element ref="{}Description" minOccurs="0"/>
- *         &lt;element ref="{}Date" minOccurs="0"/>
+ *         &lt;element ref="{}Datetime"/>
  *         &lt;element ref="{}RelatedPhotos"/>
  *         &lt;element ref="{}Liker"/>
  *         &lt;element ref="{}Follower"/>
  *         &lt;element ref="{}Comments"/>
  *       &lt;/sequence>
  *       &lt;attribute ref="{}Sticker_ID use="required""/>
- *       &lt;attribute ref="{}User_ID use="required""/>
  *       &lt;attribute ref="{}Self use="required""/>
+ *       &lt;attribute ref="{}User_ID use="required""/>
+ *       &lt;attribute ref="{}Owner use="required""/>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -49,9 +50,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "name",
+    "title",
     "description",
-    "date",
+    "datetime",
     "relatedPhotos",
     "liker",
     "follower",
@@ -60,13 +61,13 @@ import javax.xml.datatype.XMLGregorianCalendar;
 @XmlRootElement(name = "Sticker")
 public class Sticker {
 
-    @XmlElement(name = "Name")
-    protected String name;
+    @XmlElement(name = "Title")
+    protected String title;
     @XmlElement(name = "Description")
     protected String description;
-    @XmlElement(name = "Date")
+    @XmlElement(name = "Datetime", required = true)
     @XmlSchemaType(name = "date")
-    protected XMLGregorianCalendar date;
+    protected XMLGregorianCalendar datetime;
     @XmlElement(name = "RelatedPhotos", required = true)
     protected RelatedPhotos relatedPhotos;
     @XmlElement(name = "Liker", required = true)
@@ -77,34 +78,37 @@ public class Sticker {
     protected Comments comments;
     @XmlAttribute(name = "Sticker_ID", required = true)
     protected BigInteger stickerID;
-    @XmlAttribute(name = "User_ID", required = true)
-    protected BigInteger userID;
     @XmlAttribute(name = "Self", required = true)
     @XmlSchemaType(name = "anyURI")
     protected String self;
+    @XmlAttribute(name = "User_ID", required = true)
+    protected BigInteger userID;
+    @XmlAttribute(name = "Owner", required = true)
+    @XmlSchemaType(name = "anyURI")
+    protected String owner;
 
     /**
-     * Ruft den Wert der name-Eigenschaft ab.
+     * Ruft den Wert der title-Eigenschaft ab.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
     /**
-     * Legt den Wert der name-Eigenschaft fest.
+     * Legt den Wert der title-Eigenschaft fest.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setName(String value) {
-        this.name = value;
+    public void setTitle(String value) {
+        this.title = value;
     }
 
     /**
@@ -132,27 +136,27 @@ public class Sticker {
     }
 
     /**
-     * Ruft den Wert der date-Eigenschaft ab.
+     * Ruft den Wert der datetime-Eigenschaft ab.
      * 
      * @return
      *     possible object is
      *     {@link XMLGregorianCalendar }
      *     
      */
-    public XMLGregorianCalendar getDate() {
-        return date;
+    public XMLGregorianCalendar getDatetime() {
+        return datetime;
     }
 
     /**
-     * Legt den Wert der date-Eigenschaft fest.
+     * Legt den Wert der datetime-Eigenschaft fest.
      * 
      * @param value
      *     allowed object is
      *     {@link XMLGregorianCalendar }
      *     
      */
-    public void setDate(XMLGregorianCalendar value) {
-        this.date = value;
+    public void setDatetime(XMLGregorianCalendar value) {
+        this.datetime = value;
     }
 
     /**
@@ -276,6 +280,30 @@ public class Sticker {
     }
 
     /**
+     * Ruft den Wert der self-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getSelf() {
+        return self;
+    }
+
+    /**
+     * Legt den Wert der self-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setSelf(String value) {
+        this.self = value;
+    }
+
+    /**
      * Ruft den Wert der userID-Eigenschaft ab.
      * 
      * @return
@@ -300,27 +328,27 @@ public class Sticker {
     }
 
     /**
-     * Ruft den Wert der self-Eigenschaft ab.
+     * Ruft den Wert der owner-Eigenschaft ab.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getSelf() {
-        return self;
+    public String getOwner() {
+        return owner;
     }
 
     /**
-     * Legt den Wert der self-Eigenschaft fest.
+     * Legt den Wert der owner-Eigenschaft fest.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setSelf(String value) {
-        this.self = value;
+    public void setOwner(String value) {
+        this.owner = value;
     }
 
 }

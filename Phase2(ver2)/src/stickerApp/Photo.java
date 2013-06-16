@@ -2,7 +2,7 @@
 // Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.6 generiert 
 // Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
-// Generiert: 2013.06.15 um 10:30:59 PM CEST 
+// Generiert: 2013.06.16 um 10:44:43 PM CEST 
 //
 
 
@@ -30,17 +30,19 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element ref="{}Title"/>
- *         &lt;element ref="{}Description"/>
- *         &lt;element ref="{}Date"/>
- *         &lt;element ref="{}Link"/>
- *         &lt;element ref="{}Location"/>
+ *         &lt;element ref="{}Description" minOccurs="0"/>
+ *         &lt;element ref="{}Datetime"/>
+ *         &lt;element ref="{}PhotoLink"/>
+ *         &lt;element ref="{}Location" minOccurs="0"/>
  *         &lt;element ref="{}RelatedSticker" minOccurs="0"/>
  *         &lt;element ref="{}Liker"/>
  *         &lt;element ref="{}Follower"/>
  *         &lt;element ref="{}Comments"/>
  *       &lt;/sequence>
- *       &lt;attribute ref="{}Photo_ID"/>
+ *       &lt;attribute ref="{}Photo_ID use="required""/>
  *       &lt;attribute ref="{}Self use="required""/>
+ *       &lt;attribute ref="{}User_ID use="required""/>
+ *       &lt;attribute ref="{}Owner use="required""/>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -52,8 +54,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 @XmlType(name = "", propOrder = {
     "title",
     "description",
-    "date",
-    "link",
+    "datetime",
+    "photoLink",
     "location",
     "relatedSticker",
     "liker",
@@ -65,15 +67,15 @@ public class Photo {
 
     @XmlElement(name = "Title", required = true)
     protected String title;
-    @XmlElement(name = "Description", required = true)
+    @XmlElement(name = "Description")
     protected String description;
-    @XmlElement(name = "Date", required = true)
+    @XmlElement(name = "Datetime", required = true)
     @XmlSchemaType(name = "date")
-    protected XMLGregorianCalendar date;
-    @XmlElement(name = "Link", required = true)
+    protected XMLGregorianCalendar datetime;
+    @XmlElement(name = "PhotoLink", required = true)
     @XmlSchemaType(name = "anyURI")
-    protected String link;
-    @XmlElement(name = "Location", required = true)
+    protected String photoLink;
+    @XmlElement(name = "Location")
     protected Location location;
     @XmlElement(name = "RelatedSticker")
     @XmlSchemaType(name = "anyURI")
@@ -84,11 +86,16 @@ public class Photo {
     protected Follower follower;
     @XmlElement(name = "Comments", required = true)
     protected Comments comments;
-    @XmlAttribute(name = "Photo_ID")
+    @XmlAttribute(name = "Photo_ID", required = true)
     protected BigInteger photoID;
     @XmlAttribute(name = "Self", required = true)
     @XmlSchemaType(name = "anyURI")
     protected String self;
+    @XmlAttribute(name = "User_ID", required = true)
+    protected BigInteger userID;
+    @XmlAttribute(name = "Owner", required = true)
+    @XmlSchemaType(name = "anyURI")
+    protected String owner;
 
     /**
      * Ruft den Wert der title-Eigenschaft ab.
@@ -139,51 +146,51 @@ public class Photo {
     }
 
     /**
-     * Ruft den Wert der date-Eigenschaft ab.
+     * Ruft den Wert der datetime-Eigenschaft ab.
      * 
      * @return
      *     possible object is
      *     {@link XMLGregorianCalendar }
      *     
      */
-    public XMLGregorianCalendar getDate() {
-        return date;
+    public XMLGregorianCalendar getDatetime() {
+        return datetime;
     }
 
     /**
-     * Legt den Wert der date-Eigenschaft fest.
+     * Legt den Wert der datetime-Eigenschaft fest.
      * 
      * @param value
      *     allowed object is
      *     {@link XMLGregorianCalendar }
      *     
      */
-    public void setDate(XMLGregorianCalendar value) {
-        this.date = value;
+    public void setDatetime(XMLGregorianCalendar value) {
+        this.datetime = value;
     }
 
     /**
-     * Ruft den Wert der link-Eigenschaft ab.
+     * Ruft den Wert der photoLink-Eigenschaft ab.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getLink() {
-        return link;
+    public String getPhotoLink() {
+        return photoLink;
     }
 
     /**
-     * Legt den Wert der link-Eigenschaft fest.
+     * Legt den Wert der photoLink-Eigenschaft fest.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setLink(String value) {
-        this.link = value;
+    public void setPhotoLink(String value) {
+        this.photoLink = value;
     }
 
     /**
@@ -352,6 +359,54 @@ public class Photo {
      */
     public void setSelf(String value) {
         this.self = value;
+    }
+
+    /**
+     * Ruft den Wert der userID-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link BigInteger }
+     *     
+     */
+    public BigInteger getUserID() {
+        return userID;
+    }
+
+    /**
+     * Legt den Wert der userID-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link BigInteger }
+     *     
+     */
+    public void setUserID(BigInteger value) {
+        this.userID = value;
+    }
+
+    /**
+     * Ruft den Wert der owner-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getOwner() {
+        return owner;
+    }
+
+    /**
+     * Legt den Wert der owner-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setOwner(String value) {
+        this.owner = value;
     }
 
 }

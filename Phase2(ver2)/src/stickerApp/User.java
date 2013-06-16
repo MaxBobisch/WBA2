@@ -2,7 +2,7 @@
 // Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.6 generiert 
 // Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
-// Generiert: 2013.06.15 um 10:30:59 PM CEST 
+// Generiert: 2013.06.16 um 10:44:43 PM CEST 
 //
 
 
@@ -31,11 +31,11 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element ref="{}Nickname"/>
  *         &lt;element name="HomeAdress" type="{}Adress" minOccurs="0"/>
  *         &lt;element name="ShopAdress" type="{}Adress" minOccurs="0"/>
- *         &lt;element ref="{}Stickers"/>
- *         &lt;element ref="{}Collections"/>
- *         &lt;element ref="{}Photos"/>
- *         &lt;element ref="{}Offers"/>
- *         &lt;element ref="{}Inventory"/>
+ *         &lt;element ref="{}StickerContainer"/>
+ *         &lt;element ref="{}CollectionContainer"/>
+ *         &lt;element ref="{}PhotoContainer"/>
+ *         &lt;element ref="{}OfferContainer"/>
+ *         &lt;element ref="{}ShoppingCartContainer"/>
  *         &lt;element ref="{}Liker"/>
  *         &lt;element ref="{}Follower"/>
  *         &lt;element ref="{}Comments"/>
@@ -54,11 +54,11 @@ import javax.xml.bind.annotation.XmlType;
     "nickname",
     "homeAdress",
     "shopAdress",
-    "stickers",
-    "collections",
-    "photos",
-    "offers",
-    "inventory",
+    "stickerContainer",
+    "collectionContainer",
+    "photoContainer",
+    "offerContainer",
+    "shoppingCartContainer",
     "liker",
     "follower",
     "comments"
@@ -72,16 +72,16 @@ public class User {
     protected Adress homeAdress;
     @XmlElement(name = "ShopAdress")
     protected Adress shopAdress;
-    @XmlElement(name = "Stickers", required = true)
-    protected Stickers stickers;
-    @XmlElement(name = "Collections", required = true)
-    protected Collections collections;
-    @XmlElement(name = "Photos", required = true)
-    protected Photos photos;
-    @XmlElement(name = "Offers", required = true)
-    protected Offers offers;
-    @XmlElement(name = "Inventory", required = true)
-    protected Inventory inventory;
+    @XmlElement(name = "StickerContainer", required = true)
+    protected StickerContainer stickerContainer;
+    @XmlElement(name = "CollectionContainer", required = true)
+    protected CollectionContainer collectionContainer;
+    @XmlElement(name = "PhotoContainer", required = true)
+    protected PhotoContainer photoContainer;
+    @XmlElement(name = "OfferContainer", required = true)
+    protected OfferContainer offerContainer;
+    @XmlElement(name = "ShoppingCartContainer", required = true)
+    protected ShoppingCartContainer shoppingCartContainer;
     @XmlElement(name = "Liker", required = true)
     protected Liker liker;
     @XmlElement(name = "Follower", required = true)
@@ -167,123 +167,123 @@ public class User {
     }
 
     /**
-     * Ruft den Wert der stickers-Eigenschaft ab.
+     * Ruft den Wert der stickerContainer-Eigenschaft ab.
      * 
      * @return
      *     possible object is
-     *     {@link Stickers }
+     *     {@link StickerContainer }
      *     
      */
-    public Stickers getStickers() {
-        return stickers;
+    public StickerContainer getStickerContainer() {
+        return stickerContainer;
     }
 
     /**
-     * Legt den Wert der stickers-Eigenschaft fest.
+     * Legt den Wert der stickerContainer-Eigenschaft fest.
      * 
      * @param value
      *     allowed object is
-     *     {@link Stickers }
+     *     {@link StickerContainer }
      *     
      */
-    public void setStickers(Stickers value) {
-        this.stickers = value;
+    public void setStickerContainer(StickerContainer value) {
+        this.stickerContainer = value;
     }
 
     /**
-     * Ruft den Wert der collections-Eigenschaft ab.
+     * Ruft den Wert der collectionContainer-Eigenschaft ab.
      * 
      * @return
      *     possible object is
-     *     {@link Collections }
+     *     {@link CollectionContainer }
      *     
      */
-    public Collections getCollections() {
-        return collections;
+    public CollectionContainer getCollectionContainer() {
+        return collectionContainer;
     }
 
     /**
-     * Legt den Wert der collections-Eigenschaft fest.
+     * Legt den Wert der collectionContainer-Eigenschaft fest.
      * 
      * @param value
      *     allowed object is
-     *     {@link Collections }
+     *     {@link CollectionContainer }
      *     
      */
-    public void setCollections(Collections value) {
-        this.collections = value;
+    public void setCollectionContainer(CollectionContainer value) {
+        this.collectionContainer = value;
     }
 
     /**
-     * Ruft den Wert der photos-Eigenschaft ab.
+     * Ruft den Wert der photoContainer-Eigenschaft ab.
      * 
      * @return
      *     possible object is
-     *     {@link Photos }
+     *     {@link PhotoContainer }
      *     
      */
-    public Photos getPhotos() {
-        return photos;
+    public PhotoContainer getPhotoContainer() {
+        return photoContainer;
     }
 
     /**
-     * Legt den Wert der photos-Eigenschaft fest.
+     * Legt den Wert der photoContainer-Eigenschaft fest.
      * 
      * @param value
      *     allowed object is
-     *     {@link Photos }
+     *     {@link PhotoContainer }
      *     
      */
-    public void setPhotos(Photos value) {
-        this.photos = value;
+    public void setPhotoContainer(PhotoContainer value) {
+        this.photoContainer = value;
     }
 
     /**
-     * Ruft den Wert der offers-Eigenschaft ab.
+     * Ruft den Wert der offerContainer-Eigenschaft ab.
      * 
      * @return
      *     possible object is
-     *     {@link Offers }
+     *     {@link OfferContainer }
      *     
      */
-    public Offers getOffers() {
-        return offers;
+    public OfferContainer getOfferContainer() {
+        return offerContainer;
     }
 
     /**
-     * Legt den Wert der offers-Eigenschaft fest.
+     * Legt den Wert der offerContainer-Eigenschaft fest.
      * 
      * @param value
      *     allowed object is
-     *     {@link Offers }
+     *     {@link OfferContainer }
      *     
      */
-    public void setOffers(Offers value) {
-        this.offers = value;
+    public void setOfferContainer(OfferContainer value) {
+        this.offerContainer = value;
     }
 
     /**
-     * Ruft den Wert der inventory-Eigenschaft ab.
+     * Ruft den Wert der shoppingCartContainer-Eigenschaft ab.
      * 
      * @return
      *     possible object is
-     *     {@link Inventory }
+     *     {@link ShoppingCartContainer }
      *     
      */
-    public Inventory getInventory() {
-        return inventory;
+    public ShoppingCartContainer getShoppingCartContainer() {
+        return shoppingCartContainer;
     }
 
     /**
-     * Legt den Wert der inventory-Eigenschaft fest.
+     * Legt den Wert der shoppingCartContainer-Eigenschaft fest.
      * 
      * @param value
      *     allowed object is
-     *     {@link Inventory }
+     *     {@link ShoppingCartContainer }
      *     
      */
-    public void setInventory(Inventory value) {
-        this.inventory = value;
+    public void setShoppingCartContainer(ShoppingCartContainer value) {
+        this.shoppingCartContainer = value;
     }
 
     /**

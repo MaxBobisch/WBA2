@@ -3,22 +3,20 @@
 elementFormDefault="qualified">
 
 <xs:include schemaLocation="Users.xsd"/>
-<xs:include schemaLocation="Sticker.xsd"/>
-<xs:include schemaLocation="ShoppingCart.xsd"/>
-<xs:include schemaLocation="Photo.xsd"/>
-<xs:include schemaLocation="Offer.xsd"/>
+<xs:include schemaLocation="Stickers.xsd"/>
+<xs:include schemaLocation="ShoppingCarts.xsd"/>
+<xs:include schemaLocation="Photos.xsd"/>
+<xs:include schemaLocation="Offers.xsd"/>
 
 <xs:attribute name="Collection_ID" type="xs:integer" />
-<xs:attribute name="User_ID" type="xs:integer" />
-
 
 <!-- definition of complex elements -->
 
 <xs:element name="Collection">
   <xs:complexType>
     <xs:sequence>
-      <xs:element ref="Name" />
-      <xs:element ref="Description" />
+      <xs:element ref="Title" />
+      <xs:element ref="Description" minOccurs="0"/>
       <xs:element ref="Item" minOccurs="0" maxOccurs="unbounded" />
       <xs:element ref="Liker"/>
       <xs:element ref="Follower"/>
@@ -28,6 +26,14 @@ elementFormDefault="qualified">
     <xs:attribute ref="Self" use="required"/>
     <xs:attribute ref="User_ID" use="required" />
     <xs:attribute ref="Owner" use="required" />
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="Collections">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="Collection" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
   </xs:complexType>
 </xs:element>
 
