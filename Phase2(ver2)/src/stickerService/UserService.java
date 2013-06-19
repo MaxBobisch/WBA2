@@ -15,6 +15,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.datatype.DatatypeConfigurationException;
 
 import stickerApp.*;
 
@@ -22,14 +23,12 @@ import stickerApp.*;
 public class UserService
 {
 	static final String XMLFILE = "F:/max.bobisch@gmx.de/Dropbox/Github [MaxBobisch]/WBA2/Phase2(ver2)/src/xml/Users.xml";
-	static final String SERVERROOT = "localhost:4434";
 	static ObjectFactory ob=new ObjectFactory();
-	static final int USERID = 0;
 	
 	/* Funktion zum Auslesen einer XML Datei
 	 * 		~> return-Wert: Users, aus der XML Datei <~
 	 */	
-	private Users xmlAuslesen() throws JAXBException, FileNotFoundException {
+	protected Users xmlAuslesen() throws JAXBException, FileNotFoundException {
 		Users users=ob.createUsers();
 		JAXBContext context = JAXBContext.newInstance(Users.class);
 		Unmarshaller um = context.createUnmarshaller();
@@ -40,7 +39,7 @@ public class UserService
 	/* Funktion zum Schreiben einer XML Datei
 	 * 		(Users Users -> Users, die in die XML Datei geschrieben werden.)
 	 */
-	private void xmlSchreiben(Users Users) throws JAXBException, IOException {
+	protected void xmlSchreiben(Users Users) throws JAXBException, IOException {
 		JAXBContext context = JAXBContext.newInstance(Users.class);
 		Marshaller m = context.createMarshaller();
 
@@ -63,31 +62,6 @@ public class UserService
 		}
 	}
 	
-	/*  Erstelle neuen User
-	 */
-	/*
-	@PUT
-	@Path ("/User/{UserID}")
-	@Produces ("application/xml")
-	public void createUser() throws JAXBException, IOException {
-		Users users = xmlAuslesen();
-	//Schleife durch alle User
-		ListIterator<User> userIterator = users.getUser().listIterator();
-		int userID=0;
-		while(userIterator.hasNext()) {
-			if(userID < users.getUser().get(userIterator.previousIndex()+1).getUserID().intValue()) {
-				userID = users.getUser().get(userIterator.previousIndex()+1).getUserID().intValue();
-			}
-		}
-		userID++;
-		String userName = "User[" + userID + "]";
-		User user = new User();
-		user.setSelf(SERVERROOT + "/User/" + userID);
-		user.setNickname(userName);
-		user.setUserID(new BigInteger("" + userID));
-		users.getUser().add(user);
-		xmlSchreiben(users);
-	}*/
 	
 	/* Zeigt alle User an.
 	 * 		~> return-Wert: Alle User aus der XML Datei <~
@@ -162,13 +136,153 @@ public class UserService
 		lastindex++;
 		BigInteger ID = new BigInteger("" + lastindex);
 		user.setUserID(ID);
-		user.setSelf(SERVERROOT + "/users/" + lastindex);
-		user.setUserID(new BigInteger ("" + USERID));
+		user.setSelf(Helper.SERVERROOT + "/users/" + lastindex);
+		user.setUserID(new BigInteger ("" + Helper.USERID));
 		//zur Usersliste hinzufuegen
 		users.getUser().add(lastindex, user);
 		//ins XML zurückschreiben
 		xmlSchreiben(users);
 		return user;
+	}
+	
+	/*
+	 * Füge Kommentar hinzu.
+	 *   ~> return-Wert: Kommentare inkl. neuem Kommentar <~
+	 */
+	@POST
+	@Path ("/{UserID}")
+	@Produces ( " application/xml" )
+	public Comments addComment(@PathParam("User_ID") int UserID, 
+			String text) throws JAXBException, IOException, DatatypeConfigurationException {
+		Users users = xmlAuslesen();
+		Comment comment = new Comment();
+		comment.setDatetime(Helper.getXMLGregorianCalendarNow());
+		comment.setUserID(new BigInteger(""+Helper.USERID));
+		comment.setOwner(Helper.SERVERROOT + "/users/" + Helper.USERID);
+		comment.setText(text);
+		int lastindex = users.getUser().get(UserID).getComments().getComment().lastIndexOf(comment);
+		lastindex++;
+		comment.setCommentID(new BigInteger("" + lastindex));
+		users.getUser().get(UserID).getComments().getComment().add(comment);
+		xmlSchreiben(users);
+		return users.getUser().get(UserID).getComments();
+	}
+	
+	/*
+	 * Füge Liker zu User hinzu.
+	 *   ~> return-Wert: Liker inkl. neuem Like <~
+	 */
+	@POST
+	@Path ("/{UserID}")
+	@Produces ( " application/xml" )
+	public Liker addLikerToUser(@PathParam("User_ID") int UserID) 
+			throws JAXBException, IOException {
+		Users users = xmlAuslesen();
+		users.getUser().get(UserID).getLiker().getLink().add(Helper.SERVERROOT + "/users/" + Helper.USERID);
+		xmlSchreiben(users);
+		return users.getUser().get(UserID).getLiker();
+	}
+	
+	/*
+	 * Füge Liker zu Comment hinzu.
+	 *   ~> return-Wert: Comment inkl. neuem Like <~
+	 */
+	@POST
+	@Path ("/{UserID}")
+	@Produces ( " application/xml" )
+	public Comment addLikerToComment(@PathParam("User_ID") int UserID, @PathParam("User_ID") int CommentID) 
+			throws JAXBException, IOException {
+		Users users = xmlAuslesen();
+		users.getUser().get(UserID).getComments().getComment().get(CommentID).getLiker().getLink().add(Helper.SERVERROOT + "/users/" + Helper.USERID);
+		xmlSchreiben(users);
+		return users.getUser().get(UserID).getComments().getComment().get(CommentID);
+	}
+	
+	/*
+	 * Füge Follower zu User hinzu.
+	 *   ~> return-Wert: User inkl. neuem Follower <~
+	 */
+	@POST
+	@Path ("/{UserID}")
+	@Produces ( " application/xml" )
+	public User addFollowerToUser(@PathParam("User_ID") int UserID) 
+			throws JAXBException, IOException {
+		Users users = xmlAuslesen();
+		users.getUser().get(UserID).getFollower().getLink().add(Helper.SERVERROOT + "/users/" + Helper.USERID);
+		xmlSchreiben(users);
+		return users.getUser().get(UserID);
+	}
+	
+	/*
+	 * Füge HomeAdress zu User hinzu.
+	 *   ~> return-Wert: HomeAdress <~
+	 */
+	@POST
+	@Path ("/{UserID}")
+	@Produces ( " application/xml" )
+	public Adress addHomeAdressToUser(@PathParam("User_ID") int UserID,
+			@QueryParam("FirstName") String FirstName,
+			@QueryParam("FamilyName") String FamilyName,
+			@QueryParam("Street") String Street,
+			@QueryParam("Number") String Number,
+			@QueryParam("City") String City,
+			@QueryParam("Province") String Province,
+			@QueryParam("Telephone") String Telephone,
+			@QueryParam("PostalCode") String PostalCode,
+			@QueryParam("Email") String Email,
+			@QueryParam("Country") String Country)    
+			throws JAXBException, IOException {
+		Users users = xmlAuslesen();
+		Adress adress = new Adress();
+		adress.setFirstName(FirstName);
+		adress.setFamilyName(FamilyName);
+		adress.setStreet(Street);
+		adress.setNumber(Number);
+		adress.setPostalCode(PostalCode);
+		adress.setCity(City);
+		if(!"".equals(Province)) adress.setProvince(Province);
+		adress.setCountry(Country);
+		if(!"".equals(Telephone)) adress.setTelephone(new BigInteger(""+Telephone));
+		if(!"".equals(Email)) adress.setEmail(Email);
+		users.getUser().get(UserID).setHomeAdress(adress);
+		xmlSchreiben(users);
+		return adress;
+	}
+	
+	/*
+	 * Füge ShopAdress zu User hinzu.
+	 *   ~> return-Wert: ShopAdress <~
+	 */
+	@POST
+	@Path ("/{UserID}")
+	@Produces ( " application/xml" )
+	public Adress addShopAdressToUser(@PathParam("User_ID") int UserID,
+			@QueryParam("FirstName") String FirstName,
+			@QueryParam("FamilyName") String FamilyName,
+			@QueryParam("Street") String Street,
+			@QueryParam("Number") String Number,
+			@QueryParam("City") String City,
+			@QueryParam("Province") String Province,
+			@QueryParam("Telephone") String Telephone,
+			@QueryParam("PostalCode") String PostalCode,
+			@QueryParam("Email") String Email,
+			@QueryParam("Country") String Country)    
+			throws JAXBException, IOException {
+		Users users = xmlAuslesen();
+		Adress adress = new Adress();
+		adress.setFirstName(FirstName);
+		adress.setFamilyName(FamilyName);
+		adress.setStreet(Street);
+		adress.setNumber(Number);
+		adress.setPostalCode(PostalCode);
+		adress.setCity(City);
+		if(!"".equals(Province)) adress.setProvince(Province);
+		adress.setCountry(Country);
+		if(!"".equals(Telephone)) adress.setTelephone(new BigInteger(""+Telephone));
+		if(!"".equals(Email)) adress.setEmail(Email);
+		users.getUser().get(UserID).setShopAdress(adress);
+		xmlSchreiben(users);
+		return adress;
 	}
 	
 }

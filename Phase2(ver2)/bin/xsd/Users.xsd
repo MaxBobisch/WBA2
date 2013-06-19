@@ -70,6 +70,7 @@ elementFormDefault="qualified">
 <!-- KOMMENTAR -->
 <xs:element name="Text" type="xs:string" />
 <xs:element name="Datetime" type="xs:date" />
+<xs:attribute name="Comment_ID" type="xs:integer"/>
 <xs:element name="Comment">
   <xs:complexType>
     <xs:sequence>
@@ -77,6 +78,7 @@ elementFormDefault="qualified">
       <xs:element ref="Datetime"/>
       <xs:element ref="Liker"/>
     </xs:sequence>
+    <xs:attribute ref="Comment_ID" use="required" />
     <xs:attribute ref="User_ID" use="required"/>
     <xs:attribute ref="Owner" use="required"/>
   </xs:complexType>
@@ -197,6 +199,7 @@ root-Einzel-Element: USER
   <xs:complexType>
     <xs:sequence>
       <xs:element ref="Nickname"/>
+      <xs:element ref="Gender"/>
       <xs:element name="HomeAdress" type="Adress" minOccurs="0"/>
       <xs:element name="ShopAdress" type="Adress" minOccurs="0"/>
       <xs:element ref="StickerContainer"/>

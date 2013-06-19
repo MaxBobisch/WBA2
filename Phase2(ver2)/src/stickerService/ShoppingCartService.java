@@ -20,15 +20,12 @@ import stickerApp.*;
 public class ShoppingCartService
 {
 	static final String XMLFILE = "F:/max.bobisch@gmx.de/Dropbox/Github [MaxBobisch]/WBA2/Phase2(ver2)/src/xml/ShoppingCarts.xml";
-	static final String SERVERROOT = "localhost:4434";
 	static ObjectFactory ob=new ObjectFactory();
-	static final int SHOPID = 0;
-	static final int CUSTOMERID = 0;
 	
 	/* Funktion zum Auslesen einer XML Datei
 	 * 		~> return-Wert: ShoppingCarts, aus der XML Datei <~
 	 */	
-	private ShoppingCarts xmlAuslesen() throws JAXBException, FileNotFoundException {
+	protected ShoppingCarts xmlAuslesen() throws JAXBException, FileNotFoundException {
 		ShoppingCarts shoppingCarts=ob.createShoppingCarts();
 		JAXBContext context = JAXBContext.newInstance(ShoppingCarts.class);
 		Unmarshaller um = context.createUnmarshaller();
@@ -39,7 +36,7 @@ public class ShoppingCartService
 	/* Funktion zum Schreiben einer XML Datei
 	 * 		(ShoppingCarts ShoppingCarts -> ShoppingCarts, die in die XML Datei geschrieben werden.)
 	 */
-	private void xmlSchreiben(ShoppingCarts shoppingCarts) throws JAXBException, IOException {
+	protected void xmlSchreiben(ShoppingCarts shoppingCarts) throws JAXBException, IOException {
 		JAXBContext context = JAXBContext.newInstance(ShoppingCarts.class);
 		Marshaller m = context.createMarshaller();
 
@@ -115,15 +112,16 @@ public class ShoppingCartService
 			String email) {
 		Adress adress = new Adress();
 		adress.setCity(city);
-		adress.setCountry(country);
 		adress.setEmail(email);
 		adress.setFamilyName(familyName);
 		adress.setFirstName(firstName);
 		adress.setNumber(number);
 		adress.setPostalCode(postalCode);
-		adress.setProvince(province);
 		adress.setStreet(street);
-		adress.setTelephone(telephone);
+		if(!"".equals(province)) adress.setProvince(province);
+		adress.setCountry(country);
+		if(!"".equals(telephone)) adress.setTelephone(new BigInteger(""+telephone));
+		if(!"".equals(email)) adress.setEmail(email);
 		return adress;
 	}
 			
@@ -167,16 +165,50 @@ public class ShoppingCartService
 		if("Paypal".equals(payment)) shoppingCart.setPayment("Paypal");
 		shoppingCart.setCurrency(currency);
 		shoppingCart.setShoppingCartID(ID);
-		shoppingCart.setSelf(SERVERROOT + "/shoppingCarts/" + lastindex);
-		shoppingCart.setShopID(new BigInteger ("" + SHOPID));
-		shoppingCart.setShop(SERVERROOT + "/users/" + SHOPID);
-		shoppingCart.setCustomerID(new BigInteger ("" + CUSTOMERID));
-		shoppingCart.setCustomer(SERVERROOT + "/users/" + CUSTOMERID);
+		shoppingCart.setSelf(Helper.SERVERROOT + "/shoppingCarts/" + lastindex);
+		shoppingCart.setShopID(new BigInteger ("" + Helper.SHOPID));
+		shoppingCart.setShop(Helper.SERVERROOT + "/users/" + Helper.SHOPID);
+		shoppingCart.setCustomerID(new BigInteger ("" + Helper.CUSTOMERID));
+		shoppingCart.setCustomer(Helper.SERVERROOT + "/users/" + Helper.CUSTOMERID);
 		//zur ShoppingCartsliste hinzufuegen
 		shoppingCarts.getShoppingCart().add(lastindex, shoppingCart);
 		//ins XML zurückschreiben
 		xmlSchreiben(shoppingCarts);
+		
+		UserService US = new UserService();
+		Users users = US.xmlAuslesen();
+		SingleShoppingCart singleShoppingCart = new SingleShoppingCart();
+		int anzahl = users.getUser().get(Helper.CUSTOMERID).getShoppingCartContainer().getSingleShoppingCart().get(ShoppingCartID).getCount().intValue();
+		anzahl++;
+		singleShoppingCart.setCount(new BigInteger(""+anzahl));
+		singleShoppingCart.setCurrency(currency);
+		singleShoppingCart.setLink(Helper.SERVERROOT + "/shoppingcarts/" + ShoppingCartID);
+		users.getUser().get(Helper.USERID).getShoppingCartContainer().getSingleShoppingCart().add(singleShoppingCart);
+		US.xmlSchreiben(users);
+		
 		return shoppingCart;
+	}
+	
+	/*
+	 * Add Item zu ShoppingCart
+	 *   ~> return-Wert: ShoppingCart inkl. neuem Item <~
+	 */
+	@POST
+	@Path ("/{ShoppingCartID}")
+	@Produces ( " application/xml" )
+	public ShoppingCart addItemToShoppingCart(@PathParam("Photo_ID") int ShoppingCartID,
+			@QueryParam("Location") String Item) 
+			throws JAXBException, IOException {
+		ShoppingCarts shoppingCarts = xmlAuslesen();
+		shoppingCarts.getShoppingCart().get(ShoppingCartID).getProducts().getItem().add(Item);
+		xmlSchreiben(shoppingCarts);
+		
+		UserService US = new UserService();
+		Users users = US.xmlAuslesen();
+		users.getUser().get(Helper.CUSTOMERID).getShoppingCartContainer().getSingleShoppingCart().get(ShoppingCartID).getItem().add(Item);
+		US.xmlSchreiben(users);
+		
+		return shoppingCarts.getShoppingCart().get(ShoppingCartID);
 	}
 	
 	

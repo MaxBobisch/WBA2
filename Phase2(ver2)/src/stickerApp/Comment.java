@@ -2,7 +2,7 @@
 // Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.6 generiert 
 // Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
-// Generiert: 2013.06.16 um 10:44:43 PM CEST 
+// Generiert: 2013.06.19 um 06:35:20 PM CEST 
 //
 
 
@@ -33,6 +33,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *         &lt;element ref="{}Datetime"/>
  *         &lt;element ref="{}Liker"/>
  *       &lt;/sequence>
+ *       &lt;attribute ref="{}Comment_ID use="required""/>
  *       &lt;attribute ref="{}User_ID use="required""/>
  *       &lt;attribute ref="{}Owner use="required""/>
  *     &lt;/restriction>
@@ -58,6 +59,8 @@ public class Comment {
     protected XMLGregorianCalendar datetime;
     @XmlElement(name = "Liker", required = true)
     protected Liker liker;
+    @XmlAttribute(name = "Comment_ID", required = true)
+    protected BigInteger commentID;
     @XmlAttribute(name = "User_ID", required = true)
     protected BigInteger userID;
     @XmlAttribute(name = "Owner", required = true)
@@ -134,6 +137,30 @@ public class Comment {
      */
     public void setLiker(Liker value) {
         this.liker = value;
+    }
+
+    /**
+     * Ruft den Wert der commentID-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link BigInteger }
+     *     
+     */
+    public BigInteger getCommentID() {
+        return commentID;
+    }
+
+    /**
+     * Legt den Wert der commentID-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link BigInteger }
+     *     
+     */
+    public void setCommentID(BigInteger value) {
+        this.commentID = value;
     }
 
     /**
