@@ -20,6 +20,11 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.DatatypeConfigurationException;
 
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.pubsub.LeafNode;
+import org.jivesoftware.smackx.pubsub.Node;
+import org.jivesoftware.smackx.pubsub.packet.PubSub;
+
 import stickerApp.Adress;
 import stickerApp.CollectionContainer;
 import stickerApp.Comment;
@@ -34,11 +39,17 @@ import stickerApp.StickerContainer;
 import stickerApp.User;
 import stickerApp.Users;
 
+import PubSub.*;
+
 @Path( "/users" )
 public class UserService
 {
 	static final String XMLFILE = "F:/max.bobisch@gmx.de/Dropbox/Github [MaxBobisch]/WBA2/Phase2(ver2)/src/xml/Users.xml";
 	static ObjectFactory ob=new ObjectFactory();
+	
+	public void initializeXmpp() throws XMPPException {
+		Node usersNode = PubSubHandler.createCollectionNode("users");
+	}
 	
 	/* Funktion zum Auslesen einer XML Datei
 	 * 		~> return-Wert: Users, aus der XML Datei <~
@@ -139,7 +150,7 @@ public class UserService
 	public User createUser(@PathParam("User_ID") int UserID, 
 			@QueryParam("Nickname") String nickName,
 			@QueryParam("Gender") String gender
-			) throws JAXBException, IOException {
+			) throws JAXBException, IOException, XMPPException {
 		//Hole XML Daten
 		Users users=xmlAuslesen();
 		//neue User
@@ -176,6 +187,13 @@ public class UserService
 		users.getUser().add(user);
 		//ins XML zurückschreiben
 		xmlSchreiben(users);
+		
+		//XMPP funktionaliteat
+		String nodeID = "" + id;
+		LeafNode userLeaf = PubSubHandler.createNode(nodeID);
+		Node userNode = PubSubHandler.publishToNodePayload("?", "?", "?", "?");
+		PubSubHandler.subscribeNode(nodeID);
+		
 		return user;
 	}
 	

@@ -128,13 +128,13 @@ import org.jivesoftware.smackx.pubsub.listener.NodeConfigListener;
 
 		//publishing with payload
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static Node publishToNodePayload(String nodeID, String itemID) throws XMPPException{
+	public static Node publishToNodePayload(String nodeID, String itemID, String namespace, String payload) throws XMPPException{
         // Create a pubsub manager using an existing Connection
         PubSubManager mgr = createPubSubManager();
         // Get the node
         LeafNode node = mgr.getNode(nodeID);
         // Publish an Item with payload with the specified id
-        node.send(new PayloadItem(itemID, new SimplePayload("elementName", "namespace", "xmlPayload")));
+        node.send(new PayloadItem(itemID, new SimplePayload(nodeID, namespace, payload)));
         return node;
 	}
 }
