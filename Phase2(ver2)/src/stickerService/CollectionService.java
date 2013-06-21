@@ -79,11 +79,16 @@ public class CollectionService
 	@Path ("/{CollectionID}")
 	@Produces ( " application/xml" )
 	public Collection oneCollection(@PathParam("Collection_ID") int CollectionID) throws JAXBException, FileNotFoundException {
-		//Hole XML Daten
-		Collections collections=xmlAuslesen();
-		Collection collection = collections.getCollection().get(CollectionID);
-		
-		return collection;
+	//Hole XML Daten
+			Collections collections=xmlAuslesen();
+			java.util.ListIterator<Collection> iterator = collections.getCollection().listIterator();
+			while(iterator.hasNext()) {
+				if(CollectionID == iterator.next().getCollectionID().intValue()) {
+					return iterator.next();
+				}
+				iterator.next();
+			}
+			return null;
 	}
 	
 	/* Lösche Collection mit CollectionID.
@@ -92,10 +97,16 @@ public class CollectionService
 	@DELETE
 	@Path ("/{CollectionID}")
 	@Produces ( " application/xml" )
-	public Collections deleteCollection(@PathParam("Collection_ID") int CollectionID) throws JAXBException, IOException {
+	public Collections deleteCollection(@PathParam("Collection_ID") int collectionID) throws JAXBException, IOException {
 		//Hole XML Daten
 		Collections collections=xmlAuslesen();
-		Collection collection = collections.getCollection().remove(CollectionID);
+		java.util.ListIterator<Collection> iterator = collections.getCollection().listIterator();
+		while(iterator.hasNext()) {
+			if(collectionID == iterator.next().getCollectionID().intValue()) {
+				collections.getCollection().remove(iterator.nextIndex());
+			}
+			iterator.next();
+		}
 		xmlSchreiben(collections);
 		return collections;
 	}
@@ -105,34 +116,46 @@ public class CollectionService
 	 * 		~> return-Wert: Collection, die erstellt wurde <~
 	 */
 	@POST
-	@Path ("/{CollectionID}")
+	@QueryParam ("Title")
 	@Produces ( " application/xml" )
-	public Collection createCollection(@PathParam("Collection_ID") int CollectionID, 
-			String title) throws JAXBException, IOException {
+	public Collection createCollection(/*@PathParam("Collection_ID") int CollectionID,*/ 
+			@QueryParam("Title") String title) throws JAXBException, IOException {
 		//Hole XML Daten
 		Collections collections=xmlAuslesen();
 		//neue Collection
 		Collection collection = new Collection();
-		int lastindex = collections.getCollection().lastIndexOf(collection);
-		lastindex++;
-		BigInteger ID = new BigInteger("" + lastindex);
-		collection.setCollectionID(ID);
+		
+		int id = 0;
+		for(Collection c : collections.getCollection()) {
+			if(id <= c.getCollectionID().intValue()) {
+				id = c.getCollectionID().intValue() + 1;
+			}
+		}
+		collection.setCollectionID(new BigInteger(""+id));
 		collection.setTitle(title);
-		collection.setSelf(Helper.SERVERROOT + "/collections/" + lastindex);
+		collection.setSelf(Helper.SERVERROOT + "/collections/" + id);
 		collection.setUserID(new BigInteger ("" + Helper.USERID));
 		collection.setOwner(Helper.SERVERROOT + "/users/" + Helper.USERID);
 		//zur Collectionsliste hinzufuegen
-		collections.getCollection().add(lastindex, collection);
+		collections.getCollection().add(collection);
 		//ins XML zurückschreiben
 		xmlSchreiben(collections);
 		
 		UserService US = new UserService();
 		Users users = US.xmlAuslesen();
+		java.util.ListIterator<User> userIterator = users.getUser().listIterator();
+		int userindex=0;
 		Reference reference = new Reference();
 		reference.setTitle(title);
-		reference.setLink(Helper.SERVERROOT + "/collections/" + CollectionID);
-		users.getUser().get(Helper.USERID).getCollectionContainer().getReference().add(reference);
-		US.xmlSchreiben(users);
+		reference.setLink(Helper.SERVERROOT + "/collections/" + id);
+		while(userIterator.hasNext()) {
+			if(Helper.USERID == userIterator.next().getUserID().intValue()) {
+				userindex = userIterator.nextIndex();
+				users.getUser().get(userindex).getCollectionContainer().getReference().add(reference);
+				US.xmlSchreiben(users);
+			}
+			userIterator.next();
+		}
 		
 		return collection;
 	}
@@ -141,100 +164,168 @@ public class CollectionService
 	 * Füge Kommentar hinzu.
 	 *   ~> return-Wert: Kommentare inkl. neuem Kommentar <~
 	 */
-	@POST
-	@Path ("/{CollectionID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{CollectionID}")
+//	@Produces ( " application/xml" )
 	public Comments addComment(@PathParam("Collection_ID") int CollectionID, 
 			String text) throws JAXBException, IOException, DatatypeConfigurationException {
 		Collections collections = xmlAuslesen();
 		Comment comment = new Comment();
 		comment.setDatetime(Helper.getXMLGregorianCalendarNow());
 		comment.setUserID(new BigInteger(""+Helper.USERID));
-		comment.setOwner(Helper.SERVERROOT + "/users/" + Helper.USERID);
+		comment.setOwner(Helper.SERVERROOT + "/collections/" + Helper.USERID);
 		comment.setText(text);
-		int lastindex = collections.getCollection().get(CollectionID).getComments().getComment().lastIndexOf(comment);
-		lastindex++;
-		comment.setCommentID(new BigInteger("" + lastindex));
-		collections.getCollection().get(CollectionID).getComments().getComment().add(comment);
-		xmlSchreiben(collections);
-		return collections.getCollection().get(CollectionID).getComments();
+		
+		java.util.ListIterator<Collection> iterator = collections.getCollection().listIterator();
+		int commentID = 0;
+		int index=0;
+		while(iterator.hasNext()) {
+			if(CollectionID == iterator.next().getCollectionID().intValue()) {
+				for(Comment c : iterator.next().getComments().getComment()) {
+					if (commentID <= c.getCommentID().intValue())
+						commentID = c.getCommentID().intValue() + 1;
+						index=iterator.nextIndex();
+				}
+				comment.setCommentID(new BigInteger("" + commentID));
+				collections.getCollection().get(iterator.nextIndex()).getComments().getComment().add(comment);
+				xmlSchreiben(collections);
+			}
+			iterator.next();
+		}		
+		return collections.getCollection().get(index).getComments();
 	}
 	
 	/*
 	 * Füge Liker zu Collection hinzu.
 	 *   ~> return-Wert: Liker inkl. neuem Like <~
 	 */
-	@POST
-	@Path ("/{CollectionID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{CollectionID}")
+//	@Produces ( " application/xml" )
 	public Liker addLikerToCollection(@PathParam("Collection_ID") int CollectionID) 
 			throws JAXBException, IOException {
-		Collections collections = xmlAuslesen();
-		collections.getCollection().get(CollectionID).getLiker().getLink().add(Helper.SERVERROOT + "/users/" + Helper.USERID);
+Collections collections = xmlAuslesen();
+		
+		java.util.ListIterator<Collection> iterator = collections.getCollection().listIterator();
+		int index=0;
+		while(iterator.hasNext()) {
+			if(CollectionID == iterator.next().getCollectionID().intValue()) {
+				index = iterator.nextIndex();
+				collections.getCollection().get(iterator.nextIndex()).getLiker().getLink().add(Helper.SERVERROOT + "/collections/" + Helper.USERID);
+			}
+			iterator.next();
+		}	
 		xmlSchreiben(collections);
-		return collections.getCollection().get(CollectionID).getLiker();
+		return collections.getCollection().get(index).getLiker();
 	}
 	
 	/*
 	 * Füge Liker zu Comment hinzu.
 	 *   ~> return-Wert: Comment inkl. neuem Like <~
 	 */
-	@POST
-	@Path ("/{CollectionID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{CollectionID}")
+//	@Produces ( " application/xml" )
 	public Comment addLikerToComment(@PathParam("Collection_ID") int CollectionID, @PathParam("Collection_ID") int CommentID) 
 			throws JAXBException, IOException {
-		Collections collections = xmlAuslesen();
-		collections.getCollection().get(CollectionID).getComments().getComment().get(CommentID).getLiker().getLink().add(Helper.SERVERROOT + "/users/" + Helper.USERID);
-		xmlSchreiben(collections);
-		return collections.getCollection().get(CollectionID).getComments().getComment().get(CommentID);
+Collections collections = xmlAuslesen();
+		
+		java.util.ListIterator<Collection> iterator = collections.getCollection().listIterator();
+		int collectionindex=0;
+		int commentindex=0;
+		while(iterator.hasNext()) {
+			if(CollectionID == iterator.next().getCollectionID().intValue()) {
+				collectionindex = iterator.nextIndex();
+				java.util.ListIterator<Comment> iteratorComment = iterator.next().getComments().getComment().listIterator();
+				while(iteratorComment.hasNext()) {
+					if(CommentID == iteratorComment.next().getCommentID().intValue()) {
+						commentindex = iteratorComment.nextIndex();
+						collections.getCollection().get(collectionindex).getComments().getComment().get(commentindex).getLiker().getLink().add(Helper.SERVERROOT + "/collections/" + Helper.USERID);
+						xmlSchreiben(collections);
+						return collections.getCollection().get(collectionindex).getComments().getComment().get(commentindex);
+					}
+				}
+			}
+			iterator.next();
+		}
+		return null;
 	}
 	
 	/*
 	 * Füge Follower zu Collection hinzu.
-	 *   ~> return-Wert: Collections inkl. neuem Follower <~
+	 *   ~> return-Wert: Collection inkl. neuem Follower <~
 	 */
-	@POST
-	@Path ("/{CollectionID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{CollectionID}")
+//	@Produces ( " application/xml" )
 	public Collection addFollowerToCollection(@PathParam("Collection_ID") int CollectionID) 
 			throws JAXBException, IOException {
 		Collections collections = xmlAuslesen();
-		collections.getCollection().get(CollectionID).getFollower().getLink().add(Helper.SERVERROOT + "/users/" + Helper.USERID);
-		xmlSchreiben(collections);
-		return collections.getCollection().get(CollectionID);
+		
+		java.util.ListIterator<Collection> iterator = collections.getCollection().listIterator();
+		int collectionindex=0;
+		while(iterator.hasNext()) {
+			if(CollectionID == iterator.next().getCollectionID().intValue()) {
+				collectionindex = iterator.nextIndex();
+				collections.getCollection().get(collectionindex).getFollower().getLink().add(Helper.SERVERROOT + "/collections/" + Helper.USERID);
+				xmlSchreiben(collections);
+				return collections.getCollection().get(CollectionID);
+			}
+			iterator.next();
+		}
+		return null;
 	}
 	
 	/*
 	 * Update Description von Collection mit CollectionID
 	 *   ~> return-Wert: Collection mit neuer Description <~
 	 */
-	@POST
+	/*@POST
 	@Path ("/{CollectionID}")
-	@Produces ( " application/xml" )
+	@Produces ( " application/xml" )*/
 	public Collection updateDescription(@PathParam("Collection_ID") int CollectionID,
 			@QueryParam("Description") String description) 
 			throws JAXBException, IOException {
 		Collections collections = xmlAuslesen();
-		collections.getCollection().get(CollectionID).setDescription(description);
-		xmlSchreiben(collections);
-		return collections.getCollection().get(CollectionID);
+		
+		java.util.ListIterator<Collection> iterator = collections.getCollection().listIterator();
+		int collectionindex=0;
+		while(iterator.hasNext()) {
+			if(CollectionID == iterator.next().getCollectionID().intValue()) {
+				collectionindex = iterator.nextIndex();
+				collections.getCollection().get(collectionindex).setDescription(description);
+				xmlSchreiben(collections);
+				return collections.getCollection().get(collectionindex);
+			}
+			iterator.next();
+		}
+		return null;
 	}
 	
 	/*
 	 * Add Item zu Collection mit CollectionID
 	 *   ~> return-Wert: Collection inkl. neuem Item <~
 	 */
-	@POST
+	/*@POST
 	@Path ("/{CollectionID}")
-	@Produces ( " application/xml" )
+	@Produces ( " application/xml" )*/
 	public Collection addItem(@PathParam("Collection_ID") int CollectionID,
-			@QueryParam("Description") String Item) 
+			@QueryParam("Item") String Item) 
 			throws JAXBException, IOException {
 		Collections collections = xmlAuslesen();
-		collections.getCollection().get(CollectionID).getItem().add(Item);
-		xmlSchreiben(collections);
-		return collections.getCollection().get(CollectionID);
+		
+		java.util.ListIterator<Collection> iterator = collections.getCollection().listIterator();
+		int collectionindex=0;
+		while(iterator.hasNext()) {
+			if(CollectionID == iterator.next().getCollectionID().intValue()) {
+				collectionindex = iterator.nextIndex();
+				collections.getCollection().get(collectionindex).getItem().add(Item);
+				xmlSchreiben(collections);
+				return collections.getCollection().get(collectionindex);
+			}
+			iterator.next();
+		}
+		return null;
 	}
 	
 }

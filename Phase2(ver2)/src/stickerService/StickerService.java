@@ -80,10 +80,15 @@ public class StickerService
 	@Produces ( " application/xml" )
 	public Sticker oneSticker(@PathParam("Sticker_ID") int stickerID) throws JAXBException, FileNotFoundException {
 		//Hole XML Daten
-		Stickers stickers=xmlAuslesen();
-		Sticker sticker = stickers.getSticker().get(stickerID);
-		
-		return sticker;
+			Stickers stickers=xmlAuslesen();
+			java.util.ListIterator<Sticker> iterator = stickers.getSticker().listIterator();
+			while(iterator.hasNext()) {
+				if(stickerID == iterator.next().getStickerID().intValue()) {
+					return iterator.next();
+				}
+				iterator.next();
+			}
+			return null;
 	}
 	
 	/* Lösche Sticker mit StickerID.
@@ -92,10 +97,16 @@ public class StickerService
 	@DELETE
 	@Path ("/{StickerID}")
 	@Produces ( " application/xml" )
-	public Stickers deleteSticker(@PathParam("Sticker_ID") int StickerID) throws JAXBException, IOException {
+	public Stickers deleteSticker(@PathParam("Sticker_ID") int stickerID) throws JAXBException, IOException {
 		//Hole XML Daten
 		Stickers stickers=xmlAuslesen();
-		Sticker sticker = stickers.getSticker().remove(StickerID);
+		java.util.ListIterator<Sticker> iterator = stickers.getSticker().listIterator();
+		while(iterator.hasNext()) {
+			if(stickerID == iterator.next().getStickerID().intValue()) {
+				stickers.getSticker().remove(iterator.nextIndex());
+			}
+			iterator.next();
+		}
 		xmlSchreiben(stickers);
 		return stickers;
 	}
@@ -113,10 +124,13 @@ public class StickerService
 		Stickers stickers=xmlAuslesen();
 		//neue Sticker
 		Sticker sticker = new Sticker();
-		int lastindex = stickers.getSticker().lastIndexOf(sticker);
-		lastindex++;
-		BigInteger ID = new BigInteger("" + lastindex);
-		sticker.setStickerID(ID);
+		int id = 0;
+		for(Sticker c : stickers.getSticker()) {
+			if(id <= c.getStickerID().intValue()) {
+				id = c.getStickerID().intValue() + 1;
+			}
+		}
+		sticker.setStickerID(new BigInteger(""+id));
 		sticker.setTitle(title);
 		sticker.setDescription(description);
 		Liker liker = new Liker();
@@ -125,22 +139,29 @@ public class StickerService
 		sticker.setLiker(liker);
 		sticker.setFollower(follower);
 		sticker.setComments(comments);
-		sticker.setSelf(Helper.SERVERROOT + "/stickers/" + lastindex);
+		sticker.setSelf(Helper.SERVERROOT + "/stickers/" + id);
 		sticker.setUserID(new BigInteger ("" + Helper.USERID));
 		sticker.setOwner(Helper.SERVERROOT + "/users/" + Helper.USERID);
 		//zur Stickersliste hinzufuegen
-		stickers.getSticker().add(lastindex, sticker);
+		stickers.getSticker().add(sticker);
 		//ins XML zurückschreiben
 		xmlSchreiben(stickers);
 		
 		UserService US = new UserService();
 		Users users = US.xmlAuslesen();
+		java.util.ListIterator<User> userIterator = users.getUser().listIterator();
+		int userindex=0;
 		Reference reference = new Reference();
 		reference.setTitle(title);
-		reference.setLink(Helper.SERVERROOT + "/stickers/" + StickerID);
-		users.getUser().get(Helper.USERID).getStickerContainer().getReference().add(reference);
-		US.xmlSchreiben(users);
-		
+		reference.setLink(Helper.SERVERROOT + "/stickers/" + id);
+		while(userIterator.hasNext()) {
+			if(Helper.USERID == userIterator.next().getUserID().intValue()) {
+				userindex = userIterator.nextIndex();
+				users.getUser().get(userindex).getStickerContainer().getReference().add(reference);
+				US.xmlSchreiben(users);
+			}
+			userIterator.next();
+		}
 		return sticker;
 	}
 	
@@ -148,116 +169,192 @@ public class StickerService
 	 * Füge Kommentar hinzu.
 	 *   ~> return-Wert: Kommentare inkl. neuem Kommentar <~
 	 */
-	@POST
-	@Path ("/{StickerID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{StickerID}")
+//	@Produces ( " application/xml" )
 	public Comments addComment(@PathParam("Sticker_ID") int StickerID, 
 			String text) throws JAXBException, IOException, DatatypeConfigurationException {
 		Stickers stickers = xmlAuslesen();
 		Comment comment = new Comment();
 		comment.setDatetime(Helper.getXMLGregorianCalendarNow());
 		comment.setUserID(new BigInteger(""+Helper.USERID));
-		comment.setOwner(Helper.SERVERROOT + "/users/" + Helper.USERID);
+		comment.setOwner(Helper.SERVERROOT + "/stickers/" + Helper.USERID);
 		comment.setText(text);
-		int lastindex = stickers.getSticker().get(StickerID).getComments().getComment().lastIndexOf(comment);
-		lastindex++;
-		comment.setCommentID(new BigInteger("" + lastindex));
-		stickers.getSticker().get(StickerID).getComments().getComment().add(comment);
-		xmlSchreiben(stickers);
-		return stickers.getSticker().get(StickerID).getComments();
+		
+		java.util.ListIterator<Sticker> iterator = stickers.getSticker().listIterator();
+		int commentID = 0;
+		int index=0;
+		while(iterator.hasNext()) {
+			if(StickerID == iterator.next().getStickerID().intValue()) {
+				for(Comment c : iterator.next().getComments().getComment()) {
+					if (commentID <= c.getCommentID().intValue())
+						commentID = c.getCommentID().intValue() + 1;
+						index=iterator.nextIndex();
+				}
+				comment.setCommentID(new BigInteger("" + commentID));
+				stickers.getSticker().get(iterator.nextIndex()).getComments().getComment().add(comment);
+				xmlSchreiben(stickers);
+			}
+			iterator.next();
+		}		
+		return stickers.getSticker().get(index).getComments();
 	}
 	
 	/*
 	 * Füge Liker zu Sticker hinzu.
 	 *   ~> return-Wert: Liker inkl. neuem Like <~
 	 */
-	@POST
-	@Path ("/{StickerID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{StickerID}")
+//	@Produces ( " application/xml" )
 	public Liker addLikerToSticker(@PathParam("Sticker_ID") int StickerID) 
 			throws JAXBException, IOException {
-		Stickers stickers = xmlAuslesen();
-		stickers.getSticker().get(StickerID).getLiker().getLink().add(Helper.SERVERROOT + "/users/" + Helper.USERID);
+Stickers stickers = xmlAuslesen();
+		
+		java.util.ListIterator<Sticker> iterator = stickers.getSticker().listIterator();
+		int index=0;
+		while(iterator.hasNext()) {
+			if(StickerID == iterator.next().getStickerID().intValue()) {
+				index = iterator.nextIndex();
+				stickers.getSticker().get(iterator.nextIndex()).getLiker().getLink().add(Helper.SERVERROOT + "/stickers/" + Helper.USERID);
+			}
+			iterator.next();
+		}	
 		xmlSchreiben(stickers);
-		return stickers.getSticker().get(StickerID).getLiker();
+		return stickers.getSticker().get(index).getLiker();
 	}
 	
 	/*
 	 * Füge Liker zu Comment hinzu.
 	 *   ~> return-Wert: Comment inkl. neuem Like <~
 	 */
-	@POST
-	@Path ("/{StickerID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{StickerID}")
+//	@Produces ( " application/xml" )
 	public Comment addLikerToComment(@PathParam("Sticker_ID") int StickerID, @PathParam("Sticker_ID") int CommentID) 
 			throws JAXBException, IOException {
-		Stickers stickers = xmlAuslesen();
-		stickers.getSticker().get(StickerID).getComments().getComment().get(CommentID).getLiker().getLink().add(Helper.SERVERROOT + "/users/" + Helper.USERID);
-		xmlSchreiben(stickers);
-		return stickers.getSticker().get(StickerID).getComments().getComment().get(CommentID);
+Stickers stickers = xmlAuslesen();
+		
+		java.util.ListIterator<Sticker> iterator = stickers.getSticker().listIterator();
+		int stickerindex=0;
+		int commentindex=0;
+		while(iterator.hasNext()) {
+			if(StickerID == iterator.next().getStickerID().intValue()) {
+				stickerindex = iterator.nextIndex();
+				java.util.ListIterator<Comment> iteratorComment = iterator.next().getComments().getComment().listIterator();
+				while(iteratorComment.hasNext()) {
+					if(CommentID == iteratorComment.next().getCommentID().intValue()) {
+						commentindex = iteratorComment.nextIndex();
+						stickers.getSticker().get(stickerindex).getComments().getComment().get(commentindex).getLiker().getLink().add(Helper.SERVERROOT + "/stickers/" + Helper.USERID);
+						xmlSchreiben(stickers);
+						return stickers.getSticker().get(stickerindex).getComments().getComment().get(commentindex);
+					}
+				}
+			}
+			iterator.next();
+		}
+		return null;
 	}
 	
 	/*
 	 * Füge Follower zu Sticker hinzu.
 	 *   ~> return-Wert: Sticker inkl. neuem Follower <~
 	 */
-	@POST
-	@Path ("/{StickerID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{StickerID}")
+//	@Produces ( " application/xml" )
 	public Sticker addFollowerToSticker(@PathParam("Sticker_ID") int StickerID) 
 			throws JAXBException, IOException {
 		Stickers stickers = xmlAuslesen();
-		stickers.getSticker().get(StickerID).getFollower().getLink().add(Helper.SERVERROOT + "/users/" + Helper.USERID);
-		xmlSchreiben(stickers);
-		return stickers.getSticker().get(StickerID);
+		
+		java.util.ListIterator<Sticker> iterator = stickers.getSticker().listIterator();
+		int stickerindex=0;
+		while(iterator.hasNext()) {
+			if(StickerID == iterator.next().getStickerID().intValue()) {
+				stickerindex = iterator.nextIndex();
+				stickers.getSticker().get(stickerindex).getFollower().getLink().add(Helper.SERVERROOT + "/stickers/" + Helper.USERID);
+				xmlSchreiben(stickers);
+				return stickers.getSticker().get(StickerID);
+			}
+			iterator.next();
+		}
+		return null;
 	}
 	
 	/*
 	 * Füge Title zu Sticker hinzu.
 	 *   ~> return-Wert: Sticker inkl. neuem Title <~
 	 */
-	@POST
-	@Path ("/{StickerID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{StickerID}")
+//	@Produces ( " application/xml" )
 	public Sticker addTitleToSticker(@PathParam("Sticker_ID") int StickerID,
 			@QueryParam("Title") String title) 
 			throws JAXBException, IOException {
 		Stickers stickers = xmlAuslesen();
-		stickers.getSticker().get(StickerID).setTitle(title);
-		xmlSchreiben(stickers);
-		return stickers.getSticker().get(StickerID);
+		
+		java.util.ListIterator<Sticker> iterator = stickers.getSticker().listIterator();
+		int stickerindex=0;
+		while(iterator.hasNext()) {
+			if(StickerID == iterator.next().getStickerID().intValue()) {
+				stickerindex = iterator.nextIndex();
+				stickers.getSticker().get(stickerindex).setTitle(title);
+				xmlSchreiben(stickers);
+				return stickers.getSticker().get(stickerindex);
+			}
+			iterator.next();
+		}
+		return null;
 	}
 	
 	/*
 	 * Füge Description zu Sticker hinzu.
 	 *   ~> return-Wert: Sticker inkl. neuer Description <~
 	 */
-	@POST
-	@Path ("/{StickerID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{StickerID}")
+//	@Produces ( " application/xml" )
 	public Sticker addDescriptionToSticker(@PathParam("Sticker_ID") int StickerID,
 			@QueryParam("Title") String description)  
 			throws JAXBException, IOException {
 		Stickers stickers = xmlAuslesen();
-		stickers.getSticker().get(StickerID).setDescription(description);
-		xmlSchreiben(stickers);
-		return stickers.getSticker().get(StickerID);
+		java.util.ListIterator<Sticker> iterator = stickers.getSticker().listIterator();
+		int stickerindex=0;
+		while(iterator.hasNext()) {
+			if(StickerID == iterator.next().getStickerID().intValue()) {
+				stickerindex = iterator.nextIndex();
+				stickers.getSticker().get(stickerindex).setDescription(description);
+				xmlSchreiben(stickers);
+				return stickers.getSticker().get(stickerindex);
+			}
+			iterator.next();
+		}
+		return null;
 	}
 	
 	/*
 	 * Füge Related Photo zu Sticker hinzu.
 	 *   ~> return-Wert: Sticker inkl. neuem Related Photo <~
 	 */
-	@POST
-	@Path ("/{StickerID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{StickerID}")
+//	@Produces ( " application/xml" )
 	public Sticker addRelatedPhotoToSticker(@PathParam("Sticker_ID") int StickerID,
 			@QueryParam("RelatedPhoto") String RelatedPhoto)   
 			throws JAXBException, IOException {
 		Stickers stickers = xmlAuslesen();
-		stickers.getSticker().get(StickerID).getRelatedPhotos().getLink().add(RelatedPhoto);
-		xmlSchreiben(stickers);
-		return stickers.getSticker().get(StickerID);
+		java.util.ListIterator<Sticker> iterator = stickers.getSticker().listIterator();
+		int stickerindex=0;
+		while(iterator.hasNext()) {
+			if(StickerID == iterator.next().getStickerID().intValue()) {
+				stickerindex = iterator.nextIndex();
+				stickers.getSticker().get(stickerindex).getRelatedPhotos().getLink().add(RelatedPhoto);
+				xmlSchreiben(stickers);
+				return stickers.getSticker().get(stickerindex);
+			}
+			iterator.next();
+		}
+		return null;
 	}
 	
 }

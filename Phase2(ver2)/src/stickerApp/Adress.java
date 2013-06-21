@@ -2,13 +2,12 @@
 // Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.6 generiert 
 // Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
-// Generiert: 2013.06.19 um 06:35:20 PM CEST 
+// Generiert: 2013.06.21 um 05:50:54 PM CEST 
 //
 
 
 package stickerApp;
 
-import java.math.BigInteger;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -75,7 +74,7 @@ public class Adress {
     @XmlElement(name = "Country", required = true)
     protected String country;
     @XmlElement(name = "Telephone")
-    protected BigInteger telephone;
+    protected String telephone;
     protected String email;
 
     /**
@@ -275,10 +274,10 @@ public class Adress {
      * 
      * @return
      *     possible object is
-     *     {@link BigInteger }
+     *     {@link String }
      *     
      */
-    public BigInteger getTelephone() {
+    public String getTelephone() {
         return telephone;
     }
 
@@ -287,10 +286,10 @@ public class Adress {
      * 
      * @param value
      *     allowed object is
-     *     {@link BigInteger }
+     *     {@link String }
      *     
      */
-    public void setTelephone(BigInteger value) {
+    public void setTelephone(String value) {
         this.telephone = value;
     }
 

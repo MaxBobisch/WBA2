@@ -2,7 +2,7 @@
 // Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.6 generiert 
 // Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
-// Generiert: 2013.06.19 um 06:35:20 PM CEST 
+// Generiert: 2013.06.21 um 05:50:54 PM CEST 
 //
 
 
@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element ref="{}Price"/>
  *         &lt;element ref="{}Payment"/>
  *       &lt;/sequence>
+ *       &lt;attribute ref="{}State use="required""/>
  *       &lt;attribute ref="{}Currency use="required""/>
  *       &lt;attribute ref="{}ShoppingCart_ID use="required""/>
  *       &lt;attribute ref="{}Self use="required""/>
@@ -66,6 +67,8 @@ public class ShoppingCart {
     protected BigDecimal price;
     @XmlElement(name = "Payment", required = true, defaultValue = "n.a.")
     protected String payment;
+    @XmlAttribute(name = "State", required = true)
+    protected String state;
     @XmlAttribute(name = "Currency", required = true)
     protected String currency;
     @XmlAttribute(name = "ShoppingCart_ID", required = true)
@@ -178,6 +181,34 @@ public class ShoppingCart {
      */
     public void setPayment(String value) {
         this.payment = value;
+    }
+
+    /**
+     * Ruft den Wert der state-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getState() {
+        if (state == null) {
+            return "created";
+        } else {
+            return state;
+        }
+    }
+
+    /**
+     * Legt den Wert der state-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setState(String value) {
+        this.state = value;
     }
 
     /**

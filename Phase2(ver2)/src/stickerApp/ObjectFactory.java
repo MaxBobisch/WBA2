@@ -2,7 +2,7 @@
 // Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.6 generiert 
 // Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
-// Generiert: 2013.06.19 um 06:35:20 PM CEST 
+// Generiert: 2013.06.21 um 05:50:54 PM CEST 
 //
 
 
@@ -327,12 +327,12 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link BigInteger }{@code >}}
+     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
      * 
      */
     @XmlElementDecl(namespace = "", name = "Telephone")
-    public JAXBElement<BigInteger> createTelephone(BigInteger value) {
-        return new JAXBElement<BigInteger>(_Telephone_QNAME, BigInteger.class, null, value);
+    public JAXBElement<String> createTelephone(String value) {
+        return new JAXBElement<String>(_Telephone_QNAME, String.class, null, value);
     }
 
     /**

@@ -2,6 +2,7 @@
 <Users xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../xsd/Users.xsd">
   <User Self="http://tempuri.org" User_ID="0">
     <Nickname>Nickname</Nickname>
+    <Gender>not specified</Gender>
     <HomeAdress>
       <FamilyName>FamilyName</FamilyName>
       <FirstName>FirstName</FirstName>
@@ -12,7 +13,7 @@
       <Province>Province</Province>
       <Country>Country</Country>
       <Telephone>0</Telephone>
-      <email>email</email>
+      <email>customer0@gmx.de</email>
     </HomeAdress>
     <ShopAdress>
       <FamilyName>FamilyName</FamilyName>
@@ -24,7 +25,7 @@
       <Province>Province</Province>
       <Country>Country</Country>
       <Telephone>0</Telephone>
-      <email>email</email>
+      <email>customer0shop@google.com</email>
     </ShopAdress>
     <StickerContainer>
       <Reference>
@@ -67,10 +68,12 @@
       <Link>http://tempuri.org</Link>
     </Follower>
     <Comments>
-      <Comment Owner="http://tempuri.org" User_ID="0">
+      <Comment Comment_ID="0" Owner="http://tempuri.org" User_ID="0">
         <Text>Text</Text>
-        <Date>2001-01-01</Date>
-        <Liker/>
+        <Datetime>2001-01-01</Datetime>
+        <Liker>
+          <Link>http://tempuri.org</Link>
+        </Liker>
       </Comment>
     </Comments>
   </User>

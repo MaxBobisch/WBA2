@@ -5,19 +5,34 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.ListIterator;
 
-import javax.ws.rs.*;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.DatatypeConfigurationException;
 
-import stickerApp.*;
+import stickerApp.Adress;
+import stickerApp.CollectionContainer;
+import stickerApp.Comment;
+import stickerApp.Comments;
+import stickerApp.Follower;
+import stickerApp.Liker;
+import stickerApp.ObjectFactory;
+import stickerApp.OfferContainer;
+import stickerApp.PhotoContainer;
+import stickerApp.ShoppingCartContainer;
+import stickerApp.StickerContainer;
+import stickerApp.User;
+import stickerApp.Users;
 
 @Path( "/users" )
 public class UserService
@@ -82,11 +97,16 @@ public class UserService
 	@Path ("/{userID}")
 	@Produces ( " application/xml" )
 	public User oneUser(@PathParam("User_ID") int userID) throws JAXBException, FileNotFoundException {
-		//Hole XML Daten
+	//Hole XML Daten
 		Users users=xmlAuslesen();
-		User user = users.getUser().get(userID);
-		
-		return user;
+		java.util.ListIterator<User> iterator = users.getUser().listIterator();
+		while(iterator.hasNext()) {
+			if(userID == iterator.next().getUserID().intValue()) {
+				return iterator.next();
+			}
+			iterator.next();
+		}
+		return null;
 	}
 	
 	/* Lösche User mit UserID.
@@ -95,10 +115,16 @@ public class UserService
 	@DELETE
 	@Path ("/{UserID}")
 	@Produces ( " application/xml" )
-	public Users deleteUser(@PathParam("User_ID") int UserID) throws JAXBException, IOException {
+	public Users deleteUser(@PathParam("User_ID") int userID) throws JAXBException, IOException {
 		//Hole XML Daten
 		Users users=xmlAuslesen();
-		User user = users.getUser().remove(UserID);
+		java.util.ListIterator<User> iterator = users.getUser().listIterator();
+		while(iterator.hasNext()) {
+			if(userID == iterator.next().getUserID().intValue()) {
+				users.getUser().remove(iterator.nextIndex());
+			}
+			iterator.next();
+		}
 		xmlSchreiben(users);
 		return users;
 	}
@@ -132,14 +158,16 @@ public class UserService
 		user.setLiker(liker);
 		user.setFollower(follower);
 		user.setComments(comments);
-		int lastindex = users.getUser().lastIndexOf(user);
-		lastindex++;
-		BigInteger ID = new BigInteger("" + lastindex);
-		user.setUserID(ID);
-		user.setSelf(Helper.SERVERROOT + "/users/" + lastindex);
-		user.setUserID(new BigInteger ("" + Helper.USERID));
+		int id = 0;
+		for(User c : users.getUser()) {
+			if(id <= c.getUserID().intValue()) {
+				id = c.getUserID().intValue() + 1;
+			}
+		}
+		user.setUserID(new BigInteger(""+id));
+		user.setSelf(Helper.SERVERROOT + "/users/" + id);
 		//zur Usersliste hinzufuegen
-		users.getUser().add(lastindex, user);
+		users.getUser().add(user);
 		//ins XML zurückschreiben
 		xmlSchreiben(users);
 		return user;
@@ -149,9 +177,9 @@ public class UserService
 	 * Füge Kommentar hinzu.
 	 *   ~> return-Wert: Kommentare inkl. neuem Kommentar <~
 	 */
-	@POST
-	@Path ("/{UserID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{UserID}")
+//	@Produces ( " application/xml" )
 	public Comments addComment(@PathParam("User_ID") int UserID, 
 			String text) throws JAXBException, IOException, DatatypeConfigurationException {
 		Users users = xmlAuslesen();
@@ -160,66 +188,115 @@ public class UserService
 		comment.setUserID(new BigInteger(""+Helper.USERID));
 		comment.setOwner(Helper.SERVERROOT + "/users/" + Helper.USERID);
 		comment.setText(text);
-		int lastindex = users.getUser().get(UserID).getComments().getComment().lastIndexOf(comment);
-		lastindex++;
-		comment.setCommentID(new BigInteger("" + lastindex));
-		users.getUser().get(UserID).getComments().getComment().add(comment);
-		xmlSchreiben(users);
-		return users.getUser().get(UserID).getComments();
+		
+		java.util.ListIterator<User> iterator = users.getUser().listIterator();
+		int commentID = 0;
+		int index=0;
+		while(iterator.hasNext()) {
+			if(UserID == iterator.next().getUserID().intValue()) {
+				for(Comment c : iterator.next().getComments().getComment()) {
+					if (commentID <= c.getCommentID().intValue())
+						commentID = c.getCommentID().intValue() + 1;
+						index=iterator.nextIndex();
+				}
+				comment.setCommentID(new BigInteger("" + commentID));
+				users.getUser().get(iterator.nextIndex()).getComments().getComment().add(comment);
+				xmlSchreiben(users);
+			}
+			iterator.next();
+		}		
+		return users.getUser().get(index).getComments();
 	}
 	
 	/*
 	 * Füge Liker zu User hinzu.
 	 *   ~> return-Wert: Liker inkl. neuem Like <~
 	 */
-	@POST
-	@Path ("/{UserID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{UserID}")
+//	@Produces ( " application/xml" )
 	public Liker addLikerToUser(@PathParam("User_ID") int UserID) 
 			throws JAXBException, IOException {
 		Users users = xmlAuslesen();
-		users.getUser().get(UserID).getLiker().getLink().add(Helper.SERVERROOT + "/users/" + Helper.USERID);
+		
+		java.util.ListIterator<User> iterator = users.getUser().listIterator();
+		int index=0;
+		while(iterator.hasNext()) {
+			if(UserID == iterator.next().getUserID().intValue()) {
+				index = iterator.nextIndex();
+				users.getUser().get(iterator.nextIndex()).getLiker().getLink().add(Helper.SERVERROOT + "/users/" + Helper.USERID);
+			}
+			iterator.next();
+		}	
 		xmlSchreiben(users);
-		return users.getUser().get(UserID).getLiker();
+		return users.getUser().get(index).getLiker();
 	}
 	
 	/*
 	 * Füge Liker zu Comment hinzu.
 	 *   ~> return-Wert: Comment inkl. neuem Like <~
 	 */
-	@POST
-	@Path ("/{UserID}")
-	@Produces ( " application/xml" )
-	public Comment addLikerToComment(@PathParam("User_ID") int UserID, @PathParam("User_ID") int CommentID) 
+//	@POST
+//	@Path ("/{UserID}")
+//	@Produces ( " application/xml" )
+	public Comment addLikerToComment(@PathParam("User_ID") int UserID, 
+			@PathParam("User_ID") int CommentID) 
 			throws JAXBException, IOException {
 		Users users = xmlAuslesen();
-		users.getUser().get(UserID).getComments().getComment().get(CommentID).getLiker().getLink().add(Helper.SERVERROOT + "/users/" + Helper.USERID);
-		xmlSchreiben(users);
-		return users.getUser().get(UserID).getComments().getComment().get(CommentID);
+		
+		java.util.ListIterator<User> iterator = users.getUser().listIterator();
+		int userindex=0;
+		int commentindex=0;
+		while(iterator.hasNext()) {
+			if(UserID == iterator.next().getUserID().intValue()) {
+				userindex = iterator.nextIndex();
+				java.util.ListIterator<Comment> iteratorComment = iterator.next().getComments().getComment().listIterator();
+				while(iteratorComment.hasNext()) {
+					if(CommentID == iteratorComment.next().getCommentID().intValue()) {
+						commentindex = iteratorComment.nextIndex();
+						users.getUser().get(userindex).getComments().getComment().get(commentindex).getLiker().getLink().add(Helper.SERVERROOT + "/users/" + Helper.USERID);
+						xmlSchreiben(users);
+						return users.getUser().get(userindex).getComments().getComment().get(commentindex);
+					}
+				}
+			}
+			iterator.next();
+		}
+		return null;
 	}
 	
 	/*
 	 * Füge Follower zu User hinzu.
 	 *   ~> return-Wert: User inkl. neuem Follower <~
 	 */
-	@POST
-	@Path ("/{UserID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{UserID}")
+//	@Produces ( " application/xml" )
 	public User addFollowerToUser(@PathParam("User_ID") int UserID) 
 			throws JAXBException, IOException {
 		Users users = xmlAuslesen();
-		users.getUser().get(UserID).getFollower().getLink().add(Helper.SERVERROOT + "/users/" + Helper.USERID);
-		xmlSchreiben(users);
-		return users.getUser().get(UserID);
+		
+		java.util.ListIterator<User> iterator = users.getUser().listIterator();
+		int userindex=0;
+		while(iterator.hasNext()) {
+			if(UserID == iterator.next().getUserID().intValue()) {
+				userindex = iterator.nextIndex();
+				users.getUser().get(userindex).getFollower().getLink().add(Helper.SERVERROOT + "/users/" + Helper.USERID);
+				xmlSchreiben(users);
+				return users.getUser().get(UserID);
+			}
+			iterator.next();
+		}
+		return null;
 	}
 	
 	/*
 	 * Füge HomeAdress zu User hinzu.
 	 *   ~> return-Wert: HomeAdress <~
 	 */
-	@POST
-	@Path ("/{UserID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{UserID}")
+//	@Produces ( " application/xml" )
 	public Adress addHomeAdressToUser(@PathParam("User_ID") int UserID,
 			@QueryParam("FirstName") String FirstName,
 			@QueryParam("FamilyName") String FamilyName,
@@ -233,29 +310,28 @@ public class UserService
 			@QueryParam("Country") String Country)    
 			throws JAXBException, IOException {
 		Users users = xmlAuslesen();
-		Adress adress = new Adress();
-		adress.setFirstName(FirstName);
-		adress.setFamilyName(FamilyName);
-		adress.setStreet(Street);
-		adress.setNumber(Number);
-		adress.setPostalCode(PostalCode);
-		adress.setCity(City);
-		if(!"".equals(Province)) adress.setProvince(Province);
-		adress.setCountry(Country);
-		if(!"".equals(Telephone)) adress.setTelephone(new BigInteger(""+Telephone));
-		if(!"".equals(Email)) adress.setEmail(Email);
-		users.getUser().get(UserID).setHomeAdress(adress);
-		xmlSchreiben(users);
-		return adress;
+		Adress adress = Helper.createAdress(FamilyName, FirstName, Street, Number, PostalCode, City, Province, Country, Telephone, Email);
+		java.util.ListIterator<User> iterator = users.getUser().listIterator();
+		int userindex=0;
+		while(iterator.hasNext()) {
+			if(UserID == iterator.next().getUserID().intValue()) {
+				userindex = iterator.nextIndex();
+				users.getUser().get(userindex).setHomeAdress(adress);				
+				xmlSchreiben(users);
+				return adress;
+			}
+			iterator.next();
+		}
+		return null;
 	}
 	
 	/*
 	 * Füge ShopAdress zu User hinzu.
 	 *   ~> return-Wert: ShopAdress <~
 	 */
-	@POST
-	@Path ("/{UserID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{UserID}")
+//	@Produces ( " application/xml" )
 	public Adress addShopAdressToUser(@PathParam("User_ID") int UserID,
 			@QueryParam("FirstName") String FirstName,
 			@QueryParam("FamilyName") String FamilyName,
@@ -269,20 +345,19 @@ public class UserService
 			@QueryParam("Country") String Country)    
 			throws JAXBException, IOException {
 		Users users = xmlAuslesen();
-		Adress adress = new Adress();
-		adress.setFirstName(FirstName);
-		adress.setFamilyName(FamilyName);
-		adress.setStreet(Street);
-		adress.setNumber(Number);
-		adress.setPostalCode(PostalCode);
-		adress.setCity(City);
-		if(!"".equals(Province)) adress.setProvince(Province);
-		adress.setCountry(Country);
-		if(!"".equals(Telephone)) adress.setTelephone(new BigInteger(""+Telephone));
-		if(!"".equals(Email)) adress.setEmail(Email);
-		users.getUser().get(UserID).setShopAdress(adress);
-		xmlSchreiben(users);
-		return adress;
+		Adress adress = Helper.createAdress(FamilyName, FirstName, Street, Number, PostalCode, City, Province, Country, Telephone, Email);
+		java.util.ListIterator<User> iterator = users.getUser().listIterator();
+		int userindex=0;
+		while(iterator.hasNext()) {
+			if(UserID == iterator.next().getUserID().intValue()) {
+				userindex = iterator.nextIndex();
+				users.getUser().get(userindex).setShopAdress(adress);				
+				xmlSchreiben(users);
+				return adress;
+			}
+			iterator.next();
+		}
+		return null;
 	}
 	
 }

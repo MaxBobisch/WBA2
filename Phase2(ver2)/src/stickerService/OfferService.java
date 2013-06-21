@@ -80,10 +80,15 @@ public class OfferService
 	@Produces ( " application/xml" )
 	public Offer oneOffer(@PathParam("Offer_ID") int OfferID) throws JAXBException, FileNotFoundException {
 		//Hole XML Daten
-		Offers offers=xmlAuslesen();
-		Offer offer = offers.getOffer().get(OfferID);
-		
-		return offer;
+			Offers offers=xmlAuslesen();
+			java.util.ListIterator<Offer> iterator = offers.getOffer().listIterator();
+			while(iterator.hasNext()) {
+				if(OfferID == iterator.next().getOfferID().intValue()) {
+					return iterator.next();
+				}
+				iterator.next();
+			}
+			return null;
 	}
 	
 	/* Lösche Offer mit OfferID.
@@ -92,10 +97,16 @@ public class OfferService
 	@DELETE
 	@Path ("/{OfferID}")
 	@Produces ( " application/xml" )
-	public Offers deleteOffer(@PathParam("Offer_ID") int OfferID) throws JAXBException, IOException {
+	public Offers deleteOffer(@PathParam("Offer_ID") int offerID) throws JAXBException, IOException {
 		//Hole XML Daten
 		Offers offers=xmlAuslesen();
-		Offer offer = offers.getOffer().remove(OfferID);
+		java.util.ListIterator<Offer> iterator = offers.getOffer().listIterator();
+		while(iterator.hasNext()) {
+			if(offerID == iterator.next().getOfferID().intValue()) {
+				offers.getOffer().remove(iterator.nextIndex());
+			}
+			iterator.next();
+		}
 		xmlSchreiben(offers);
 		return offers;
 	}
@@ -116,10 +127,13 @@ public class OfferService
 		Offers offers=xmlAuslesen();
 		//neue Offer
 		Offer offer = new Offer();
-		int lastindex = offers.getOffer().lastIndexOf(offer);
-		lastindex++;
-		BigInteger ID = new BigInteger("" + lastindex);
-		offer.setOfferID(ID);
+		int id = 0;
+		for(Offer c : offers.getOffer()) {
+			if(id <= c.getOfferID().intValue()) {
+				id = c.getOfferID().intValue() + 1;
+			}
+		}
+		offer.setOfferID(new BigInteger(""+id));
 		offer.setTitle(title);
 		offer.setDescription(description);
 		offer.setPrice(new BigDecimal("" + price));
@@ -130,23 +144,31 @@ public class OfferService
 		offer.setLiker(liker);
 		offer.setFollower(follower);
 		offer.setComments(comments);
-		offer.setSelf(Helper.SERVERROOT + "/offers/" + lastindex);
+		offer.setSelf(Helper.SERVERROOT + "/offers/" + id);
 		offer.setUserID(new BigInteger ("" + Helper.USERID));
 		offer.setOwner(Helper.SERVERROOT + "/users/" + Helper.USERID);
 		//zur Offersliste hinzufuegen
-		offers.getOffer().add(lastindex, offer);
+		offers.getOffer().add(offer);
 		//ins XML zurückschreiben
 		xmlSchreiben(offers);
 		
 		UserService US = new UserService();
 		Users users = US.xmlAuslesen();
+		java.util.ListIterator<User> userIterator = users.getUser().listIterator();
+		int userindex=0;
 		SingleOffer singleOffer = new SingleOffer();
 		singleOffer.setTitle(title);
 		singleOffer.setPrice(new BigDecimal("" + price));
 		singleOffer.setCurrency(currency);
-		singleOffer.setLink(Helper.SERVERROOT + "/offers/" + OfferID);
-		users.getUser().get(Helper.USERID).getOfferContainer().getSingleOffer().add(singleOffer);
-		US.xmlSchreiben(users);
+		singleOffer.setLink(Helper.SERVERROOT + "/offers/" + id);
+		while(userIterator.hasNext()) {
+			if(Helper.USERID == userIterator.next().getUserID().intValue()) {
+				userindex = userIterator.nextIndex();
+				users.getUser().get(userindex).getOfferContainer().getSingleOffer().add(singleOffer);
+				US.xmlSchreiben(users);
+			}
+			userIterator.next();
+		}
 		
 		return offer;
 	}
@@ -155,84 +177,142 @@ public class OfferService
 	 * Füge Kommentar hinzu.
 	 *   ~> return-Wert: Kommentare inkl. neuem Kommentar <~
 	 */
-	@POST
-	@Path ("/{OfferID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{OfferID}")
+//	@Produces ( " application/xml" )
 	public Comments addComment(@PathParam("Offer_ID") int OfferID, 
 			String text) throws JAXBException, IOException, DatatypeConfigurationException {
 		Offers offers = xmlAuslesen();
 		Comment comment = new Comment();
 		comment.setDatetime(Helper.getXMLGregorianCalendarNow());
 		comment.setUserID(new BigInteger(""+Helper.USERID));
-		comment.setOwner(Helper.SERVERROOT + "/users/" + Helper.USERID);
+		comment.setOwner(Helper.SERVERROOT + "/offers/" + Helper.USERID);
 		comment.setText(text);
-		int lastindex = offers.getOffer().get(OfferID).getComments().getComment().lastIndexOf(comment);
-		lastindex++;
-		comment.setCommentID(new BigInteger("" + lastindex));
-		offers.getOffer().get(OfferID).getComments().getComment().add(comment);
-		xmlSchreiben(offers);
-		return offers.getOffer().get(OfferID).getComments();
+		
+		java.util.ListIterator<Offer> iterator = offers.getOffer().listIterator();
+		int commentID = 0;
+		int index=0;
+		while(iterator.hasNext()) {
+			if(OfferID == iterator.next().getOfferID().intValue()) {
+				for(Comment c : iterator.next().getComments().getComment()) {
+					if (commentID <= c.getCommentID().intValue())
+						commentID = c.getCommentID().intValue() + 1;
+						index=iterator.nextIndex();
+				}
+				comment.setCommentID(new BigInteger("" + commentID));
+				offers.getOffer().get(iterator.nextIndex()).getComments().getComment().add(comment);
+				xmlSchreiben(offers);
+			}
+			iterator.next();
+		}		
+		return offers.getOffer().get(index).getComments();
 	}
 	
 	/*
 	 * Füge Liker zu Offer hinzu.
 	 *   ~> return-Wert: Liker inkl. neuem Like <~
 	 */
-	@POST
-	@Path ("/{OfferID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{OfferID}")
+//	@Produces ( " application/xml" )
 	public Liker addLikerToOffer(@PathParam("Offer_ID") int OfferID) 
 			throws JAXBException, IOException {
-		Offers offers = xmlAuslesen();
-		offers.getOffer().get(OfferID).getLiker().getLink().add(Helper.SERVERROOT + "/users/" + Helper.USERID);
+Offers offers = xmlAuslesen();
+		
+		java.util.ListIterator<Offer> iterator = offers.getOffer().listIterator();
+		int index=0;
+		while(iterator.hasNext()) {
+			if(OfferID == iterator.next().getOfferID().intValue()) {
+				index = iterator.nextIndex();
+				offers.getOffer().get(iterator.nextIndex()).getLiker().getLink().add(Helper.SERVERROOT + "/offers/" + Helper.USERID);
+			}
+			iterator.next();
+		}	
 		xmlSchreiben(offers);
-		return offers.getOffer().get(OfferID).getLiker();
+		return offers.getOffer().get(index).getLiker();
 	}
 	
 	/*
 	 * Füge Liker zu Comment hinzu.
 	 *   ~> return-Wert: Comment inkl. neuem Like <~
 	 */
-	@POST
-	@Path ("/{OfferID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{OfferID}")
+//	@Produces ( " application/xml" )
 	public Comment addLikerToComment(@PathParam("Offer_ID") int OfferID, @PathParam("Offer_ID") int CommentID) 
 			throws JAXBException, IOException {
-		Offers offers = xmlAuslesen();
-		offers.getOffer().get(OfferID).getComments().getComment().get(CommentID).getLiker().getLink().add(Helper.SERVERROOT + "/users/" + Helper.USERID);
-		xmlSchreiben(offers);
-		return offers.getOffer().get(OfferID).getComments().getComment().get(CommentID);
+Offers offers = xmlAuslesen();
+		
+		java.util.ListIterator<Offer> iterator = offers.getOffer().listIterator();
+		int offerindex=0;
+		int commentindex=0;
+		while(iterator.hasNext()) {
+			if(OfferID == iterator.next().getOfferID().intValue()) {
+				offerindex = iterator.nextIndex();
+				java.util.ListIterator<Comment> iteratorComment = iterator.next().getComments().getComment().listIterator();
+				while(iteratorComment.hasNext()) {
+					if(CommentID == iteratorComment.next().getCommentID().intValue()) {
+						commentindex = iteratorComment.nextIndex();
+						offers.getOffer().get(offerindex).getComments().getComment().get(commentindex).getLiker().getLink().add(Helper.SERVERROOT + "/offers/" + Helper.USERID);
+						xmlSchreiben(offers);
+						return offers.getOffer().get(offerindex).getComments().getComment().get(commentindex);
+					}
+				}
+			}
+			iterator.next();
+		}
+		return null;
 	}
 	
 	/*
 	 * Füge Follower zu Offer hinzu.
 	 *   ~> return-Wert: Offer inkl. neuem Follower <~
 	 */
-	@POST
-	@Path ("/{OfferID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{OfferID}")
+//	@Produces ( " application/xml" )
 	public Offer addFollowerToOffer(@PathParam("Offer_ID") int OfferID) 
 			throws JAXBException, IOException {
 		Offers offers = xmlAuslesen();
-		offers.getOffer().get(OfferID).getFollower().getLink().add(Helper.SERVERROOT + "/users/" + Helper.USERID);
-		xmlSchreiben(offers);
-		return offers.getOffer().get(OfferID);
+		
+		java.util.ListIterator<Offer> iterator = offers.getOffer().listIterator();
+		int offerindex=0;
+		while(iterator.hasNext()) {
+			if(OfferID == iterator.next().getOfferID().intValue()) {
+				offerindex = iterator.nextIndex();
+				offers.getOffer().get(offerindex).getFollower().getLink().add(Helper.SERVERROOT + "/offers/" + Helper.USERID);
+				xmlSchreiben(offers);
+				return offers.getOffer().get(OfferID);
+			}
+			iterator.next();
+		}
+		return null;
 	}
 	
 	/*
 	 * Add Item zu Offer mit OfferID
 	 *   ~> return-Wert: Offer inkl. neuem Item <~
 	 */
-	@POST
-	@Path ("/{OfferID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{OfferID}")
+//	@Produces ( " application/xml" )
 	public Offer addFollowerToOffer(@PathParam("Offer_ID") int OfferID,
 			@QueryParam("Item") String Item) 
 			throws JAXBException, IOException {
 		Offers offers = xmlAuslesen();
-		offers.getOffer().get(OfferID).getItem().add(Item);
-		xmlSchreiben(offers);
-		return offers.getOffer().get(OfferID);
+		
+		java.util.ListIterator<Offer> iterator = offers.getOffer().listIterator();
+		int offerindex=0;
+		while(iterator.hasNext()) {
+			if(OfferID == iterator.next().getOfferID().intValue()) {
+				offerindex = iterator.nextIndex();
+				offers.getOffer().get(offerindex).getItem().add(Item);
+				xmlSchreiben(offers);
+				return offers.getOffer().get(offerindex);
+			}
+			iterator.next();
+		}
+		return null;
 	}
 	
 	

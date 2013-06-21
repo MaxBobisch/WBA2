@@ -14,6 +14,19 @@ elementFormDefault="qualified">
 <xs:attribute name="Customer" type="xs:anyURI" />
 <xs:attribute name="Shop" type="xs:anyURI" />
 
+<xs:attribute name="State" default="created">
+<xs:simpleType>
+  <xs:restriction base="xs:string">
+  	<xs:enumeration value="created"/>
+    <xs:enumeration value="received"/>
+    <xs:enumeration value="accepted"/>
+    <xs:enumeration value="rejected"/>
+    <xs:enumeration value="cancelled" />
+    <xs:enumeration value="fulfilled" />
+  </xs:restriction>
+</xs:simpleType> 
+</xs:attribute>
+
 <xs:element name="Payment" default="n.a.">
 <xs:simpleType>
   <xs:restriction base="xs:string">
@@ -41,6 +54,7 @@ elementFormDefault="qualified">
       <xs:element ref="Price"/>
       <xs:element ref="Payment"/>
     </xs:sequence>
+    <xs:attribute ref="State" use="required"/>
     <xs:attribute ref="Currency" use="required"/>
     <xs:attribute ref="ShoppingCart_ID" use="required" />
     <xs:attribute ref="Self" use="required"/>

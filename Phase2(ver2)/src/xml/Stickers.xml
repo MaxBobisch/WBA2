@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Stickers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Users.xsd">
+<Stickers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../xsd/Users.xsd">
   <Sticker Owner="http://tempuri.org" Self="http://tempuri.org" Sticker_ID="0" User_ID="0">
     <Title>Title</Title>
     <Description>Description</Description>
-    <Date>2001-01-01</Date>
+    <Datetime>2001-01-01</Datetime>
     <RelatedPhotos>
       <Link>http://tempuri.org</Link>
     </RelatedPhotos>
@@ -14,10 +14,12 @@
       <Link>http://tempuri.org</Link>
     </Follower>
     <Comments>
-      <Comment Owner="http://tempuri.org" User_ID="0">
+      <Comment Comment_ID="0" Owner="http://tempuri.org" User_ID="0">
         <Text>Text</Text>
-        <Date>2001-01-01</Date>
-        <Liker/>
+        <Datetime>2001-01-01</Datetime>
+        <Liker>
+          <Link>http://tempuri.org</Link>
+        </Liker>
       </Comment>
     </Comments>
   </Sticker>

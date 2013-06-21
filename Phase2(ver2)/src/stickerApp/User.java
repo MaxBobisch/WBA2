@@ -2,7 +2,7 @@
 // Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.6 generiert 
 // Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
-// Generiert: 2013.06.19 um 06:35:20 PM CEST 
+// Generiert: 2013.06.21 um 05:50:54 PM CEST 
 //
 
 
@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element ref="{}Nickname"/>
+ *         &lt;element ref="{}Gender"/>
  *         &lt;element name="HomeAdress" type="{}Adress" minOccurs="0"/>
  *         &lt;element name="ShopAdress" type="{}Adress" minOccurs="0"/>
  *         &lt;element ref="{}StickerContainer"/>
@@ -52,6 +53,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "nickname",
+    "gender",
     "homeAdress",
     "shopAdress",
     "stickerContainer",
@@ -68,6 +70,8 @@ public class User {
 
     @XmlElement(name = "Nickname", required = true)
     protected String nickname;
+    @XmlElement(name = "Gender", required = true, defaultValue = "not specified")
+    protected String gender;
     @XmlElement(name = "HomeAdress")
     protected Adress homeAdress;
     @XmlElement(name = "ShopAdress")
@@ -116,6 +120,30 @@ public class User {
      */
     public void setNickname(String value) {
         this.nickname = value;
+    }
+
+    /**
+     * Ruft den Wert der gender-Eigenschaft ab.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getGender() {
+        return gender;
+    }
+
+    /**
+     * Legt den Wert der gender-Eigenschaft fest.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setGender(String value) {
+        this.gender = value;
     }
 
     /**

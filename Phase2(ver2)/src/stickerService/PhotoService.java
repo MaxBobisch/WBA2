@@ -7,19 +7,30 @@ import java.io.IOException;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
-import javax.ws.rs.*;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 
-import stickerApp.*;
+import stickerApp.Comment;
+import stickerApp.Comments;
+import stickerApp.Follower;
+import stickerApp.Liker;
+import stickerApp.ObjectFactory;
+import stickerApp.Photo;
+import stickerApp.Photos;
+import stickerApp.SinglePhoto;
+import stickerApp.User;
+import stickerApp.Users;
 
 @Path( "/photos" )
 public class PhotoService
@@ -86,9 +97,14 @@ public class PhotoService
 	public Photo onePhoto(@PathParam("Photo_ID") int photoID) throws JAXBException, FileNotFoundException {
 		//Hole XML Daten
 		Photos photos=xmlAuslesen();
-		Photo photo = photos.getPhoto().get(photoID);
-		
-		return photo;
+		java.util.ListIterator<Photo> iterator = photos.getPhoto().listIterator();
+		while(iterator.hasNext()) {
+			if(photoID == iterator.next().getPhotoID().intValue()) {
+				return iterator.next();
+			}
+			iterator.next();
+		}
+		return null;
 	}
 	
 	/* Lösche Photo mit PhotoID.
@@ -97,10 +113,16 @@ public class PhotoService
 	@DELETE
 	@Path ("/{PhotoID}")
 	@Produces ( " application/xml" )
-	public Photos deletePhoto(@PathParam("Photo_ID") int PhotoID) throws JAXBException, IOException {
+	public Photos deletePhoto(@PathParam("Photo_ID") int photoID) throws JAXBException, IOException {
 		//Hole XML Daten
 		Photos photos=xmlAuslesen();
-		Photo photo = photos.getPhoto().remove(PhotoID);
+		java.util.ListIterator<Photo> iterator = photos.getPhoto().listIterator();
+		while(iterator.hasNext()) {
+			if(photoID == iterator.next().getPhotoID().intValue()) {
+				photos.getPhoto().remove(iterator.nextIndex());
+			}
+			iterator.next();
+		}
 		xmlSchreiben(photos);
 		return photos;
 	}
@@ -119,10 +141,13 @@ public class PhotoService
 		Photos photos=xmlAuslesen();
 		//neue Photo
 		Photo photo = new Photo();
-		int lastindex = photos.getPhoto().lastIndexOf(photo);
-		lastindex++;
-		BigInteger ID = new BigInteger("" + lastindex);
-		photo.setPhotoID(ID);
+		int id = 0;
+		for(Photo c : photos.getPhoto()) {
+			if(id <= c.getPhotoID().intValue()) {
+				id = c.getPhotoID().intValue() + 1;
+			}
+		}
+		photo.setPhotoID(new BigInteger(""+id));
 		if(!"".equals(title))photo.setTitle(title);
 		photo.setDescription(description);
 		photo.setDatetime(Helper.getXMLGregorianCalendarNow());
@@ -132,23 +157,31 @@ public class PhotoService
 		photo.setLiker(liker);
 		photo.setFollower(follower);
 		photo.setComments(comments);
-		photo.setSelf(Helper.SERVERROOT + "/photos/" + lastindex);
+		photo.setSelf(Helper.SERVERROOT + "/photos/" + id);
 		photo.setUserID(new BigInteger ("" + Helper.USERID));
 		photo.setOwner(Helper.SERVERROOT + "/users/" + Helper.USERID);
 		photo.setPhotoLink(photoLink);
 		//zur Photosliste hinzufuegen
-		photos.getPhoto().add(lastindex, photo);
+		photos.getPhoto().add(photo);
 		//ins XML zurückschreiben
 		xmlSchreiben(photos);
 		
 		UserService US = new UserService();
 		Users users = US.xmlAuslesen();
+		java.util.ListIterator<User> userIterator = users.getUser().listIterator();
+		int userindex=0;
 		SinglePhoto singlePhoto = new SinglePhoto();
 		singlePhoto.setPhotoLink(photoLink);
 		if(!"".equals(title))singlePhoto.setTitle(title);
-		singlePhoto.setLink(Helper.SERVERROOT + "/offers/" + PhotoID);
-		users.getUser().get(Helper.USERID).getPhotoContainer().getSinglePhoto().add(singlePhoto);
-		US.xmlSchreiben(users);
+		singlePhoto.setLink(Helper.SERVERROOT + "/photos/" + id);
+		while(userIterator.hasNext()) {
+			if(Helper.USERID == userIterator.next().getUserID().intValue()) {
+				userindex = userIterator.nextIndex();
+				users.getUser().get(userindex).getPhotoContainer().getSinglePhoto().add(singlePhoto);
+				US.xmlSchreiben(users);
+			}
+			userIterator.next();
+		}
 		
 		return photo;
 	}
@@ -157,118 +190,196 @@ public class PhotoService
 	 * Füge Kommentar hinzu.
 	 *   ~> return-Wert: Kommentare inkl. neuem Kommentar <~
 	 */
-	@POST
-	@Path ("/{PhotoID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{PhotoID}")
+//	@Produces ( " application/xml" )
 	public Comments addComment(@PathParam("Photo_ID") int PhotoID, 
 			String text) throws JAXBException, IOException, DatatypeConfigurationException {
 		Photos photos = xmlAuslesen();
 		Comment comment = new Comment();
 		comment.setDatetime(Helper.getXMLGregorianCalendarNow());
 		comment.setUserID(new BigInteger(""+Helper.USERID));
-		comment.setOwner(Helper.SERVERROOT + "/users/" + Helper.USERID);
+		comment.setOwner(Helper.SERVERROOT + "/photos/" + Helper.USERID);
 		comment.setText(text);
-		int lastindex = photos.getPhoto().get(PhotoID).getComments().getComment().lastIndexOf(comment);
-		lastindex++;
-		comment.setCommentID(new BigInteger("" + lastindex));
-		photos.getPhoto().get(PhotoID).getComments().getComment().add(comment);
-		xmlSchreiben(photos);
-		return photos.getPhoto().get(PhotoID).getComments();
+		
+		java.util.ListIterator<Photo> iterator = photos.getPhoto().listIterator();
+		int commentID = 0;
+		int index=0;
+		while(iterator.hasNext()) {
+			if(PhotoID == iterator.next().getPhotoID().intValue()) {
+				for(Comment c : iterator.next().getComments().getComment()) {
+					if (commentID <= c.getCommentID().intValue())
+						commentID = c.getCommentID().intValue() + 1;
+						index=iterator.nextIndex();
+				}
+				comment.setCommentID(new BigInteger("" + commentID));
+				photos.getPhoto().get(iterator.nextIndex()).getComments().getComment().add(comment);
+				xmlSchreiben(photos);
+			}
+			iterator.next();
+		}		
+		return photos.getPhoto().get(index).getComments();
 	}
 	
 	/*
 	 * Füge Liker zu Photo hinzu.
 	 *   ~> return-Wert: Liker inkl. neuem Like <~
 	 */
-	@POST
-	@Path ("/{PhotoID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{PhotoID}")
+//	@Produces ( " application/xml" )
 	public Liker addLikerToPhoto(@PathParam("Photo_ID") int PhotoID) 
 			throws JAXBException, IOException {
-		Photos photos = xmlAuslesen();
-		photos.getPhoto().get(PhotoID).getLiker().getLink().add(Helper.SERVERROOT + "/users/" + Helper.USERID);
+Photos photos = xmlAuslesen();
+		
+		java.util.ListIterator<Photo> iterator = photos.getPhoto().listIterator();
+		int index=0;
+		while(iterator.hasNext()) {
+			if(PhotoID == iterator.next().getPhotoID().intValue()) {
+				index = iterator.nextIndex();
+				photos.getPhoto().get(iterator.nextIndex()).getLiker().getLink().add(Helper.SERVERROOT + "/photos/" + Helper.USERID);
+			}
+			iterator.next();
+		}	
 		xmlSchreiben(photos);
-		return photos.getPhoto().get(PhotoID).getLiker();
+		return photos.getPhoto().get(index).getLiker();
 	}
 	
 	/*
 	 * Füge Liker zu Comment hinzu.
 	 *   ~> return-Wert: Comment inkl. neuem Like <~
 	 */
-	@POST
-	@Path ("/{PhotoID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{PhotoID}")
+//	@Produces ( " application/xml" )
 	public Comment addLikerToComment(@PathParam("Photo_ID") int PhotoID, @PathParam("Photo_ID") int CommentID) 
 			throws JAXBException, IOException {
-		Photos photos = xmlAuslesen();
-		photos.getPhoto().get(PhotoID).getComments().getComment().get(CommentID).getLiker().getLink().add(Helper.SERVERROOT + "/users/" + Helper.USERID);
-		xmlSchreiben(photos);
-		return photos.getPhoto().get(PhotoID).getComments().getComment().get(CommentID);
+Photos photos = xmlAuslesen();
+		
+		java.util.ListIterator<Photo> iterator = photos.getPhoto().listIterator();
+		int photoindex=0;
+		int commentindex=0;
+		while(iterator.hasNext()) {
+			if(PhotoID == iterator.next().getPhotoID().intValue()) {
+				photoindex = iterator.nextIndex();
+				java.util.ListIterator<Comment> iteratorComment = iterator.next().getComments().getComment().listIterator();
+				while(iteratorComment.hasNext()) {
+					if(CommentID == iteratorComment.next().getCommentID().intValue()) {
+						commentindex = iteratorComment.nextIndex();
+						photos.getPhoto().get(photoindex).getComments().getComment().get(commentindex).getLiker().getLink().add(Helper.SERVERROOT + "/photos/" + Helper.USERID);
+						xmlSchreiben(photos);
+						return photos.getPhoto().get(photoindex).getComments().getComment().get(commentindex);
+					}
+				}
+			}
+			iterator.next();
+		}
+		return null;
 	}
 	
 	/*
-	 * Füge Follower zu Photo hinzu.
-	 *   ~> return-Wert: Photo inkl. neuem Follower <~
+	 * Füge Follower zu Sticker hinzu.
+	 *   ~> return-Wert: Sticker inkl. neuem Follower <~
 	 */
-	@POST
-	@Path ("/{PhotoID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{StickerID}")
+//	@Produces ( " application/xml" )
 	public Photo addFollowerToPhoto(@PathParam("Photo_ID") int PhotoID) 
 			throws JAXBException, IOException {
 		Photos photos = xmlAuslesen();
-		photos.getPhoto().get(PhotoID).getFollower().getLink().add(Helper.SERVERROOT + "/users/" + Helper.USERID);
-		xmlSchreiben(photos);
-		return photos.getPhoto().get(PhotoID);
+		
+		java.util.ListIterator<Photo> iterator = photos.getPhoto().listIterator();
+		int photoindex=0;
+		while(iterator.hasNext()) {
+			if(PhotoID == iterator.next().getPhotoID().intValue()) {
+				photoindex = iterator.nextIndex();
+				photos.getPhoto().get(photoindex).getFollower().getLink().add(Helper.SERVERROOT + "/photos/" + Helper.USERID);
+				xmlSchreiben(photos);
+				return photos.getPhoto().get(PhotoID);
+			}
+			iterator.next();
+		}
+		return null;
 	}
 	
 	/*
 	 * Füge Description zu Photo hinzu.
 	 *   ~> return-Wert: Photo inkl. neuer Description <~
 	 */
-	@POST
-	@Path ("/{PhotoID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{PhotoID}")
+//	@Produces ( " application/xml" )
 	public Photo addDescriptionToPhoto(@PathParam("Photo_ID") int PhotoID,
 			@QueryParam("Description") String description) 
 			throws JAXBException, IOException {
 		Photos photos = xmlAuslesen();
-		photos.getPhoto().get(PhotoID).setDescription(description);
-		xmlSchreiben(photos);
-		return photos.getPhoto().get(PhotoID);
+		
+		java.util.ListIterator<Photo> iterator = photos.getPhoto().listIterator();
+		int photoindex=0;
+		while(iterator.hasNext()) {
+			if(PhotoID == iterator.next().getPhotoID().intValue()) {
+				photoindex = iterator.nextIndex();
+				photos.getPhoto().get(photoindex).setDescription(description);
+				xmlSchreiben(photos);
+				return photos.getPhoto().get(photoindex);
+			}
+			iterator.next();
+		}
+		return null;
 	}
 	
 	/*
 	 * Füge Location zu Photo hinzu.
 	 *   ~> return-Wert: Photo inkl. neuer Location <~
 	 */
-	@POST
-	@Path ("/{PhotoID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{PhotoID}")
+//	@Produces ( " application/xml" )
 	public Photo addLocationToPhoto(@PathParam("Photo_ID") int PhotoID,
 			@QueryParam("Latitude") double latitude,
 			@QueryParam("Longitude") double longitude) 
 			throws JAXBException, IOException {
 		Photos photos = xmlAuslesen();
-		photos.getPhoto().get(PhotoID).getLocation().setLatitude(new BigDecimal(latitude));
-		photos.getPhoto().get(PhotoID).getLocation().setLongitude(new BigDecimal(longitude));
-		xmlSchreiben(photos);
-		return photos.getPhoto().get(PhotoID);
+		
+		java.util.ListIterator<Photo> iterator = photos.getPhoto().listIterator();
+		int photoindex=0;
+		while(iterator.hasNext()) {
+			if(PhotoID == iterator.next().getPhotoID().intValue()) {
+				photoindex = iterator.nextIndex();
+				photos.getPhoto().get(photoindex).getLocation().setLatitude(new BigDecimal(latitude));
+				photos.getPhoto().get(photoindex).getLocation().setLongitude(new BigDecimal(longitude));
+				xmlSchreiben(photos);
+				return photos.getPhoto().get(photoindex);
+			}
+			iterator.next();
+		}
+		return null;
 	}
 	
 	/*
 	 * Füge Related Sticker zu Photo hinzu.
 	 *   ~> return-Wert: Photo inkl. neuem Related Sticker <~
 	 */
-	@POST
-	@Path ("/{PhotoID}")
-	@Produces ( " application/xml" )
+//	@POST
+//	@Path ("/{PhotoID}")
+//	@Produces ( " application/xml" )
 	public Photo addFollowerToPhoto(@PathParam("Photo_ID") int PhotoID,
 			@QueryParam("Location") String RelatedSticker) 
 			throws JAXBException, IOException {
 		Photos photos = xmlAuslesen();
-		photos.getPhoto().get(PhotoID).setRelatedSticker(RelatedSticker);
-		xmlSchreiben(photos);
-		return photos.getPhoto().get(PhotoID);
+		
+		java.util.ListIterator<Photo> iterator = photos.getPhoto().listIterator();
+		int photoindex=0;
+		while(iterator.hasNext()) {
+			if(PhotoID == iterator.next().getPhotoID().intValue()) {
+				photoindex = iterator.nextIndex();
+				photos.getPhoto().get(photoindex).setRelatedSticker(RelatedSticker);
+				xmlSchreiben(photos);
+				return photos.getPhoto().get(photoindex);
+			}
+			iterator.next();
+		}
+		return null;
 	}
 	
 }

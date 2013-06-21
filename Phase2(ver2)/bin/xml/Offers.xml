@@ -12,10 +12,12 @@
       <Link>http://tempuri.org</Link>
     </Follower>
     <Comments>
-      <Comment Owner="http://tempuri.org" User_ID="0">
+      <Comment Comment_ID="0" Owner="http://tempuri.org" User_ID="0">
         <Text>Text</Text>
-        <Date>2001-01-01</Date>
-        <Liker/>
+        <Datetime>2001-01-01</Datetime>
+        <Liker>
+          <Link>http://tempuri.org</Link>
+        </Liker>
       </Comment>
     </Comments>
   </Offer>
