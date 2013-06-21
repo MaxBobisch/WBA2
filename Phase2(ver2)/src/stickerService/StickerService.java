@@ -76,17 +76,17 @@ public class StickerService
 	 * 		~> return-Wert: Sticker mit stickerID aus der XML Datei <~
 	 */
 	@GET
-	@Path ("/{stickerID}")
+	@Path ("/{sticker_ID}")
 	@Produces ( " application/xml" )
 	public Sticker oneSticker(@PathParam("Sticker_ID") int stickerID) throws JAXBException, FileNotFoundException {
-		//Hole XML Daten
+			//Hole XML Daten
 			Stickers stickers=xmlAuslesen();
 			java.util.ListIterator<Sticker> iterator = stickers.getSticker().listIterator();
 			while(iterator.hasNext()) {
-				if(stickerID == iterator.next().getStickerID().intValue()) {
-					return iterator.next();
+				Sticker sticker = iterator.next();
+				if(stickerID == sticker.getStickerID().intValue()) {
+					return sticker;
 				}
-				iterator.next();
 			}
 			return null;
 	}
@@ -95,20 +95,21 @@ public class StickerService
 	 * 		~> return-Wert:  <~
 	 */
 	@DELETE
-	@Path ("/{StickerID}")
+	@Path ("/{Sticker_ID}")
 	@Produces ( " application/xml" )
 	public Stickers deleteSticker(@PathParam("Sticker_ID") int stickerID) throws JAXBException, IOException {
-		//Hole XML Daten
-		Stickers stickers=xmlAuslesen();
-		java.util.ListIterator<Sticker> iterator = stickers.getSticker().listIterator();
-		while(iterator.hasNext()) {
-			if(stickerID == iterator.next().getStickerID().intValue()) {
-				stickers.getSticker().remove(iterator.nextIndex());
+			//Hole XML Daten
+			Stickers stickers=xmlAuslesen();
+			java.util.ListIterator<Sticker> iterator = stickers.getSticker().listIterator();
+			while(iterator.hasNext()) {
+				int index = iterator.nextIndex();
+				Sticker sticker = iterator.next();
+				if(stickerID == sticker.getStickerID().intValue()) {
+					stickers.getSticker().remove(index);
+				}
 			}
-			iterator.next();
-		}
-		xmlSchreiben(stickers);
-		return stickers;
+			xmlSchreiben(stickers);
+			return stickers;
 	}
 	
 	/* Erstelle Sticker mit StickerID.

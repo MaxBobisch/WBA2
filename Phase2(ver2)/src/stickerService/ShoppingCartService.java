@@ -94,41 +94,43 @@ public class ShoppingCartService
 	/* Zeigt alle ShoppingCart an mit State.
 	 * 		~> return-Wert: Alle ShoppingCart mit State aus der XML Datei <~
 	 */
-	@SuppressWarnings("null")
 	@GET
-	@QueryParam ("State")
+	@QueryParam ("state")
 	@Produces ( " application/xml" )
-	public ShoppingCarts createdShoppingCarts(@QueryParam("State") String State) throws JAXBException, FileNotFoundException {
+	public ShoppingCarts allShoppingCarts(@QueryParam("state") String QueryState) throws JAXBException, FileNotFoundException {
 		//Hole XML Daten
 		ShoppingCarts shoppingCarts=xmlAuslesen();
-		if(!isEmpty(State)) {
-			java.util.List<ShoppingCart> list = shoppingCarts.getShoppingCart();
-			ShoppingCarts result = null;
-			for(ShoppingCart shoppingCart: list) {
-				for(String state : STATE)
-					if(state.equals(shoppingCart.getState()))
+		java.util.ListIterator<ShoppingCart> iterator = shoppingCarts.getShoppingCart().listIterator();
+		ShoppingCarts result = null;		
+		for(String validState : STATE) {
+			if(validState.equals(QueryState)) {
+				result = new ShoppingCarts();
+				while(iterator.hasNext()) {
+					ShoppingCart shoppingCart = iterator.next();
+					if(validState.equals(shoppingCart.getState())) {
 						result.getShoppingCart().add(shoppingCart);
+					}
+				}
 			}
-			return result;
 		}
-		return shoppingCarts;
+		return result!=null ? result : shoppingCarts ;
 	}
 	
 	/* Zeigt ShoppingCart mit shoppingCartID an.
 	 * 		~> return-Wert: ShoppingCart mit shoppingCartID aus der XML Datei <~
 	 */
 	@GET
-	@Path ("/{ShoppingCartID}")
+	@Path ("/{ShoppingCart_ID}")
 	@Produces ( " application/xml" )
-	public ShoppingCart oneShoppingCart(@PathParam("ShoppingCartID") int shoppingCartID) throws JAXBException, FileNotFoundException {
+	public ShoppingCart oneShoppingCart(@PathParam("ShoppingCart_ID") int shoppingCartID) throws JAXBException, FileNotFoundException {
 		//Hole XML Daten
 		ShoppingCarts shoppingCarts=xmlAuslesen();
 		java.util.ListIterator<ShoppingCart> iterator = shoppingCarts.getShoppingCart().listIterator();
 		while(iterator.hasNext()) {
-			if(shoppingCartID == iterator.next().getShoppingCartID().intValue()) {
-				return iterator.next();
+			ShoppingCart shoppingCart = iterator.next();
+			if(shoppingCartID == shoppingCart.getShoppingCartID().intValue()) {
+				return shoppingCart;
 			}
-			iterator.next();
 		}
 		return null;
 	}
@@ -137,20 +139,21 @@ public class ShoppingCartService
 	 * 		~> return-Wert:  <~
 	 */
 	@DELETE
-	@Path ("/{ShoppingCartID}")
+	@Path ("/{ShoppingCart_ID}")
 	@Produces ( " application/xml" )
-	public ShoppingCarts deleteShoppingCart(@PathParam("ShoppingCartID") int shoppingCartID) throws JAXBException, IOException {
-		//Hole XML Daten
-		ShoppingCarts shoppingCarts=xmlAuslesen();
-		java.util.ListIterator<ShoppingCart> iterator = shoppingCarts.getShoppingCart().listIterator();
-		while(iterator.hasNext()) {
-			if(shoppingCartID == iterator.next().getShoppingCartID().intValue()) {
-				shoppingCarts.getShoppingCart().remove(iterator.nextIndex());
+	public ShoppingCarts deleteShoppingCart(@PathParam("ShoppingCart_ID") int shoppingCartID) throws JAXBException, IOException {
+			//Hole XML Daten
+			ShoppingCarts shoppingCarts=xmlAuslesen();
+			java.util.ListIterator<ShoppingCart> iterator = shoppingCarts.getShoppingCart().listIterator();
+			while(iterator.hasNext()) {
+				int index = iterator.nextIndex();
+				ShoppingCart shoppingCart = iterator.next();
+				if(shoppingCartID == shoppingCart.getShoppingCartID().intValue()) {
+					shoppingCarts.getShoppingCart().remove(index);
+				}
 			}
-			iterator.next();
-		}
-		xmlSchreiben(shoppingCarts);
-		return shoppingCarts;
+			xmlSchreiben(shoppingCarts);
+			return shoppingCarts;
 	}			
 	
 	/* Erstelle ShoppingCart mit ShoppingCartID.
@@ -256,9 +259,10 @@ public class ShoppingCartService
 	 */
 //	@POST
 //	@Path ("/{ShoppingCartID}")
+//	@QueryParam("Item")
 //	@Produces ( " application/xml" )
 	public ShoppingCart addItemToShoppingCart(@PathParam("ShoppingCartID") int ShoppingCartID,
-			@QueryParam("Location") String Item) 
+			@QueryParam("Item") String Item) 
 			throws JAXBException, IOException {
 		ShoppingCarts shoppingCarts = xmlAuslesen();
 		

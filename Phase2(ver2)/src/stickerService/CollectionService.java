@@ -76,17 +76,17 @@ public class CollectionService
 	 * 		~> return-Wert: Collection mit CollectionID aus der XML Datei <~
 	 */
 	@GET
-	@Path ("/{CollectionID}")
+	@Path ("/{Collection_ID}")
 	@Produces ( " application/xml" )
-	public Collection oneCollection(@PathParam("Collection_ID") int CollectionID) throws JAXBException, FileNotFoundException {
-	//Hole XML Daten
+	public Collection oneCollection(@PathParam("Collection_ID") int collectionID) throws JAXBException, FileNotFoundException {
+			//Hole XML Daten
 			Collections collections=xmlAuslesen();
 			java.util.ListIterator<Collection> iterator = collections.getCollection().listIterator();
 			while(iterator.hasNext()) {
-				if(CollectionID == iterator.next().getCollectionID().intValue()) {
-					return iterator.next();
+				Collection collection = iterator.next();
+				if(collectionID == collection.getCollectionID().intValue()) {
+					return collection;
 				}
-				iterator.next();
 			}
 			return null;
 	}
@@ -95,17 +95,18 @@ public class CollectionService
 	 * 		~> return-Wert:  <~
 	 */
 	@DELETE
-	@Path ("/{CollectionID}")
+	@Path ("/{Collection_ID}")
 	@Produces ( " application/xml" )
 	public Collections deleteCollection(@PathParam("Collection_ID") int collectionID) throws JAXBException, IOException {
 		//Hole XML Daten
 		Collections collections=xmlAuslesen();
 		java.util.ListIterator<Collection> iterator = collections.getCollection().listIterator();
 		while(iterator.hasNext()) {
-			if(collectionID == iterator.next().getCollectionID().intValue()) {
-				collections.getCollection().remove(iterator.nextIndex());
+			int index = iterator.nextIndex();
+			Collection collection = iterator.next();
+			if(collectionID == collection.getCollectionID().intValue()) {
+				collections.getCollection().remove(index);
 			}
-			iterator.next();
 		}
 		xmlSchreiben(collections);
 		return collections;

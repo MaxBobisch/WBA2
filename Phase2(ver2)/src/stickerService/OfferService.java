@@ -76,17 +76,17 @@ public class OfferService
 	 * 		~> return-Wert: Offer mit OfferID aus der XML Datei <~
 	 */
 	@GET
-	@Path ("/{OfferID}")
+	@Path ("/{Offer_ID}")
 	@Produces ( " application/xml" )
-	public Offer oneOffer(@PathParam("Offer_ID") int OfferID) throws JAXBException, FileNotFoundException {
-		//Hole XML Daten
+	public Offer oneOffer(@PathParam("Offer_ID") int offerID) throws JAXBException, FileNotFoundException {
+			//Hole XML Daten
 			Offers offers=xmlAuslesen();
 			java.util.ListIterator<Offer> iterator = offers.getOffer().listIterator();
 			while(iterator.hasNext()) {
-				if(OfferID == iterator.next().getOfferID().intValue()) {
-					return iterator.next();
+				Offer offer = iterator.next();
+				if(offerID == offer.getOfferID().intValue()) {
+					return offer;
 				}
-				iterator.next();
 			}
 			return null;
 	}
@@ -95,20 +95,21 @@ public class OfferService
 	 * 		~> return-Wert:  <~
 	 */
 	@DELETE
-	@Path ("/{OfferID}")
+	@Path ("/{Offer_ID}")
 	@Produces ( " application/xml" )
 	public Offers deleteOffer(@PathParam("Offer_ID") int offerID) throws JAXBException, IOException {
-		//Hole XML Daten
-		Offers offers=xmlAuslesen();
-		java.util.ListIterator<Offer> iterator = offers.getOffer().listIterator();
-		while(iterator.hasNext()) {
-			if(offerID == iterator.next().getOfferID().intValue()) {
-				offers.getOffer().remove(iterator.nextIndex());
+			//Hole XML Daten
+			Offers offers=xmlAuslesen();
+			java.util.ListIterator<Offer> iterator = offers.getOffer().listIterator();
+			while(iterator.hasNext()) {
+				int index = iterator.nextIndex();
+				Offer offer = iterator.next();
+				if(offerID == offer.getOfferID().intValue()) {
+					offers.getOffer().remove(index);
+				}
 			}
-			iterator.next();
-		}
-		xmlSchreiben(offers);
-		return offers;
+			xmlSchreiben(offers);
+			return offers;
 	}
 	
 	/* Erstelle Offer mit OfferID.

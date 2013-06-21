@@ -1,6 +1,5 @@
 package stickerService;
 
-import java.math.BigInteger;
 import java.util.GregorianCalendar;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -12,19 +11,31 @@ import stickerApp.Adress;
 public class Helper {
 	
 	static final String SERVERROOT = "localhost:4434";
-	static final int USERID = 0;
-	static final int SHOPID = 1;
-	static final int CUSTOMERID = 0;
+	static int USERID = 0;
+	static int SHOPID = 1;
+	static int CUSTOMERID = 0;
 
 	public static XMLGregorianCalendar getXMLGregorianCalendarNow() 
       throws DatatypeConfigurationException
-{
-  GregorianCalendar gregorianCalendar = new GregorianCalendar();
-  DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
-  XMLGregorianCalendar now = 
-      datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
-  return now;
-}
+	{
+	  GregorianCalendar gregorianCalendar = new GregorianCalendar();
+	  DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
+	  XMLGregorianCalendar now = 
+	      datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
+	  return now;
+	}
+	
+	public static void changeUserID (int UserID) {
+		USERID = UserID;
+	}
+	
+	public static void changeShopID (int ShopID) {
+		SHOPID = ShopID;
+	}
+	
+	public static void changeCustomerID (int CustomerID) {
+		CUSTOMERID = CustomerID;
+	}
 	
 	public static Adress createAdress (String familyName,
 			String firstName,

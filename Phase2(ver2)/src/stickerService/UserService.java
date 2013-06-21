@@ -94,17 +94,17 @@ public class UserService
 	 * 		~> return-Wert: User mit userID aus der XML Datei <~
 	 */
 	@GET
-	@Path ("/{userID}")
+	@Path ("/{user_ID}")
 	@Produces ( " application/xml" )
 	public User oneUser(@PathParam("User_ID") int userID) throws JAXBException, FileNotFoundException {
-	//Hole XML Daten
+		//Hole XML Daten
 		Users users=xmlAuslesen();
 		java.util.ListIterator<User> iterator = users.getUser().listIterator();
 		while(iterator.hasNext()) {
-			if(userID == iterator.next().getUserID().intValue()) {
-				return iterator.next();
+			User user = iterator.next();
+			if(userID == user.getUserID().intValue()) {
+				return user;
 			}
-			iterator.next();
 		}
 		return null;
 	}
@@ -113,20 +113,21 @@ public class UserService
 	 * 		~> return-Wert:  <~
 	 */
 	@DELETE
-	@Path ("/{UserID}")
+	@Path ("/{User_ID}")
 	@Produces ( " application/xml" )
 	public Users deleteUser(@PathParam("User_ID") int userID) throws JAXBException, IOException {
-		//Hole XML Daten
-		Users users=xmlAuslesen();
-		java.util.ListIterator<User> iterator = users.getUser().listIterator();
-		while(iterator.hasNext()) {
-			if(userID == iterator.next().getUserID().intValue()) {
-				users.getUser().remove(iterator.nextIndex());
+			//Hole XML Daten
+			Users users=xmlAuslesen();
+			java.util.ListIterator<User> iterator = users.getUser().listIterator();
+			while(iterator.hasNext()) {
+				int index = iterator.nextIndex();
+				User user = iterator.next();
+				if(userID == user.getUserID().intValue()) {
+					users.getUser().remove(index);
+				}
 			}
-			iterator.next();
-		}
-		xmlSchreiben(users);
-		return users;
+			xmlSchreiben(users);
+			return users;
 	}
 	
 	/* Erstelle User mit UserID.

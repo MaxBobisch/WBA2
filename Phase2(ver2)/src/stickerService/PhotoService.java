@@ -92,39 +92,40 @@ public class PhotoService
 	 * 		~> return-Wert: Photo mit photoID aus der XML Datei <~
 	 */
 	@GET
-	@Path ("/{photoID}")
+	@Path ("/{Photo_ID}")
 	@Produces ( " application/xml" )
 	public Photo onePhoto(@PathParam("Photo_ID") int photoID) throws JAXBException, FileNotFoundException {
-		//Hole XML Daten
-		Photos photos=xmlAuslesen();
-		java.util.ListIterator<Photo> iterator = photos.getPhoto().listIterator();
-		while(iterator.hasNext()) {
-			if(photoID == iterator.next().getPhotoID().intValue()) {
-				return iterator.next();
+			//Hole XML Daten
+			Photos photos=xmlAuslesen();
+			java.util.ListIterator<Photo> iterator = photos.getPhoto().listIterator();
+			while(iterator.hasNext()) {
+				Photo photo = iterator.next();
+				if(photoID == photo.getPhotoID().intValue()) {
+					return photo;
+				}
 			}
-			iterator.next();
-		}
-		return null;
+			return null;
 	}
 	
 	/* Lösche Photo mit PhotoID.
 	 * 		~> return-Wert:  <~
 	 */
 	@DELETE
-	@Path ("/{PhotoID}")
+	@Path ("/{Photo_ID}")
 	@Produces ( " application/xml" )
 	public Photos deletePhoto(@PathParam("Photo_ID") int photoID) throws JAXBException, IOException {
-		//Hole XML Daten
-		Photos photos=xmlAuslesen();
-		java.util.ListIterator<Photo> iterator = photos.getPhoto().listIterator();
-		while(iterator.hasNext()) {
-			if(photoID == iterator.next().getPhotoID().intValue()) {
-				photos.getPhoto().remove(iterator.nextIndex());
+			//Hole XML Daten
+			Photos photos=xmlAuslesen();
+			java.util.ListIterator<Photo> iterator = photos.getPhoto().listIterator();
+			while(iterator.hasNext()) {
+				int index = iterator.nextIndex();
+				Photo photo = iterator.next();
+				if(photoID == photo.getPhotoID().intValue()) {
+					photos.getPhoto().remove(index);
+				}
 			}
-			iterator.next();
-		}
-		xmlSchreiben(photos);
-		return photos;
+			xmlSchreiben(photos);
+			return photos;
 	}
 	
 	/* Erstelle Photo mit PhotoID.
