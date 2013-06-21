@@ -1,10 +1,10 @@
 package PubSub;
 
+import java.util.Collection;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smackx.packet.DiscoverItems;
 import org.jivesoftware.smackx.pubsub.AccessModel;
 import org.jivesoftware.smackx.pubsub.ConfigureForm;
 import org.jivesoftware.smackx.pubsub.FormType;
@@ -14,158 +14,129 @@ import org.jivesoftware.smackx.pubsub.Node;
 import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.PubSubManager;
 import org.jivesoftware.smackx.pubsub.PublishModel;
-import org.jivesoftware.smackx.pubsub.Subscription;
+import org.jivesoftware.smackx.pubsub.SimplePayload;
+import org.jivesoftware.smackx.pubsub.listener.ItemDeleteListener;
+import org.jivesoftware.smackx.pubsub.listener.ItemEventListener;
+import org.jivesoftware.smackx.pubsub.listener.NodeConfigListener;
 
-
-public class PubSubHandler {
-
-	private static final String HOST = "MAX-LAPTOP";
-	private static final int PORT = 9090;
-	private static String topicID;
-	static ConnectionConfiguration config = new ConnectionConfiguration(HOST,PORT);
-
-			
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+	public class PubSubHandler {
+		static String host = "localhost";
+		static int port = 5222;
+		
+	public static Connection createConnection(){
+		// Create a connection to the server on a specific port.
+		ConnectionConfiguration config = new ConnectionConfiguration(host, port);
+		Connection con = new XMPPConnection(config);
+		return con;
 	}
-			
+	
+	public static PubSubManager createPubSubManager(){
+		// Create a connection to the server on a specific port.
+		Connection con = createConnection();
+		// Create a pubsub manager using an existing Connection
+	    PubSubManager mgr = new PubSubManager(con);
+		return mgr;
+	}
+	
+	public static Node createCollectionNode(String nodeID) throws XMPPException{
+		// Create a pubsub manager using an existing Connection
+	    PubSubManager mgr = createPubSubManager();
+	    // Create the node
+	    ConfigureForm form = new ConfigureForm(FormType.submit);
+	    //Settings for the node
+	    form.setAccessModel(AccessModel.open);
+	    form.setDeliverPayloads(true);
+	    form.setNotifyRetract(true);
+	    form.setPersistentItems(true);
+	    form.setPublishModel(PublishModel.open);
+	    Node node = mgr.createNode(nodeID, form);
+		return node;
+	}
+	
+	public static LeafNode createNode(String nodeID) throws XMPPException{
+		// Create a pubsub manager using an existing Connection
+	    PubSubManager mgr = createPubSubManager();
+	    // Create the node
+	    ConfigureForm form = new ConfigureForm(FormType.submit);
+	    //Settings for the node
+	    form.setAccessModel(AccessModel.open);
+	    form.setDeliverPayloads(true);
+	    form.setNotifyRetract(true);
+	    form.setPersistentItems(true);
+	    form.setPublishModel(PublishModel.open);
+	    LeafNode leaf = (LeafNode) mgr.createNode(nodeID, form);
+		return leaf;	
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public static boolean subscribeNode(String nodeID) throws XMPPException{
+	    //TODO: get JID
+		String subscribersJid = "0815";
+	    // Create a pubsub manager using an existing Connection
+	    PubSubManager mgr = createPubSubManager();
+	    // Get the node
+	    LeafNode node = mgr.getNode(nodeID);
+	    //create and add listeners
+	    ItemEventListener listener = new ItemEventCoordinator<Item>();
+	    node.addItemEventListener(listener);
+	    ItemDeleteListener deleteListener = new ItemDeleteCoordinator();
+	    node.addItemDeleteListener(deleteListener);
+	    NodeConfigListener configListener = new NodeConfigCoordinator();
+	    node.addConfigurationListener(configListener);
+	    //subscribe to the node
+	    node.subscribe(subscribersJid);
+		return true;
+	}
+	
+	public static boolean unsubscribeNode(String nodeID, @SuppressWarnings("rawtypes") ItemEventListener listener, ItemDeleteListener deleteListener, NodeConfigListener configListener) throws XMPPException{
+	    //TODO: get JID
+		String subscribersJid = "0815";
+	   	// Create a pubsub manager using an existing Connection
+	    PubSubManager mgr = createPubSubManager();
+	    // Get the node
+	    LeafNode node = mgr.getNode(nodeID);
+	    //remove listener
+	    node.removeItemEventListener(listener);
+	    node.removeItemDeleteListener(deleteListener);
+	    node.removeConfigurationListener(configListener);
+		//unsubscribe to the node
+	    node.unsubscribe(subscribersJid);
+		return true;
+		}
+	
+		//retrieve the existing items from a node:
+	public static Collection<? extends Item> getItemsFromNode(String nodeID) throws XMPPException{
+	    // Create a pubsub manager using an existing Connection
+	    PubSubManager mgr = createPubSubManager();
+	    // Get the node
+	    LeafNode node = mgr.getNode(nodeID);
+	    //Get the items
+	    Collection<? extends Item> items = node.getItems();
+		return items;
+	}
+	
+		//publishing with no payload
+	public static Node publishToNode(String nodeID, String itemID) throws XMPPException{
+        // Create a pubsub manager using an existing Connection
+        PubSubManager mgr = createPubSubManager();
+        // Get the node
+        LeafNode node = mgr.getNode(nodeID);
+        // Publish an Item with the specified id
+        node.send(new Item(itemID));
+        return node;
+	}
 
-			private PubSubManager createPubSubManager() throws XMPPException {
-				
-				// Create a connection to the XMPP server.
-				Connection con = new XMPPConnection(HOST);
-				// Connect to the server
-				con.connect();
-				PubSubManager mgr = new PubSubManager(con, "pubsub.StickerApp");
-				return mgr;
-			}
-			
-			
-			
-			public Node createTopic(String topicID) throws XMPPException {
-				ConfigureForm form = new ConfigureForm(FormType.submit);
-				form.setPersistentItems(true);
-				form.setDeliverPayloads(true);
-				form.setAccessModel(AccessModel.open);
-				form.setPublishModel(PublishModel.open);
-				form.setNotifyDelete(true);
-				form.setSubscribe(true);
-				
-				Node n = createPubSubManager().createNode(topicID, form);
-				return n;
-			}
-			
-			
-			private Node getNode(String topicID) throws XMPPException{
-				
-				// Create a connection to the XMPP server.
-				Connection con = new XMPPConnection(HOST);
-				// Connect to the server
-				con.connect();
-				PubSubManager mgr = new PubSubManager(con, "pubsub.StickerApp");
-				Node n = mgr.getNode(topicID);
-				return n;
-			}
-			
-			
-			@SuppressWarnings({ "rawtypes" })
-			public void publishPayload(String topicID, PayloadItem payload) throws XMPPException{
-				((LeafNode)getNode(topicID)).publish(payload);
-			}
-			
-			
-			public void subscribe(String jid, String topicID) throws XMPPException{
-				getNode(topicID).subscribe(jid);
-			}
-			
-			
-			public void unSubscribe(String jid, String topicID) throws XMPPException{
-				getNode(topicID).unsubscribe(jid);
-			}
-			
-			
-			public void listener(String topicID) throws XMPPException {		
-				getNode(topicID).addItemEventListener(new ItemEventCoordinator<Item>());
-			}
-			
-			public void deListener(String topicID) throws XMPPException {		
-				((LeafNode)getNode(topicID)).addItemDeleteListener(new ItemDeleteCoordinator<Item>());
-			}
-			
-			
-			public String getTopicID(String topicID) throws XMPPException{
-				return getNode(topicID).getId();
-			}
-			
-			public void discoverNodes(String topicID) throws XMPPException {
-				System.out.println(createPubSubManager().discoverNodes(topicID).toXML());
-			}
-			
-			public void deleteTopic(String topicID) throws XMPPException {
-				createPubSubManager().deleteNode(topicID);
-			}
-			
-			public String discoItems(String topicID) throws XMPPException {
-				DiscoverItems disco = ((LeafNode)getNode(topicID)).discoverItems();
-				return disco.toXML();
-			}
-			
-			
-			public void getCurrentItems(String topicID) throws XMPPException {
-				Iterable<Subscription> id = (Iterable<Subscription>) getNode(topicID).getSubscriptions();
-				for (Subscription i : id) {
-					System.out.println("SubscriptionID: " + i.getId());
-					System.out.println("ItemResult: " + ((LeafNode)getNode(topicID)).getItems(i.getId()));
-				}
-			}
-			
-			public String getThisSubscriber(String topicID) throws XMPPException {
-				 String sub = null;
-				 if (getNode(topicID).getSubscriptions().isEmpty()){
-					 System.out.println("keine Subscriber");
-				 }
-				 else {
-					 int index = getNode(topicID).getSubscriptions().size()-1;
-					 sub = getNode(topicID).getSubscriptions().get(index).getId();
-				 }
-				 return sub;		
-			}
-			
-			public String getItem(String topicID) throws XMPPException {
-				 String give = null;
-				 if (getNode(topicID).getSubscriptions().isEmpty()){
-					 System.out.println("keine Subscriber");
-				 }
-				 else {
-					 int index = getNode(topicID).getSubscriptions().size()-1;
-					 String sub = getNode(topicID).getSubscriptions().get(index).getId();
-					 give = ((LeafNode)getNode(topicID)).getItems(sub).toString();
-				 }
-				 return give;		
-			}
-
-			
-			public String getSubscriptions(String topicID) throws XMPPException {
-				Iterable<Subscription> id = (Iterable<Subscription>) getNode(topicID).getSubscriptions();
-				String subs = null;
-				for (Subscription i : id) {
-					subs = i.getId();
-//					System.out.println("SubscriptionID: " + i.getId());
-				}
-				return subs;
-			}
-
-
-			public static String getTopicID() {
-				return topicID;
-			}
-
-
-			public static void setTopicID(String topicID) {
-				PubSubHandler.topicID = topicID;
-			}
+		//publishing with payload
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static Node publishToNodePayload(String nodeID, String itemID) throws XMPPException{
+        // Create a pubsub manager using an existing Connection
+        PubSubManager mgr = createPubSubManager();
+        // Get the node
+        LeafNode node = mgr.getNode(nodeID);
+        // Publish an Item with payload with the specified id
+        node.send(new PayloadItem(itemID, new SimplePayload("elementName", "namespace", "xmlPayload")));
+        return node;
+	}
 }
+
+

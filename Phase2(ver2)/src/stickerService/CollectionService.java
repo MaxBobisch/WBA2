@@ -150,12 +150,12 @@ public class CollectionService
 		reference.setTitle(title);
 		reference.setLink(Helper.SERVERROOT + "/collections/" + id);
 		while(userIterator.hasNext()) {
-			if(Helper.USERID == userIterator.next().getUserID().intValue()) {
-				userindex = userIterator.nextIndex();
+			userindex = userIterator.nextIndex();
+			User user = userIterator.next();
+			if(Helper.USERID == user.getUserID().intValue()) {
 				users.getUser().get(userindex).getCollectionContainer().getReference().add(reference);
 				US.xmlSchreiben(users);
 			}
-			userIterator.next();
 		}
 		
 		return collection;
@@ -179,21 +179,21 @@ public class CollectionService
 		
 		java.util.ListIterator<Collection> iterator = collections.getCollection().listIterator();
 		int commentID = 0;
-		int index=0;
+		int collectionIndex=0;
 		while(iterator.hasNext()) {
-			if(CollectionID == iterator.next().getCollectionID().intValue()) {
-				for(Comment c : iterator.next().getComments().getComment()) {
+			collectionIndex=iterator.nextIndex();
+			Collection collection = iterator.next();
+			if(CollectionID == collection.getCollectionID().intValue()) {
+				for(Comment c : collection.getComments().getComment()) {
 					if (commentID <= c.getCommentID().intValue())
 						commentID = c.getCommentID().intValue() + 1;
-						index=iterator.nextIndex();
 				}
 				comment.setCommentID(new BigInteger("" + commentID));
 				collections.getCollection().get(iterator.nextIndex()).getComments().getComment().add(comment);
 				xmlSchreiben(collections);
 			}
-			iterator.next();
 		}		
-		return collections.getCollection().get(index).getComments();
+		return collections.getCollection().get(collectionIndex).getComments();
 	}
 	
 	/*
@@ -205,19 +205,19 @@ public class CollectionService
 //	@Produces ( " application/xml" )
 	public Liker addLikerToCollection(@PathParam("Collection_ID") int CollectionID) 
 			throws JAXBException, IOException {
-Collections collections = xmlAuslesen();
+		Collections collections = xmlAuslesen();
 		
 		java.util.ListIterator<Collection> iterator = collections.getCollection().listIterator();
-		int index=0;
+		int collectionIndex=0;
 		while(iterator.hasNext()) {
-			if(CollectionID == iterator.next().getCollectionID().intValue()) {
-				index = iterator.nextIndex();
-				collections.getCollection().get(iterator.nextIndex()).getLiker().getLink().add(Helper.SERVERROOT + "/collections/" + Helper.USERID);
+			collectionIndex = iterator.nextIndex();
+			Collection collection = iterator.next();
+			if(CollectionID == collection.getCollectionID().intValue()) {
+				collections.getCollection().get(collectionIndex).getLiker().getLink().add(Helper.SERVERROOT + "/collections/" + Helper.USERID);
 			}
-			iterator.next();
 		}	
 		xmlSchreiben(collections);
-		return collections.getCollection().get(index).getLiker();
+		return collections.getCollection().get(collectionIndex).getLiker();
 	}
 	
 	/*
@@ -235,19 +235,20 @@ Collections collections = xmlAuslesen();
 		int collectionindex=0;
 		int commentindex=0;
 		while(iterator.hasNext()) {
-			if(CollectionID == iterator.next().getCollectionID().intValue()) {
-				collectionindex = iterator.nextIndex();
-				java.util.ListIterator<Comment> iteratorComment = iterator.next().getComments().getComment().listIterator();
+			collectionindex = iterator.nextIndex();
+			Collection collection = iterator.next();
+			if(CollectionID == collection.getCollectionID().intValue()) {
+				java.util.ListIterator<Comment> iteratorComment = collection.getComments().getComment().listIterator();
 				while(iteratorComment.hasNext()) {
-					if(CommentID == iteratorComment.next().getCommentID().intValue()) {
-						commentindex = iteratorComment.nextIndex();
+					commentindex = iteratorComment.nextIndex();
+					Comment comment = iteratorComment.next();
+					if(CommentID == comment.getCommentID().intValue()) {
 						collections.getCollection().get(collectionindex).getComments().getComment().get(commentindex).getLiker().getLink().add(Helper.SERVERROOT + "/collections/" + Helper.USERID);
 						xmlSchreiben(collections);
 						return collections.getCollection().get(collectionindex).getComments().getComment().get(commentindex);
 					}
 				}
 			}
-			iterator.next();
 		}
 		return null;
 	}
@@ -266,13 +267,39 @@ Collections collections = xmlAuslesen();
 		java.util.ListIterator<Collection> iterator = collections.getCollection().listIterator();
 		int collectionindex=0;
 		while(iterator.hasNext()) {
-			if(CollectionID == iterator.next().getCollectionID().intValue()) {
-				collectionindex = iterator.nextIndex();
+			collectionindex = iterator.nextIndex();
+			Collection collection = iterator.next();
+			if(CollectionID == collection.getCollectionID().intValue()) {
 				collections.getCollection().get(collectionindex).getFollower().getLink().add(Helper.SERVERROOT + "/collections/" + Helper.USERID);
 				xmlSchreiben(collections);
 				return collections.getCollection().get(CollectionID);
 			}
-			iterator.next();
+		}
+		return null;
+	}
+	
+	/*
+	 * Update Title von Collection mit CollectionID
+	 *   ~> return-Wert: Collection mit neuem Title <~
+	 */
+	/*@POST
+	@Path ("/{CollectionID}")
+	@Produces ( " application/xml" )*/
+	public Collection updateTitle(@PathParam("Collection_ID") int CollectionID,
+			@QueryParam("Title") String title) 
+			throws JAXBException, IOException {
+		Collections collections = xmlAuslesen();
+		
+		java.util.ListIterator<Collection> iterator = collections.getCollection().listIterator();
+		int collectionindex=0;
+		while(iterator.hasNext()) {
+			collectionindex = iterator.nextIndex();
+			Collection collection = iterator.next();
+			if(CollectionID == collection.getCollectionID().intValue()) {
+				collections.getCollection().get(collectionindex).setTitle(title);
+				xmlSchreiben(collections);
+				return collections.getCollection().get(collectionindex);
+			}
 		}
 		return null;
 	}
@@ -292,13 +319,13 @@ Collections collections = xmlAuslesen();
 		java.util.ListIterator<Collection> iterator = collections.getCollection().listIterator();
 		int collectionindex=0;
 		while(iterator.hasNext()) {
-			if(CollectionID == iterator.next().getCollectionID().intValue()) {
-				collectionindex = iterator.nextIndex();
+			collectionindex = iterator.nextIndex();
+			Collection collection = iterator.next();
+			if(CollectionID == collection.getCollectionID().intValue()) {
 				collections.getCollection().get(collectionindex).setDescription(description);
 				xmlSchreiben(collections);
 				return collections.getCollection().get(collectionindex);
 			}
-			iterator.next();
 		}
 		return null;
 	}
@@ -318,13 +345,13 @@ Collections collections = xmlAuslesen();
 		java.util.ListIterator<Collection> iterator = collections.getCollection().listIterator();
 		int collectionindex=0;
 		while(iterator.hasNext()) {
-			if(CollectionID == iterator.next().getCollectionID().intValue()) {
-				collectionindex = iterator.nextIndex();
+			collectionindex = iterator.nextIndex();
+			Collection collection = iterator.next();
+			if(CollectionID == collection.getCollectionID().intValue()) {
 				collections.getCollection().get(collectionindex).getItem().add(Item);
 				xmlSchreiben(collections);
 				return collections.getCollection().get(collectionindex);
 			}
-			iterator.next();
 		}
 		return null;
 	}

@@ -37,6 +37,11 @@ public class Helper {
 		CUSTOMERID = CustomerID;
 	}
 	
+	public static boolean isEmpty( String s )
+  {
+     return s == null || s.trim().length() <= 0;
+  }
+	
 	public static Adress createAdress (String familyName,
 			String firstName,
 			String street,

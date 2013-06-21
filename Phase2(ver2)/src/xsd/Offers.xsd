@@ -9,7 +9,13 @@ elementFormDefault="qualified">
 <xs:include schemaLocation="Users.xsd"/>
 
 <xs:element name="Item" type="xs:anyURI" />
-<xs:element name="Price" type="xs:decimal" />
+<xs:element name="Price">
+  <xs:simpleType>
+    <xs:restriction base="xs:decimal">
+      <xs:minInclusive value="0.0"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:element>
 
 <xs:attribute name="Offer_ID" type="xs:integer" />
 <xs:attribute name="Currency" type="xs:string" />

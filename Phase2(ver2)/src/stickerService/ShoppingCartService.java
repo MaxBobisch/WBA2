@@ -25,6 +25,7 @@ import stickerApp.ObjectFactory;
 import stickerApp.Products;
 import stickerApp.ShoppingCart;
 import stickerApp.ShoppingCarts;
+import stickerApp.SinglePhoto;
 import stickerApp.SingleShoppingCart;
 import stickerApp.User;
 import stickerApp.Users;
@@ -71,25 +72,7 @@ public class ShoppingCartService
 				e.printStackTrace();
 			}
 		}
-	}
-	
-	
-//	/* Zeigt alle ShoppingCart an.
-//	 * 		~> return-Wert: Alle ShoppingCart aus der XML Datei <~
-//	 */
-//	@GET
-//	@Produces ( " application/xml" )
-//	public ShoppingCarts allShoppingCarts() throws JAXBException, FileNotFoundException {
-//		//Hole XML Daten
-//		ShoppingCarts shoppingCarts=xmlAuslesen();
-//		
-//		return shoppingCarts;
-//	}
-	
-	public static boolean isEmpty( String s )
-  {
-     return s == null || s.trim().length() <= 0;
-  }
+	}	
 	
 	/* Zeigt alle ShoppingCart an mit State.
 	 * 		~> return-Wert: Alle ShoppingCart mit State aus der XML Datei <~
@@ -193,10 +176,10 @@ public class ShoppingCartService
 		Adress adress = Helper.createAdress(familyName,firstName,street,number,postalCode,city,province,country,telephone,email);
 		shoppingCart.setShipTo(adress);
 		shoppingCart.setPrice(new BigDecimal("" + price));
-		shoppingCart.setPayment("n.a.");
 		if("Bank Account".equals(payment)) shoppingCart.setPayment("Bank Account");
-		if("Credit Card".equals(payment)) shoppingCart.setPayment("Credit Card");
-		if("Paypal".equals(payment)) shoppingCart.setPayment("Paypal");
+		else if("Credit Card".equals(payment)) shoppingCart.setPayment("Credit Card");
+		else if("Paypal".equals(payment)) shoppingCart.setPayment("Paypal");
+		else shoppingCart.setPayment("n.a.");
 		shoppingCart.setState("created");
 		shoppingCart.setCurrency(currency);
 		shoppingCart.setSelf(Helper.SERVERROOT + "/shoppingCarts/" + id);
@@ -211,14 +194,26 @@ public class ShoppingCartService
 		
 		UserService US = new UserService();
 		Users users = US.xmlAuslesen();
+		java.util.ListIterator<User> userIterator = users.getUser().listIterator();
 		SingleShoppingCart singleShoppingCart = new SingleShoppingCart();
-		int anzahl = users.getUser().get(Helper.CUSTOMERID).getShoppingCartContainer().getSingleShoppingCart().get(ShoppingCartID).getCount().intValue();
-		anzahl++;
-		singleShoppingCart.setCount(new BigInteger(""+anzahl));
-		singleShoppingCart.setCurrency(currency);
-		singleShoppingCart.setLink(Helper.SERVERROOT + "/shoppingcarts/" + ShoppingCartID);
-		users.getUser().get(Helper.USERID).getShoppingCartContainer().getSingleShoppingCart().add(singleShoppingCart);
-		US.xmlSchreiben(users);
+		int userindex=0;
+		while(userIterator.hasNext()) {
+			userindex = userIterator.nextIndex();
+			User user = userIterator.next();
+			if(Helper.USERID == user.getUserID().intValue()) {
+				int anzahl = user.getShoppingCartContainer().getSingleShoppingCart().get(ShoppingCartID).getCount().intValue();
+				anzahl++;
+				singleShoppingCart.setCount(new BigInteger(""+anzahl));
+				singleShoppingCart.setCurrency(currency);
+				singleShoppingCart.setLink(Helper.SERVERROOT + "/shoppingcarts/" + ShoppingCartID);
+				users.getUser().get(userindex).getShoppingCartContainer().getSingleShoppingCart().add(singleShoppingCart);
+				US.xmlSchreiben(users);
+			}
+		}
+		
+		
+		
+		
 		
 		return shoppingCart;
 	}
@@ -230,7 +225,7 @@ public class ShoppingCartService
 //	@POST
 //	@Path ("/{ShoppingCartID}")
 //	@Produces ( " application/xml" )
-	public ShoppingCart changeState(@PathParam("ShoppingCartID") int ShoppingCartID,
+	public ShoppingCart updateState(@PathParam("ShoppingCartID") int ShoppingCartID,
 			@QueryParam("Location") String State) 
 			throws JAXBException, IOException {
 		ShoppingCarts shoppingCarts = xmlAuslesen();
@@ -240,14 +235,134 @@ public class ShoppingCartService
 			if(State.equals(state)) {
 				java.util.ListIterator<ShoppingCart> iterator = shoppingCarts.getShoppingCart().listIterator();
 				while(iterator.hasNext()) {
-					if(ShoppingCartID == iterator.next().getShoppingCartID().intValue()) {
-						shoppingCartIndex = iterator.next().getShoppingCartID().intValue();
+					shoppingCartIndex = iterator.nextIndex();
+					ShoppingCart shoppingCart = iterator.next();
+					if(ShoppingCartID == shoppingCart.getShoppingCartID().intValue()) {
 						shoppingCarts.getShoppingCart().get(shoppingCartIndex).setState(State);
 						xmlSchreiben(shoppingCarts);
 						return shoppingCarts.getShoppingCart().get(ShoppingCartID);
 					}
-					iterator.next();
 				}
+			}
+		}
+		return null;
+	}
+	
+	/*
+	 * Update ShipTo
+	 *   ~> return-Wert: ShoppingCart mit shoppingCartID<~
+	 */
+//	@POST
+//	@Path ("/{ShoppingCartID}")
+//	@Produces ( " application/xml" )
+	public ShoppingCart updateShipTo(@PathParam("ShoppingCartID") int ShoppingCartID,
+			String familyName,
+			String firstName,
+			String street,
+			String number,
+			String postalCode,
+			String city,
+			String province,
+			String country,
+			String telephone,
+			String email) 
+			throws JAXBException, IOException {
+		ShoppingCarts shoppingCarts = xmlAuslesen();
+		
+		int shoppingCartIndex = 0;
+		java.util.ListIterator<ShoppingCart> iterator = shoppingCarts.getShoppingCart().listIterator();
+		while(iterator.hasNext()) {
+			shoppingCartIndex = iterator.nextIndex();
+			ShoppingCart shoppingCart = iterator.next();
+			if(ShoppingCartID == shoppingCart.getShoppingCartID().intValue()) {
+				shoppingCarts.getShoppingCart().get(shoppingCartIndex).setShipTo(Helper.createAdress(familyName,firstName,street,number,postalCode,city,province,country,telephone,email));
+				xmlSchreiben(shoppingCarts);
+				return shoppingCarts.getShoppingCart().get(ShoppingCartID);
+			}
+		}
+		return null;
+	}
+	
+	/*
+	 * Update Price
+	 *   ~> return-Wert: ShoppingCart mit shoppingCartID<~
+	 */
+//	@POST
+//	@Path ("/{ShoppingCartID}")
+//	@Produces ( " application/xml" )
+	public ShoppingCart updatePrice(@PathParam("ShoppingCartID") int ShoppingCartID,
+		@QueryParam("Price") double price) 
+			throws JAXBException, IOException {
+		ShoppingCarts shoppingCarts = xmlAuslesen();
+		
+		int shoppingCartIndex = 0;
+		
+		java.util.ListIterator<ShoppingCart> iterator = shoppingCarts.getShoppingCart().listIterator();
+		while(iterator.hasNext()) {
+			shoppingCartIndex = iterator.nextIndex();
+			ShoppingCart shoppingCart = iterator.next();
+			if(ShoppingCartID == shoppingCart.getShoppingCartID().intValue()) {
+				shoppingCarts.getShoppingCart().get(shoppingCartIndex).setPrice(new BigDecimal(price));
+				xmlSchreiben(shoppingCarts);
+				return shoppingCarts.getShoppingCart().get(ShoppingCartID);
+			}
+		}
+		return null;
+	}
+	
+	/*
+	 * Update Payment
+	 *   ~> return-Wert: ShoppingCart mit shoppingCartID<~
+	 */
+//	@POST
+//	@Path ("/{ShoppingCartID}")
+//	@Produces ( " application/xml" )
+	public ShoppingCart updatePayment(@PathParam("ShoppingCartID") int ShoppingCartID,
+		@QueryParam("Payment") String payment) 
+			throws JAXBException, IOException {
+		ShoppingCarts shoppingCarts = xmlAuslesen();
+		
+		int shoppingCartIndex = 0;
+		
+		java.util.ListIterator<ShoppingCart> iterator = shoppingCarts.getShoppingCart().listIterator();
+		while(iterator.hasNext()) {
+			shoppingCartIndex = iterator.nextIndex();
+			ShoppingCart shoppingCart = iterator.next();
+			if(ShoppingCartID == shoppingCart.getShoppingCartID().intValue()) {
+				shoppingCartIndex = shoppingCart.getShoppingCartID().intValue();
+				if("Bank Account".equals(payment)) shoppingCarts.getShoppingCart().get(shoppingCartIndex).setPayment("Bank Account");
+				else if("Credit Card".equals(payment)) shoppingCarts.getShoppingCart().get(shoppingCartIndex).setPayment("Credit Card");
+				else if("Paypal".equals(payment)) shoppingCarts.getShoppingCart().get(shoppingCartIndex).setPayment("Paypal");
+				else shoppingCarts.getShoppingCart().get(shoppingCartIndex).setPayment("n.a.");
+				xmlSchreiben(shoppingCarts);
+				return shoppingCarts.getShoppingCart().get(ShoppingCartID);
+			}
+		}
+		return null;
+	}
+	
+	/*
+	 * Update Currency
+	 *   ~> return-Wert: ShoppingCart mit shoppingCartID<~
+	 */
+//	@POST
+//	@Path ("/{ShoppingCartID}")
+//	@Produces ( " application/xml" )
+	public ShoppingCart updateCurrency(@PathParam("ShoppingCartID") int ShoppingCartID,
+		@QueryParam("Currency") String currency) 
+			throws JAXBException, IOException {
+		ShoppingCarts shoppingCarts = xmlAuslesen();
+		
+		int shoppingCartIndex = 0;
+		
+		java.util.ListIterator<ShoppingCart> iterator = shoppingCarts.getShoppingCart().listIterator();
+		while(iterator.hasNext()) {
+			shoppingCartIndex = iterator.nextIndex();
+			ShoppingCart shoppingCart = iterator.next();
+			if(ShoppingCartID == shoppingCart.getShoppingCartID().intValue()) {
+				shoppingCarts.getShoppingCart().get(shoppingCartIndex).setCurrency(currency);
+				xmlSchreiben(shoppingCarts);
+				return shoppingCarts.getShoppingCart().get(ShoppingCartID);
 			}
 		}
 		return null;
@@ -269,8 +384,9 @@ public class ShoppingCartService
 		int shoppingCartIndex = 0;
 		java.util.ListIterator<ShoppingCart> iterator = shoppingCarts.getShoppingCart().listIterator();
 		while(iterator.hasNext()) {
-			if(ShoppingCartID == iterator.next().getShoppingCartID().intValue()) {
-				shoppingCartIndex = iterator.next().getShoppingCartID().intValue();
+			shoppingCartIndex = iterator.nextIndex();
+			ShoppingCart shoppingCart = iterator.next();
+			if(ShoppingCartID == shoppingCart.getShoppingCartID().intValue()) {
 				shoppingCarts.getShoppingCart().get(shoppingCartIndex).getProducts().getItem().add(Item);
 				xmlSchreiben(shoppingCarts);
 				
@@ -279,17 +395,15 @@ public class ShoppingCartService
 				java.util.ListIterator<User> userIterator = users.getUser().listIterator();
 				int userindex=0;
 				while(userIterator.hasNext()) {
-					if(Helper.USERID == userIterator.next().getUserID().intValue()) {
-						userindex = userIterator.nextIndex();
+					userindex = userIterator.nextIndex();
+					User user = userIterator.next();
+					if(Helper.USERID == user.getUserID().intValue()) {
 						users.getUser().get(userindex).getShoppingCartContainer().getSingleShoppingCart().get(shoppingCartIndex).getItem().add(Item);
 						US.xmlSchreiben(users);
-						
 						return shoppingCarts.getShoppingCart().get(ShoppingCartID);
 					}
-					userIterator.next();
 				}
 			}
-			iterator.next();
 		}		
 		return null;
 	}

@@ -156,12 +156,12 @@ public class StickerService
 		reference.setTitle(title);
 		reference.setLink(Helper.SERVERROOT + "/stickers/" + id);
 		while(userIterator.hasNext()) {
-			if(Helper.USERID == userIterator.next().getUserID().intValue()) {
-				userindex = userIterator.nextIndex();
+			userindex = userIterator.nextIndex();
+			User user = userIterator.next();
+			if(Helper.USERID == user.getUserID().intValue()) {
 				users.getUser().get(userindex).getStickerContainer().getReference().add(reference);
 				US.xmlSchreiben(users);
 			}
-			userIterator.next();
 		}
 		return sticker;
 	}
@@ -186,17 +186,17 @@ public class StickerService
 		int commentID = 0;
 		int index=0;
 		while(iterator.hasNext()) {
-			if(StickerID == iterator.next().getStickerID().intValue()) {
-				for(Comment c : iterator.next().getComments().getComment()) {
+			index=iterator.nextIndex();
+			Sticker sticker = iterator.next();
+			if(StickerID == sticker.getStickerID().intValue()) {
+				for(Comment c : sticker.getComments().getComment()) {
 					if (commentID <= c.getCommentID().intValue())
 						commentID = c.getCommentID().intValue() + 1;
-						index=iterator.nextIndex();
 				}
 				comment.setCommentID(new BigInteger("" + commentID));
-				stickers.getSticker().get(iterator.nextIndex()).getComments().getComment().add(comment);
+				stickers.getSticker().get(index).getComments().getComment().add(comment);
 				xmlSchreiben(stickers);
 			}
-			iterator.next();
 		}		
 		return stickers.getSticker().get(index).getComments();
 	}
@@ -210,16 +210,16 @@ public class StickerService
 //	@Produces ( " application/xml" )
 	public Liker addLikerToSticker(@PathParam("Sticker_ID") int StickerID) 
 			throws JAXBException, IOException {
-Stickers stickers = xmlAuslesen();
+		Stickers stickers = xmlAuslesen();
 		
 		java.util.ListIterator<Sticker> iterator = stickers.getSticker().listIterator();
 		int index=0;
 		while(iterator.hasNext()) {
-			if(StickerID == iterator.next().getStickerID().intValue()) {
-				index = iterator.nextIndex();
-				stickers.getSticker().get(iterator.nextIndex()).getLiker().getLink().add(Helper.SERVERROOT + "/stickers/" + Helper.USERID);
+			index=iterator.nextIndex();
+			Sticker sticker = iterator.next();
+			if(StickerID == sticker.getStickerID().intValue()) {
+				stickers.getSticker().get(index).getLiker().getLink().add(Helper.SERVERROOT + "/stickers/" + Helper.USERID);
 			}
-			iterator.next();
 		}	
 		xmlSchreiben(stickers);
 		return stickers.getSticker().get(index).getLiker();
@@ -240,19 +240,20 @@ Stickers stickers = xmlAuslesen();
 		int stickerindex=0;
 		int commentindex=0;
 		while(iterator.hasNext()) {
-			if(StickerID == iterator.next().getStickerID().intValue()) {
-				stickerindex = iterator.nextIndex();
-				java.util.ListIterator<Comment> iteratorComment = iterator.next().getComments().getComment().listIterator();
+			stickerindex=iterator.nextIndex();
+			Sticker sticker = iterator.next();
+			if(StickerID == sticker.getStickerID().intValue()) {
+				java.util.ListIterator<Comment> iteratorComment = sticker.getComments().getComment().listIterator();
 				while(iteratorComment.hasNext()) {
-					if(CommentID == iteratorComment.next().getCommentID().intValue()) {
-						commentindex = iteratorComment.nextIndex();
+					commentindex = iteratorComment.nextIndex();
+					Comment comment = iteratorComment.next();
+					if(CommentID == comment.getCommentID().intValue()) {
 						stickers.getSticker().get(stickerindex).getComments().getComment().get(commentindex).getLiker().getLink().add(Helper.SERVERROOT + "/stickers/" + Helper.USERID);
 						xmlSchreiben(stickers);
 						return stickers.getSticker().get(stickerindex).getComments().getComment().get(commentindex);
 					}
 				}
 			}
-			iterator.next();
 		}
 		return null;
 	}
@@ -271,13 +272,13 @@ Stickers stickers = xmlAuslesen();
 		java.util.ListIterator<Sticker> iterator = stickers.getSticker().listIterator();
 		int stickerindex=0;
 		while(iterator.hasNext()) {
-			if(StickerID == iterator.next().getStickerID().intValue()) {
-				stickerindex = iterator.nextIndex();
+			stickerindex=iterator.nextIndex();
+			Sticker sticker = iterator.next();
+			if(StickerID == sticker.getStickerID().intValue()) {
 				stickers.getSticker().get(stickerindex).getFollower().getLink().add(Helper.SERVERROOT + "/stickers/" + Helper.USERID);
 				xmlSchreiben(stickers);
 				return stickers.getSticker().get(StickerID);
 			}
-			iterator.next();
 		}
 		return null;
 	}
@@ -297,13 +298,13 @@ Stickers stickers = xmlAuslesen();
 		java.util.ListIterator<Sticker> iterator = stickers.getSticker().listIterator();
 		int stickerindex=0;
 		while(iterator.hasNext()) {
-			if(StickerID == iterator.next().getStickerID().intValue()) {
-				stickerindex = iterator.nextIndex();
+			stickerindex=iterator.nextIndex();
+			Sticker sticker = iterator.next();
+			if(StickerID == sticker.getStickerID().intValue()) {
 				stickers.getSticker().get(stickerindex).setTitle(title);
 				xmlSchreiben(stickers);
 				return stickers.getSticker().get(stickerindex);
 			}
-			iterator.next();
 		}
 		return null;
 	}
@@ -322,13 +323,14 @@ Stickers stickers = xmlAuslesen();
 		java.util.ListIterator<Sticker> iterator = stickers.getSticker().listIterator();
 		int stickerindex=0;
 		while(iterator.hasNext()) {
-			if(StickerID == iterator.next().getStickerID().intValue()) {
+			stickerindex=iterator.nextIndex();
+			Sticker sticker = iterator.next();
+			if(StickerID == sticker.getStickerID().intValue()) {
 				stickerindex = iterator.nextIndex();
 				stickers.getSticker().get(stickerindex).setDescription(description);
 				xmlSchreiben(stickers);
 				return stickers.getSticker().get(stickerindex);
 			}
-			iterator.next();
 		}
 		return null;
 	}
@@ -347,13 +349,13 @@ Stickers stickers = xmlAuslesen();
 		java.util.ListIterator<Sticker> iterator = stickers.getSticker().listIterator();
 		int stickerindex=0;
 		while(iterator.hasNext()) {
-			if(StickerID == iterator.next().getStickerID().intValue()) {
-				stickerindex = iterator.nextIndex();
+			stickerindex=iterator.nextIndex();
+			Sticker sticker = iterator.next();
+			if(StickerID == sticker.getStickerID().intValue()) {
 				stickers.getSticker().get(stickerindex).getRelatedPhotos().getLink().add(RelatedPhoto);
 				xmlSchreiben(stickers);
 				return stickers.getSticker().get(stickerindex);
 			}
-			iterator.next();
 		}
 		return null;
 	}

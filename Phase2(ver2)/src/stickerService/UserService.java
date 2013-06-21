@@ -137,12 +137,17 @@ public class UserService
 	@Path ("/{UserID}")
 	@Produces ( " application/xml" )
 	public User createUser(@PathParam("User_ID") int UserID, 
-			String nickName
+			@QueryParam("Nickname") String nickName,
+			@QueryParam("Gender") String gender
 			) throws JAXBException, IOException {
 		//Hole XML Daten
 		Users users=xmlAuslesen();
 		//neue User
 		User user = new User();
+		user.setNickname(nickName);
+		if("male".equals(gender)) user.setGender(gender);
+		else if("male".equals(gender)) user.setGender(gender);
+		else user.setGender("not specified");
 		StickerContainer stickerContainer = new StickerContainer();
 		CollectionContainer collectionContainer = new CollectionContainer();
 		PhotoContainer photoContainer = new PhotoContainer();
@@ -194,17 +199,17 @@ public class UserService
 		int commentID = 0;
 		int index=0;
 		while(iterator.hasNext()) {
-			if(UserID == iterator.next().getUserID().intValue()) {
-				for(Comment c : iterator.next().getComments().getComment()) {
+			index=iterator.nextIndex();
+			User user = iterator.next();
+			if(UserID == user.getUserID().intValue()) {
+				for(Comment c : user.getComments().getComment()) {
 					if (commentID <= c.getCommentID().intValue())
 						commentID = c.getCommentID().intValue() + 1;
-						index=iterator.nextIndex();
 				}
 				comment.setCommentID(new BigInteger("" + commentID));
-				users.getUser().get(iterator.nextIndex()).getComments().getComment().add(comment);
+				users.getUser().get(index).getComments().getComment().add(comment);
 				xmlSchreiben(users);
 			}
-			iterator.next();
 		}		
 		return users.getUser().get(index).getComments();
 	}
@@ -216,18 +221,18 @@ public class UserService
 //	@POST
 //	@Path ("/{UserID}")
 //	@Produces ( " application/xml" )
-	public Liker addLikerToUser(@PathParam("User_ID") int UserID) 
+	public Liker addLiker(@PathParam("User_ID") int UserID) 
 			throws JAXBException, IOException {
 		Users users = xmlAuslesen();
 		
 		java.util.ListIterator<User> iterator = users.getUser().listIterator();
 		int index=0;
 		while(iterator.hasNext()) {
-			if(UserID == iterator.next().getUserID().intValue()) {
-				index = iterator.nextIndex();
-				users.getUser().get(iterator.nextIndex()).getLiker().getLink().add(Helper.SERVERROOT + "/users/" + Helper.USERID);
+			index=iterator.nextIndex();
+			User user = iterator.next();
+			if(UserID == user.getUserID().intValue()) {
+				users.getUser().get(index).getLiker().getLink().add(Helper.SERVERROOT + "/users/" + Helper.USERID);
 			}
-			iterator.next();
 		}	
 		xmlSchreiben(users);
 		return users.getUser().get(index).getLiker();
@@ -249,19 +254,20 @@ public class UserService
 		int userindex=0;
 		int commentindex=0;
 		while(iterator.hasNext()) {
-			if(UserID == iterator.next().getUserID().intValue()) {
-				userindex = iterator.nextIndex();
-				java.util.ListIterator<Comment> iteratorComment = iterator.next().getComments().getComment().listIterator();
+			userindex=iterator.nextIndex();
+			User user = iterator.next();
+			if(UserID ==user.getUserID().intValue()) {
+				java.util.ListIterator<Comment> iteratorComment = user.getComments().getComment().listIterator();
 				while(iteratorComment.hasNext()) {
-					if(CommentID == iteratorComment.next().getCommentID().intValue()) {
-						commentindex = iteratorComment.nextIndex();
+					commentindex = iteratorComment.nextIndex();
+					Comment comment = iteratorComment.next();
+					if(CommentID == comment.getCommentID().intValue()) {
 						users.getUser().get(userindex).getComments().getComment().get(commentindex).getLiker().getLink().add(Helper.SERVERROOT + "/users/" + Helper.USERID);
 						xmlSchreiben(users);
 						return users.getUser().get(userindex).getComments().getComment().get(commentindex);
 					}
 				}
 			}
-			iterator.next();
 		}
 		return null;
 	}
@@ -273,20 +279,70 @@ public class UserService
 //	@POST
 //	@Path ("/{UserID}")
 //	@Produces ( " application/xml" )
-	public User addFollowerToUser(@PathParam("User_ID") int UserID) 
+	public User addFollower(@PathParam("User_ID") int UserID) 
 			throws JAXBException, IOException {
 		Users users = xmlAuslesen();
 		
 		java.util.ListIterator<User> iterator = users.getUser().listIterator();
 		int userindex=0;
 		while(iterator.hasNext()) {
-			if(UserID == iterator.next().getUserID().intValue()) {
-				userindex = iterator.nextIndex();
+			userindex=iterator.nextIndex();
+			User user = iterator.next();
+			if(UserID == user.getUserID().intValue()) {
 				users.getUser().get(userindex).getFollower().getLink().add(Helper.SERVERROOT + "/users/" + Helper.USERID);
 				xmlSchreiben(users);
 				return users.getUser().get(UserID);
 			}
-			iterator.next();
+		}
+		return null;
+	}
+	
+	/*
+	 * Update Nickname From User.
+	 *   ~> return-Wert: User <~
+	 */
+//	@POST
+//	@Path ("/{UserID}")
+//	@Produces ( " application/xml" )
+	public User updateNickname(@PathParam("User_ID") int UserID,
+			@QueryParam("Nickname") String nickname)    
+			throws JAXBException, IOException {
+		Users users = xmlAuslesen();
+		java.util.ListIterator<User> iterator = users.getUser().listIterator();
+		int userindex=0;
+		while(iterator.hasNext()) {
+			userindex=iterator.nextIndex();
+			User user = iterator.next();
+			if(UserID ==user.getUserID().intValue()) {
+				users.getUser().get(userindex).setNickname(nickname);	
+				xmlSchreiben(users);
+				return users.getUser().get(userindex);
+			}
+		}
+		return null;
+	}
+	
+	/*
+	 * Update Gender From User.
+	 *   ~> return-Wert: User <~
+	 */
+//	@POST
+//	@Path ("/{UserID}")
+//	@Produces ( " application/xml" )
+	public User updateGender(@PathParam("User_ID") int UserID,
+			@QueryParam("Gender") String gender)    
+			throws JAXBException, IOException {
+		Users users = xmlAuslesen();
+		java.util.ListIterator<User> iterator = users.getUser().listIterator();
+		int userindex=0;
+		while(iterator.hasNext()) {
+			userindex=iterator.nextIndex();
+			User user = iterator.next();
+			if(UserID == user.getUserID().intValue()) {
+				users.getUser().get(userindex).setGender(gender);	
+				xmlSchreiben(users);
+				return users.getUser().get(userindex);
+			}
 		}
 		return null;
 	}
@@ -298,7 +354,7 @@ public class UserService
 //	@POST
 //	@Path ("/{UserID}")
 //	@Produces ( " application/xml" )
-	public Adress addHomeAdressToUser(@PathParam("User_ID") int UserID,
+	public Adress updateHomeAdress(@PathParam("User_ID") int UserID,
 			@QueryParam("FirstName") String FirstName,
 			@QueryParam("FamilyName") String FamilyName,
 			@QueryParam("Street") String Street,
@@ -315,13 +371,13 @@ public class UserService
 		java.util.ListIterator<User> iterator = users.getUser().listIterator();
 		int userindex=0;
 		while(iterator.hasNext()) {
-			if(UserID == iterator.next().getUserID().intValue()) {
-				userindex = iterator.nextIndex();
+			userindex=iterator.nextIndex();
+			User user = iterator.next();
+			if(UserID == user.getUserID().intValue()) {
 				users.getUser().get(userindex).setHomeAdress(adress);				
 				xmlSchreiben(users);
 				return adress;
 			}
-			iterator.next();
 		}
 		return null;
 	}
@@ -333,7 +389,7 @@ public class UserService
 //	@POST
 //	@Path ("/{UserID}")
 //	@Produces ( " application/xml" )
-	public Adress addShopAdressToUser(@PathParam("User_ID") int UserID,
+	public Adress updateShopAdress(@PathParam("User_ID") int UserID,
 			@QueryParam("FirstName") String FirstName,
 			@QueryParam("FamilyName") String FamilyName,
 			@QueryParam("Street") String Street,
@@ -350,13 +406,13 @@ public class UserService
 		java.util.ListIterator<User> iterator = users.getUser().listIterator();
 		int userindex=0;
 		while(iterator.hasNext()) {
-			if(UserID == iterator.next().getUserID().intValue()) {
-				userindex = iterator.nextIndex();
+			userindex=iterator.nextIndex();
+			User user = iterator.next();
+			if(UserID == user.getUserID().intValue()) {
 				users.getUser().get(userindex).setShopAdress(adress);				
 				xmlSchreiben(users);
 				return adress;
 			}
-			iterator.next();
 		}
 		return null;
 	}

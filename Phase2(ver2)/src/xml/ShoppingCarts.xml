@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ShoppingCarts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../xsd/Stickers.xsd">
-  <ShoppingCart Currency="" Customer="http://tempuri.org" Customer_ID="0" Self="http://tempuri.org" Shop="http://tempuri.org" Shop_ID="0" ShoppingCart_ID="0" State="created">
+  <ShoppingCart Currency="€" Customer="http://tempuri.org" Customer_ID="0" Self="http://tempuri.org" Shop="http://tempuri.org" Shop_ID="0" ShoppingCart_ID="0" State="created">
     <Products>
       <Item>http://tempuri.org</Item>
     </Products>
@@ -19,7 +19,7 @@
     <Price>0.0</Price>
     <Payment>n.a.</Payment>
   </ShoppingCart>
-  <ShoppingCart Currency="" Customer="http://tempuri.org" Customer_ID="0" Self="http://tempuri.org" Shop="http://tempuri.org" Shop_ID="0" ShoppingCart_ID="1" State="received">
+  <ShoppingCart Currency="$" Customer="http://tempuri.org" Customer_ID="0" Self="http://tempuri.org" Shop="http://tempuri.org" Shop_ID="0" ShoppingCart_ID="1" State="received">
     <Products>
       <Item>http://tempuri.org</Item>
     </Products>
@@ -38,7 +38,7 @@
     <Price>0.0</Price>
     <Payment>n.a.</Payment>
   </ShoppingCart>
-  <ShoppingCart Currency="" Customer="http://tempuri.org" Customer_ID="0" Self="http://tempuri.org" Shop="http://tempuri.org" Shop_ID="0" ShoppingCart_ID="2" State="accepted">
+  <ShoppingCart Currency="$" Customer="http://tempuri.org" Customer_ID="0" Self="http://tempuri.org" Shop="http://tempuri.org" Shop_ID="0" ShoppingCart_ID="2" State="accepted">
     <Products>
       <Item>http://tempuri.org</Item>
     </Products>
@@ -57,7 +57,7 @@
     <Price>0.0</Price>
     <Payment>n.a.</Payment>
   </ShoppingCart>
-  <ShoppingCart Currency="" Customer="http://tempuri.org" Customer_ID="0" Self="http://tempuri.org" Shop="http://tempuri.org" Shop_ID="0" ShoppingCart_ID="3" State="rejected">
+  <ShoppingCart Currency="$" Customer="http://tempuri.org" Customer_ID="0" Self="http://tempuri.org" Shop="http://tempuri.org" Shop_ID="0" ShoppingCart_ID="3" State="rejected">
     <Products>
       <Item>http://tempuri.org</Item>
     </Products>
@@ -76,7 +76,7 @@
     <Price>0.0</Price>
     <Payment>n.a.</Payment>
   </ShoppingCart>
-  <ShoppingCart Currency="" Customer="http://tempuri.org" Customer_ID="0" Self="http://tempuri.org" Shop="http://tempuri.org" Shop_ID="0" ShoppingCart_ID="4" State="cancelled">
+  <ShoppingCart Currency="$" Customer="http://tempuri.org" Customer_ID="0" Self="http://tempuri.org" Shop="http://tempuri.org" Shop_ID="0" ShoppingCart_ID="4" State="cancelled">
     <Products>
       <Item>http://tempuri.org</Item>
     </Products>
@@ -95,7 +95,7 @@
     <Price>0.0</Price>
     <Payment>n.a.</Payment>
   </ShoppingCart>
-  <ShoppingCart Currency="" Customer="http://tempuri.org" Customer_ID="0" Self="http://tempuri.org" Shop="http://tempuri.org" Shop_ID="0" ShoppingCart_ID="5" State="fulfilled">
+  <ShoppingCart Currency="$" Customer="http://tempuri.org" Customer_ID="0" Self="http://tempuri.org" Shop="http://tempuri.org" Shop_ID="0" ShoppingCart_ID="5" State="fulfilled">
     <Products>
       <Item>http://tempuri.org</Item>
     </Products>

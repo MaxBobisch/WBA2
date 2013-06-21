@@ -163,12 +163,12 @@ public class OfferService
 		singleOffer.setCurrency(currency);
 		singleOffer.setLink(Helper.SERVERROOT + "/offers/" + id);
 		while(userIterator.hasNext()) {
-			if(Helper.USERID == userIterator.next().getUserID().intValue()) {
-				userindex = userIterator.nextIndex();
+			userindex = userIterator.nextIndex();
+			User user = userIterator.next();
+			if(Helper.USERID == user.getUserID().intValue()) {
 				users.getUser().get(userindex).getOfferContainer().getSingleOffer().add(singleOffer);
 				US.xmlSchreiben(users);
 			}
-			userIterator.next();
 		}
 		
 		return offer;
@@ -192,21 +192,21 @@ public class OfferService
 		
 		java.util.ListIterator<Offer> iterator = offers.getOffer().listIterator();
 		int commentID = 0;
-		int index=0;
+		int offerIndex=0;
 		while(iterator.hasNext()) {
-			if(OfferID == iterator.next().getOfferID().intValue()) {
-				for(Comment c : iterator.next().getComments().getComment()) {
+			offerIndex = iterator.nextIndex();
+			Offer offer = iterator.next();
+			if(OfferID == offer.getOfferID().intValue()) {
+				for(Comment c : offer.getComments().getComment()) {
 					if (commentID <= c.getCommentID().intValue())
 						commentID = c.getCommentID().intValue() + 1;
-						index=iterator.nextIndex();
 				}
 				comment.setCommentID(new BigInteger("" + commentID));
-				offers.getOffer().get(iterator.nextIndex()).getComments().getComment().add(comment);
+				offers.getOffer().get(offerIndex).getComments().getComment().add(comment);
 				xmlSchreiben(offers);
 			}
-			iterator.next();
 		}		
-		return offers.getOffer().get(index).getComments();
+		return offers.getOffer().get(offerIndex).getComments();
 	}
 	
 	/*
@@ -221,16 +221,16 @@ public class OfferService
 Offers offers = xmlAuslesen();
 		
 		java.util.ListIterator<Offer> iterator = offers.getOffer().listIterator();
-		int index=0;
+		int offerIndex=0;
 		while(iterator.hasNext()) {
-			if(OfferID == iterator.next().getOfferID().intValue()) {
-				index = iterator.nextIndex();
-				offers.getOffer().get(iterator.nextIndex()).getLiker().getLink().add(Helper.SERVERROOT + "/offers/" + Helper.USERID);
+			offerIndex = iterator.nextIndex();
+			Offer offer = iterator.next();
+			if(OfferID == offer.getOfferID().intValue()) {
+				offers.getOffer().get(offerIndex).getLiker().getLink().add(Helper.SERVERROOT + "/offers/" + Helper.USERID);
 			}
-			iterator.next();
 		}	
 		xmlSchreiben(offers);
-		return offers.getOffer().get(index).getLiker();
+		return offers.getOffer().get(offerIndex).getLiker();
 	}
 	
 	/*
@@ -245,22 +245,23 @@ Offers offers = xmlAuslesen();
 Offers offers = xmlAuslesen();
 		
 		java.util.ListIterator<Offer> iterator = offers.getOffer().listIterator();
-		int offerindex=0;
-		int commentindex=0;
+		int offerIndex=0;
+		int commentIndex=0;
 		while(iterator.hasNext()) {
-			if(OfferID == iterator.next().getOfferID().intValue()) {
-				offerindex = iterator.nextIndex();
-				java.util.ListIterator<Comment> iteratorComment = iterator.next().getComments().getComment().listIterator();
+			offerIndex = iterator.nextIndex();
+			Offer offer = iterator.next();
+			if(OfferID == offer.getOfferID().intValue()) {
+				java.util.ListIterator<Comment> iteratorComment = offer.getComments().getComment().listIterator();
 				while(iteratorComment.hasNext()) {
-					if(CommentID == iteratorComment.next().getCommentID().intValue()) {
-						commentindex = iteratorComment.nextIndex();
-						offers.getOffer().get(offerindex).getComments().getComment().get(commentindex).getLiker().getLink().add(Helper.SERVERROOT + "/offers/" + Helper.USERID);
+					commentIndex = iteratorComment.nextIndex();
+					Comment comment = iteratorComment.next();
+					if(CommentID == comment.getCommentID().intValue()) {
+						offers.getOffer().get(offerIndex).getComments().getComment().get(commentIndex).getLiker().getLink().add(Helper.SERVERROOT + "/offers/" + Helper.USERID);
 						xmlSchreiben(offers);
-						return offers.getOffer().get(offerindex).getComments().getComment().get(commentindex);
+						return offers.getOffer().get(offerIndex).getComments().getComment().get(commentIndex);
 					}
 				}
 			}
-			iterator.next();
 		}
 		return null;
 	}
@@ -277,15 +278,119 @@ Offers offers = xmlAuslesen();
 		Offers offers = xmlAuslesen();
 		
 		java.util.ListIterator<Offer> iterator = offers.getOffer().listIterator();
-		int offerindex=0;
+		int offerIndex=0;
 		while(iterator.hasNext()) {
-			if(OfferID == iterator.next().getOfferID().intValue()) {
-				offerindex = iterator.nextIndex();
-				offers.getOffer().get(offerindex).getFollower().getLink().add(Helper.SERVERROOT + "/offers/" + Helper.USERID);
+			offerIndex = iterator.nextIndex();
+			Offer offer = iterator.next();
+			if(OfferID == offer.getOfferID().intValue()) {
+				offers.getOffer().get(offerIndex).getFollower().getLink().add(Helper.SERVERROOT + "/offers/" + Helper.USERID);
 				xmlSchreiben(offers);
 				return offers.getOffer().get(OfferID);
 			}
-			iterator.next();
+		}
+		return null;
+	}
+	
+	/*
+	 * Update Title von Offer mit OfferID
+	 *   ~> return-Wert: Offer mit neuem Title <~
+	 */
+	/*@POST
+	@Path ("/{OfferID}")
+	@Produces ( " application/xml" )*/
+	public Offer updateTitle(@PathParam("Offer_ID") int OfferID,
+			@QueryParam("Title") String title) 
+			throws JAXBException, IOException {
+		Offers offers = xmlAuslesen();
+		
+		java.util.ListIterator<Offer> iterator = offers.getOffer().listIterator();
+		int offerIndex=0;
+		while(iterator.hasNext()) {
+			offerIndex = iterator.nextIndex();
+			Offer offer = iterator.next();
+			if(OfferID == offer.getOfferID().intValue()) {
+				offers.getOffer().get(offerIndex).setTitle(title);
+				xmlSchreiben(offers);
+				return offers.getOffer().get(offerIndex);
+			}
+		}
+		return null;
+	}
+	
+	/*
+	 * Update Description von Offer mit OfferID
+	 *   ~> return-Wert: Offer mit neuer Description <~
+	 */
+	/*@POST
+	@Path ("/{OfferID}")
+	@Produces ( " application/xml" )*/
+	public Offer updateDescription(@PathParam("Offer_ID") int OfferID,
+			@QueryParam("Description") String description) 
+			throws JAXBException, IOException {
+		Offers offers = xmlAuslesen();
+		
+		java.util.ListIterator<Offer> iterator = offers.getOffer().listIterator();
+		int offerIndex=0;
+		while(iterator.hasNext()) {
+			offerIndex = iterator.nextIndex();
+			Offer offer = iterator.next();
+			if(OfferID == offer.getOfferID().intValue()) {
+				offers.getOffer().get(offerIndex).setDescription(description);
+				xmlSchreiben(offers);
+				return offers.getOffer().get(offerIndex);
+			}
+		}
+		return null;
+	}
+	
+	/*
+	 * Update Price von Offer mit OfferID
+	 *   ~> return-Wert: Offer mit neuem Price <~
+	 */
+	/*@POST
+	@Path ("/{OfferID}")
+	@Produces ( " application/xml" )*/
+	public Offer updatePrice(@PathParam("Offer_ID") int OfferID,
+			@QueryParam("Price") double price) 
+			throws JAXBException, IOException {
+		Offers offers = xmlAuslesen();
+		
+		java.util.ListIterator<Offer> iterator = offers.getOffer().listIterator();
+		int offerIndex=0;
+		while(iterator.hasNext()) {
+			offerIndex = iterator.nextIndex();
+			Offer offer = iterator.next();
+			if(OfferID == offer.getOfferID().intValue()) {
+				offers.getOffer().get(offerIndex).setPrice(new BigDecimal(price));
+				xmlSchreiben(offers);
+				return offers.getOffer().get(offerIndex);
+			}
+		}
+		return null;
+	}
+	
+	/*
+	 * Update Currency von Offer mit OfferID
+	 *   ~> return-Wert: Offer mit neuem Price <~
+	 */
+	/*@POST
+	@Path ("/{OfferID}")
+	@Produces ( " application/xml" )*/
+	public Offer updateCurrency(@PathParam("Offer_ID") int OfferID,
+			@QueryParam("Currency") String currency) 
+			throws JAXBException, IOException {
+		Offers offers = xmlAuslesen();
+		
+		java.util.ListIterator<Offer> iterator = offers.getOffer().listIterator();
+		int offerIndex=0;
+		while(iterator.hasNext()) {
+			offerIndex = iterator.nextIndex();
+			Offer offer = iterator.next();
+			if(OfferID == offer.getOfferID().intValue()) {
+				offers.getOffer().get(offerIndex).setCurrency(currency);
+				xmlSchreiben(offers);
+				return offers.getOffer().get(offerIndex);
+			}
 		}
 		return null;
 	}
@@ -303,15 +408,15 @@ Offers offers = xmlAuslesen();
 		Offers offers = xmlAuslesen();
 		
 		java.util.ListIterator<Offer> iterator = offers.getOffer().listIterator();
-		int offerindex=0;
+		int offerIndex=0;
 		while(iterator.hasNext()) {
-			if(OfferID == iterator.next().getOfferID().intValue()) {
-				offerindex = iterator.nextIndex();
-				offers.getOffer().get(offerindex).getItem().add(Item);
+			offerIndex = iterator.nextIndex();
+			Offer offer = iterator.next();
+			if(OfferID == offer.getOfferID().intValue()) {
+				offers.getOffer().get(offerIndex).getItem().add(Item);
 				xmlSchreiben(offers);
-				return offers.getOffer().get(offerindex);
+				return offers.getOffer().get(offerIndex);
 			}
-			iterator.next();
 		}
 		return null;
 	}
