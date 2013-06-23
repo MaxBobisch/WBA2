@@ -1,5 +1,6 @@
 package stickerService;
 
+import PubSub.*;
 import java.util.GregorianCalendar;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -14,7 +15,8 @@ public class Helper {
 	static int USERID = 0;
 	static int SHOPID = 1;
 	static int CUSTOMERID = 0;
-
+	public static String PASSWORD = "password";
+	
 	public static XMLGregorianCalendar getXMLGregorianCalendarNow() 
       throws DatatypeConfigurationException
 	{
@@ -27,6 +29,10 @@ public class Helper {
 	
 	public static void changeUserID (int UserID) {
 		USERID = UserID;
+	}
+	
+	public static int getUserID () {
+		return USERID;
 	}
 	
 	public static void changeShopID (int ShopID) {

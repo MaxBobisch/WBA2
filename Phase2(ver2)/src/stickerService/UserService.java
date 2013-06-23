@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.math.BigInteger;
 
@@ -33,6 +34,7 @@ import stickerApp.Follower;
 import stickerApp.Liker;
 import stickerApp.ObjectFactory;
 import stickerApp.OfferContainer;
+import stickerApp.Photo;
 import stickerApp.PhotoContainer;
 import stickerApp.ShoppingCartContainer;
 import stickerApp.StickerContainer;
@@ -46,10 +48,6 @@ public class UserService
 {
 	static final String XMLFILE = "F:/max.bobisch@gmx.de/Dropbox/Github [MaxBobisch]/WBA2/Phase2(ver2)/src/xml/Users.xml";
 	static ObjectFactory ob=new ObjectFactory();
-	
-	public void initializeXmpp() throws XMPPException {
-		Node usersNode = PubSubHandler.createCollectionNode("users");
-	}
 	
 	/* Funktion zum Auslesen einer XML Datei
 	 * 		~> return-Wert: Users, aus der XML Datei <~
@@ -88,6 +86,17 @@ public class UserService
 		}
 	}
 	
+	public boolean contains (int id) throws FileNotFoundException, JAXBException {
+		Users users = xmlAuslesen();
+		java.util.ListIterator<User> iterator = users.getUser().listIterator();
+		while(iterator.hasNext()) {
+			User user = iterator.next();
+			if(id == user.getUserID().intValue()) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	/* Zeigt alle User an.
 	 * 		~> return-Wert: Alle User aus der XML Datei <~
@@ -105,7 +114,7 @@ public class UserService
 	 * 		~> return-Wert: User mit userID aus der XML Datei <~
 	 */
 	@GET
-	@Path ("/{user_ID}")
+	@Path ("/{User_ID}")
 	@Produces ( " application/xml" )
 	public User oneUser(@PathParam("User_ID") int userID) throws JAXBException, FileNotFoundException {
 		//Hole XML Daten
@@ -141,13 +150,23 @@ public class UserService
 			return users;
 	}
 	
+	public int nextIndex (Users users) {
+		int id = 0;
+		for(User c : users.getUser()) {
+			if(id <= c.getUserID().intValue()) {
+				id = c.getUserID().intValue() + 1;
+			}
+		}
+		return id;
+	}
+	
 	/* Erstelle User mit UserID.
 	 * 		~> return-Wert: User, die erstellt wurde <~
 	 */
 	@POST
-	@Path ("/{UserID}")
+	/*@Path ("/{UserID}")*/
 	@Produces ( " application/xml" )
-	public User createUser(@PathParam("User_ID") int UserID, 
+	public User createUser(/*@PathParam("User_ID") int UserID,*/ 
 			@QueryParam("Nickname") String nickName,
 			@QueryParam("Gender") String gender
 			) throws JAXBException, IOException, XMPPException {
@@ -175,26 +194,43 @@ public class UserService
 		user.setLiker(liker);
 		user.setFollower(follower);
 		user.setComments(comments);
-		int id = 0;
-		for(User c : users.getUser()) {
-			if(id <= c.getUserID().intValue()) {
-				id = c.getUserID().intValue() + 1;
-			}
-		}
+		int id = nextIndex(users);
 		user.setUserID(new BigInteger(""+id));
 		user.setSelf(Helper.SERVERROOT + "/users/" + id);
-		//zur Usersliste hinzufuegen
+		user.getFollower().getLink().add(Helper.SERVERROOT + "/users/" + id);
+  	// zur Usersliste hinzufuegen
 		users.getUser().add(user);
-		//ins XML zurückschreiben
-		xmlSchreiben(users);
+		
 		
 		//XMPP funktionaliteat
-		String nodeID = "" + id;
-		LeafNode userLeaf = PubSubHandler.createNode(nodeID);
-		Node userNode = PubSubHandler.publishToNodePayload("?", "?", "?", "?");
-		PubSubHandler.subscribeNode(nodeID);
+		String nodeID = "user" + id;
+//		LeafNode userLeaf = PubSubHandler.createNode(nodeID);
+//		Node userNode = PubSubHandler.publishToNodePayload("users", nodeID, null, "USER CREATED:\n" + xmlToString(user));
+//		PubSubHandler.subscribeNode(nodeID, nodeID);
 		
+	  //ins XML zurückschreiben
+		xmlSchreiben(users);
 		return user;
+	}
+	
+	public String xmlToString (User user) throws JAXBException, IOException {
+		JAXBContext context = JAXBContext.newInstance(User.class);
+		Marshaller m = context.createMarshaller();
+		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		StringWriter wr = null;
+		try {
+			wr = new StringWriter();
+			m.marshal(user, wr);
+			return wr.toString();
+		}
+		finally {
+			try {
+				wr.close();
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	/*
@@ -204,7 +240,7 @@ public class UserService
 //	@POST
 //	@Path ("/{UserID}")
 //	@Produces ( " application/xml" )
-	public Comments addComment(@PathParam("User_ID") int UserID, 
+	public Comments addCommentToUser(@PathParam("User_ID") int UserID, 
 			String text) throws JAXBException, IOException, DatatypeConfigurationException {
 		Users users = xmlAuslesen();
 		Comment comment = new Comment();

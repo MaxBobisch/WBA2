@@ -69,7 +69,7 @@ elementFormDefault="qualified">
 
 <!-- KOMMENTAR -->
 <xs:element name="Text" type="xs:string" />
-<xs:element name="Datetime" type="xs:date" />
+<xs:element name="Datetime" type="xs:dateTime" />
 <xs:attribute name="Comment_ID" type="xs:integer"/>
 <xs:element name="Comment">
   <xs:complexType>

@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -21,6 +22,12 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.DatatypeConfigurationException;
 
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.pubsub.LeafNode;
+import org.jivesoftware.smackx.pubsub.Node;
+
+import PubSub.PubSubHandler;
+
 import stickerApp.Comment;
 import stickerApp.Comments;
 import stickerApp.Follower;
@@ -29,6 +36,8 @@ import stickerApp.ObjectFactory;
 import stickerApp.Photo;
 import stickerApp.Photos;
 import stickerApp.SinglePhoto;
+import stickerApp.Sticker;
+import stickerApp.Stickers;
 import stickerApp.User;
 import stickerApp.Users;
 
@@ -75,6 +84,17 @@ public class PhotoService
 		}
 	}
 	
+	public boolean contains (int id) throws FileNotFoundException, JAXBException {
+		Photos photos = xmlAuslesen();
+		java.util.ListIterator<Photo> iterator = photos.getPhoto().listIterator();
+		while(iterator.hasNext()) {
+			Photo photo = iterator.next();
+			if(id == photo.getPhotoID().intValue()) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	/* Zeigt alle Photo an.
 	 * 		~> return-Wert: Alle Photo aus der XML Datei <~
@@ -128,26 +148,31 @@ public class PhotoService
 			return photos;
 	}
 	
-	/* Erstelle Photo mit PhotoID.
-	 * 		~> return-Wert: Photo, die erstellt wurde <~
-	 */
-	@POST
-	@Path ("/{PhotoID}")
-	@Produces ( " application/xml" )
-	public Photo createPhoto(@PathParam("Photo_ID") int PhotoID, 
-			String title, 
-			String description,
-			String photoLink) throws JAXBException, IOException, DatatypeConfigurationException {
-		//Hole XML Daten
-		Photos photos=xmlAuslesen();
-		//neue Photo
-		Photo photo = new Photo();
+	public int nextIndex (Photos photos) {
 		int id = 0;
 		for(Photo c : photos.getPhoto()) {
 			if(id <= c.getPhotoID().intValue()) {
 				id = c.getPhotoID().intValue() + 1;
 			}
 		}
+		return id;
+	}
+	
+	/* Erstelle Photo mit PhotoID.
+	 * 		~> return-Wert: Photo, die erstellt wurde <~
+	 */
+	@POST
+	/*@Path ("/{PhotoID}")*/
+	@Produces ( " application/xml" )
+	public Photo createPhoto(/*@PathParam("Photo_ID") int PhotoID,*/ 
+			String title, 
+			String description,
+			String photoLink) throws JAXBException, IOException, DatatypeConfigurationException, XMPPException {
+		//Hole XML Daten
+		Photos photos=xmlAuslesen();
+		//neue Photo
+		Photo photo = new Photo();
+		int id = nextIndex(photos);
 		photo.setPhotoID(new BigInteger(""+id));
 		if(!"".equals(title))photo.setTitle(title);
 		photo.setDescription(description);
@@ -184,8 +209,37 @@ public class PhotoService
 			}
 		}
 		
+	//XMPP funktionaliteat
+			String nodeID = "photo" + id;
+//			LeafNode photoLeaf = PubSubHandler.createNode(nodeID);
+//			Node photoNode = PubSubHandler.publishToNodePayload("photos", nodeID, null, "PHOTO CREATED:\n" + xmlToString(photo));
+//			PubSubHandler.subscribeNode("user" + Helper.USERID, nodeID);
+//			System.out.println(photoNode.getSubscriptions().toString());
+		
 		return photo;
 	}
+	
+  public String xmlToString (Photo photo) throws JAXBException, IOException {
+		ObjectFactory ob=new ObjectFactory();
+		JAXBContext context = JAXBContext.newInstance(Photo.class);
+		Marshaller m = context.createMarshaller();
+		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		StringWriter wr = null;
+		try {
+			wr = new StringWriter();
+			m.marshal(photo, wr);
+			return wr.toString();
+		}
+		finally {
+			try {
+				wr.close();
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+  
 	
 	/*
 	 * Füge Kommentar hinzu.
@@ -194,13 +248,13 @@ public class PhotoService
 //	@POST
 //	@Path ("/{PhotoID}")
 //	@Produces ( " application/xml" )
-	public Comments addComment(@PathParam("Photo_ID") int PhotoID, 
+	public Comments addCommentToPhoto(@PathParam("Photo_ID") int PhotoID, 
 			String text) throws JAXBException, IOException, DatatypeConfigurationException {
 		Photos photos = xmlAuslesen();
 		Comment comment = new Comment();
 		comment.setDatetime(Helper.getXMLGregorianCalendarNow());
 		comment.setUserID(new BigInteger(""+Helper.USERID));
-		comment.setOwner(Helper.SERVERROOT + "/photos/" + Helper.USERID);
+		comment.setOwner(Helper.SERVERROOT + "/users/" + Helper.USERID);
 		comment.setText(text);
 		
 		java.util.ListIterator<Photo> iterator = photos.getPhoto().listIterator();

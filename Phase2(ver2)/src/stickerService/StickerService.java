@@ -59,6 +59,17 @@ public class StickerService
 		}
 	}
 	
+	public boolean contains (int id) throws FileNotFoundException, JAXBException {
+		Stickers stickers = xmlAuslesen();
+		java.util.ListIterator<Sticker> iterator = stickers.getSticker().listIterator();
+		while(iterator.hasNext()) {
+			Sticker sticker = iterator.next();
+			if(id == sticker.getStickerID().intValue()) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	/* Zeigt alle Sticker an.
 	 * 		~> return-Wert: Alle Sticker aus der XML Datei <~
@@ -112,6 +123,16 @@ public class StickerService
 			return stickers;
 	}
 	
+	public int nextIndex (Stickers stickers) {
+		int id = 0;
+		for(Sticker c : stickers.getSticker()) {
+			if(id <= c.getStickerID().intValue()) {
+				id = c.getStickerID().intValue() + 1;
+			}
+		}
+		return id;
+	}
+	
 	/* Erstelle Sticker mit StickerID.
 	 * 		~> return-Wert: Sticker, die erstellt wurde <~
 	 */
@@ -125,12 +146,7 @@ public class StickerService
 		Stickers stickers=xmlAuslesen();
 		//neue Sticker
 		Sticker sticker = new Sticker();
-		int id = 0;
-		for(Sticker c : stickers.getSticker()) {
-			if(id <= c.getStickerID().intValue()) {
-				id = c.getStickerID().intValue() + 1;
-			}
-		}
+		int id = nextIndex(stickers);
 		sticker.setStickerID(new BigInteger(""+id));
 		sticker.setTitle(title);
 		sticker.setDescription(description);
@@ -173,13 +189,13 @@ public class StickerService
 //	@POST
 //	@Path ("/{StickerID}")
 //	@Produces ( " application/xml" )
-	public Comments addComment(@PathParam("Sticker_ID") int StickerID, 
+	public Comments addCommentToSticker(@PathParam("Sticker_ID") int StickerID, 
 			String text) throws JAXBException, IOException, DatatypeConfigurationException {
 		Stickers stickers = xmlAuslesen();
 		Comment comment = new Comment();
 		comment.setDatetime(Helper.getXMLGregorianCalendarNow());
 		comment.setUserID(new BigInteger(""+Helper.USERID));
-		comment.setOwner(Helper.SERVERROOT + "/stickers/" + Helper.USERID);
+		comment.setOwner(Helper.SERVERROOT + "/users/" + Helper.USERID);
 		comment.setText(text);
 		
 		java.util.ListIterator<Sticker> iterator = stickers.getSticker().listIterator();
@@ -290,7 +306,7 @@ Stickers stickers = xmlAuslesen();
 //	@POST
 //	@Path ("/{StickerID}")
 //	@Produces ( " application/xml" )
-	public Sticker addTitleToSticker(@PathParam("Sticker_ID") int StickerID,
+	public Sticker updateTitleFromSticker(@PathParam("Sticker_ID") int StickerID,
 			@QueryParam("Title") String title) 
 			throws JAXBException, IOException {
 		Stickers stickers = xmlAuslesen();
@@ -316,7 +332,7 @@ Stickers stickers = xmlAuslesen();
 //	@POST
 //	@Path ("/{StickerID}")
 //	@Produces ( " application/xml" )
-	public Sticker addDescriptionToSticker(@PathParam("Sticker_ID") int StickerID,
+	public Sticker updateDescriptionFromSticker(@PathParam("Sticker_ID") int StickerID,
 			@QueryParam("Title") String description)  
 			throws JAXBException, IOException {
 		Stickers stickers = xmlAuslesen();

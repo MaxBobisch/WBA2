@@ -27,6 +27,8 @@ import stickerApp.ShoppingCart;
 import stickerApp.ShoppingCarts;
 import stickerApp.SinglePhoto;
 import stickerApp.SingleShoppingCart;
+import stickerApp.Sticker;
+import stickerApp.Stickers;
 import stickerApp.User;
 import stickerApp.Users;
 
@@ -73,6 +75,18 @@ public class ShoppingCartService
 			}
 		}
 	}	
+	
+	public boolean contains (int id) throws FileNotFoundException, JAXBException {
+		ShoppingCarts shoppingCarts = xmlAuslesen();
+		java.util.ListIterator<ShoppingCart> iterator = shoppingCarts.getShoppingCart().listIterator();
+		while(iterator.hasNext()) {
+			ShoppingCart shoppingCart = iterator.next();
+			if(id == shoppingCart.getShoppingCartID().intValue()) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	/* Zeigt alle ShoppingCart an mit State.
 	 * 		~> return-Wert: Alle ShoppingCart mit State aus der XML Datei <~
@@ -139,6 +153,16 @@ public class ShoppingCartService
 			return shoppingCarts;
 	}			
 	
+	public int nextIndex (ShoppingCarts shoppingCarts) {
+		int id = 0;
+		for(ShoppingCart c : shoppingCarts.getShoppingCart()) {
+			if(id <= c.getShoppingCartID().intValue()) {
+				id = c.getShoppingCartID().intValue() + 1;
+			}
+		}
+		return id;
+	}
+	
 	/* Erstelle ShoppingCart mit ShoppingCartID.
 	 * 		~> return-Wert: ShoppingCart, die erstellt wurde <~
 	 */
@@ -165,12 +189,7 @@ public class ShoppingCartService
 		ShoppingCarts shoppingCarts=xmlAuslesen();
 		//neues ShoppingCart
 		ShoppingCart shoppingCart = new ShoppingCart();
-		int id = 0;
-		for(ShoppingCart c : shoppingCarts.getShoppingCart()) {
-			if(id <= c.getShoppingCartID().intValue()) {
-				id = c.getShoppingCartID().intValue() + 1;
-			}
-		}
+		int id = nextIndex(shoppingCarts);
 		shoppingCart.setShoppingCartID(new BigInteger(""+id));
 		shoppingCart.setProducts(new Products());
 		Adress adress = Helper.createAdress(familyName,firstName,street,number,postalCode,city,province,country,telephone,email);

@@ -1,29 +1,92 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Photos xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../xsd/ShoppingCarts.xsd">
-  <Photo Owner="http://tempuri.org" Photo_ID="0" Self="http://tempuri.org" User_ID="0">
-    <Title>Title</Title>
-    <Description>Description</Description>
-    <Datetime>2001-01-01</Datetime>
-    <PhotoLink>http://tempuri.org</PhotoLink>
-    <Location>
-      <latitude>0.0</latitude>
-      <longitude>0.0</longitude>
-    </Location>
-    <RelatedSticker>http://tempuri.org</RelatedSticker>
-    <Liker>
-      <Link>http://tempuri.org</Link>
-    </Liker>
-    <Follower>
-      <Link>http://tempuri.org</Link>
-    </Follower>
-    <Comments>
-      <Comment Comment_ID="0" Owner="http://tempuri.org" User_ID="0">
-        <Text>Text</Text>
-        <Datetime>2001-01-01</Datetime>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Photos>
+    <Photo Photo_ID="0" Self="http://tempuri.org" User_ID="0" Owner="http://tempuri.org">
+        <Title>Title</Title>
+        <Description>Description</Description>
+        <Datetime>2001-12-31T12:00:00</Datetime>
+        <PhotoLink>http://tempuri.org</PhotoLink>
+        <Location>
+            <latitude>0.0</latitude>
+            <longitude>0.0</longitude>
+        </Location>
+        <RelatedSticker>http://tempuri.org</RelatedSticker>
         <Liker>
-          <Link>http://tempuri.org</Link>
+            <Link>http://tempuri.org</Link>
         </Liker>
-      </Comment>
-    </Comments>
-  </Photo>
+        <Follower>
+            <Link>http://tempuri.org</Link>
+        </Follower>
+        <Comments>
+            <Comment Comment_ID="0" User_ID="0" Owner="http://tempuri.org">
+                <Text>Text</Text>
+                <Datetime>2001-12-31T12:00:00</Datetime>
+                <Liker>
+                    <Link>http://tempuri.org</Link>
+                </Liker>
+            </Comment>
+        </Comments>
+    </Photo>
+    <Photo Photo_ID="1" Self="localhost:4434/photos/1" User_ID="1" Owner="localhost:4434/users/1">
+        <Title>StickerPhoto</Title>
+        <Description>StickerDescription</Description>
+        <Datetime>2013-06-22T17:10:16.232+02:00</Datetime>
+        <PhotoLink>PhotoLink</PhotoLink>
+        <Liker/>
+        <Follower/>
+        <Comments/>
+    </Photo>
+    <Photo Photo_ID="2" Self="localhost:4434/photos/2" User_ID="0" Owner="localhost:4434/users/0">
+        <Title>AgentenFoto</Title>
+        <Description>gefahr</Description>
+        <Datetime>2013-06-22T17:11:39.574+02:00</Datetime>
+        <PhotoLink>Link</PhotoLink>
+        <Liker/>
+        <Follower/>
+        <Comments/>
+    </Photo>
+    <Photo Photo_ID="3" Self="localhost:4434/photos/3" User_ID="0" Owner="localhost:4434/users/0">
+        <Title>Photo2</Title>
+        <Description>Descr.</Description>
+        <Datetime>2013-06-22T17:14:04.660+02:00</Datetime>
+        <PhotoLink>http://Photoverknuepfung.jpg</PhotoLink>
+        <Liker/>
+        <Follower/>
+        <Comments/>
+    </Photo>
+    <Photo Photo_ID="4" Self="localhost:4434/photos/4" User_ID="7" Owner="localhost:4434/users/7">
+        <Title>Photo2</Title>
+        <Description>Descr.</Description>
+        <Datetime>2013-06-22T17:14:19.047+02:00</Datetime>
+        <PhotoLink>http://Photoverknuepfung.jpg</PhotoLink>
+        <Liker/>
+        <Follower/>
+        <Comments/>
+    </Photo>
+    <Photo Photo_ID="5" Self="localhost:4434/photos/5" User_ID="1" Owner="localhost:4434/users/1">
+        <Title>Phototest3</Title>
+        <Description>Description4</Description>
+        <Datetime>2013-06-22T17:15:57.705+02:00</Datetime>
+        <PhotoLink>http://PhotoLink5.png</PhotoLink>
+        <Liker/>
+        <Follower/>
+        <Comments/>
+    </Photo>
+    <Photo Photo_ID="6" Self="localhost:4434/photos/6" User_ID="0" Owner="localhost:4434/users/0">
+        <Title>Photo2</Title>
+        <Description>Description2</Description>
+        <Datetime>2013-06-22T18:15:50.526+02:00</Datetime>
+        <PhotoLink>http://Photo2Link2.jpg</PhotoLink>
+        <Liker/>
+        <Follower/>
+        <Comments/>
+    </Photo>
+    <Photo Photo_ID="7" Self="localhost:4434/photos/7" User_ID="0" Owner="localhost:4434/users/0">
+        <Title>testt</Title>
+        <Description>testd</Description>
+        <Datetime>2013-06-22T18:19:56.210+02:00</Datetime>
+        <PhotoLink>http:77testl.jpg</PhotoLink>
+        <Liker/>
+        <Follower/>
+        <Comments/>
+    </Photo>
 </Photos>

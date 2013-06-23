@@ -60,6 +60,18 @@ public class OfferService
 		}
 	}
 	
+	public boolean contains (int id) throws FileNotFoundException, JAXBException {
+		Offers offers = xmlAuslesen();
+		java.util.ListIterator<Offer> iterator = offers.getOffer().listIterator();
+		while(iterator.hasNext()) {
+			Offer offer = iterator.next();
+			if(id == offer.getOfferID().intValue()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	/* Zeigt alle Offer an.
 	 * 		~> return-Wert: Alle Offer aus der XML Datei <~
 	 */
@@ -112,6 +124,16 @@ public class OfferService
 			return offers;
 	}
 	
+	public int nextIndex(Offers offers) {
+		int id = 0;
+		for(Offer c : offers.getOffer()) {
+			if(id <= c.getOfferID().intValue()) {
+				id = c.getOfferID().intValue() + 1;
+			}
+		}
+		return id;
+	}
+	
 	/* Erstelle Offer mit OfferID.
 	 * 		~> return-Wert: Offer, das erstellt wurde <~
 	 */
@@ -128,12 +150,7 @@ public class OfferService
 		Offers offers=xmlAuslesen();
 		//neue Offer
 		Offer offer = new Offer();
-		int id = 0;
-		for(Offer c : offers.getOffer()) {
-			if(id <= c.getOfferID().intValue()) {
-				id = c.getOfferID().intValue() + 1;
-			}
-		}
+		int id = nextIndex(offers);
 		offer.setOfferID(new BigInteger(""+id));
 		offer.setTitle(title);
 		offer.setDescription(description);
@@ -181,13 +198,13 @@ public class OfferService
 //	@POST
 //	@Path ("/{OfferID}")
 //	@Produces ( " application/xml" )
-	public Comments addComment(@PathParam("Offer_ID") int OfferID, 
+	public Comments addCommentToOffer(@PathParam("Offer_ID") int OfferID, 
 			String text) throws JAXBException, IOException, DatatypeConfigurationException {
 		Offers offers = xmlAuslesen();
 		Comment comment = new Comment();
 		comment.setDatetime(Helper.getXMLGregorianCalendarNow());
 		comment.setUserID(new BigInteger(""+Helper.USERID));
-		comment.setOwner(Helper.SERVERROOT + "/offers/" + Helper.USERID);
+		comment.setOwner(Helper.SERVERROOT + "/users/" + Helper.USERID);
 		comment.setText(text);
 		
 		java.util.ListIterator<Offer> iterator = offers.getOffer().listIterator();

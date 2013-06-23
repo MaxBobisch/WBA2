@@ -26,7 +26,7 @@ public class CollectionService
 	/* Funktion zum Auslesen einer XML Datei
 	 * 		~> return-Wert: Collections, aus der XML Datei <~
 	 */	
-	protected Collections xmlAuslesen() throws JAXBException, FileNotFoundException {
+	public Collections xmlAuslesen() throws JAXBException, FileNotFoundException {
 		Collections collections=ob.createCollections();
 		JAXBContext context = JAXBContext.newInstance(Collections.class);
 		Unmarshaller um = context.createUnmarshaller();
@@ -58,6 +58,18 @@ public class CollectionService
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public boolean contains (int id) throws FileNotFoundException, JAXBException {
+		Collections collections = xmlAuslesen();
+		java.util.ListIterator<Collection> iterator = collections.getCollection().listIterator();
+		while(iterator.hasNext()) {
+			Collection collection = iterator.next();
+			if(id == collection.getCollectionID().intValue()) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 		/* Zeigt alle Collection an.
@@ -112,7 +124,15 @@ public class CollectionService
 		return collections;
 	}
 	
-	
+	public int nextIndex (Collections collections) {
+		int id = 0;
+		for(Collection c : collections.getCollection()) {
+			if(id <= c.getCollectionID().intValue()) {
+				id = c.getCollectionID().intValue() + 1;
+			}
+		}
+		return id;
+	}
 	/* Erstelle Collection mit CollectionID.
 	 * 		~> return-Wert: Collection, die erstellt wurde <~
 	 */
@@ -125,13 +145,7 @@ public class CollectionService
 		Collections collections=xmlAuslesen();
 		//neue Collection
 		Collection collection = new Collection();
-		
-		int id = 0;
-		for(Collection c : collections.getCollection()) {
-			if(id <= c.getCollectionID().intValue()) {
-				id = c.getCollectionID().intValue() + 1;
-			}
-		}
+		int id = nextIndex(collections);
 		collection.setCollectionID(new BigInteger(""+id));
 		collection.setTitle(title);
 		collection.setSelf(Helper.SERVERROOT + "/collections/" + id);
@@ -168,13 +182,13 @@ public class CollectionService
 //	@POST
 //	@Path ("/{CollectionID}")
 //	@Produces ( " application/xml" )
-	public Comments addComment(@PathParam("Collection_ID") int CollectionID, 
+	public Comments addCommentToCollection(@PathParam("Collection_ID") int CollectionID, 
 			String text) throws JAXBException, IOException, DatatypeConfigurationException {
 		Collections collections = xmlAuslesen();
 		Comment comment = new Comment();
 		comment.setDatetime(Helper.getXMLGregorianCalendarNow());
 		comment.setUserID(new BigInteger(""+Helper.USERID));
-		comment.setOwner(Helper.SERVERROOT + "/collections/" + Helper.USERID);
+		comment.setOwner(Helper.SERVERROOT + "/users/" + Helper.USERID);
 		comment.setText(text);
 		
 		java.util.ListIterator<Collection> iterator = collections.getCollection().listIterator();
@@ -355,5 +369,4 @@ Collections collections = xmlAuslesen();
 		}
 		return null;
 	}
-	
 }

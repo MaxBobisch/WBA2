@@ -2,7 +2,7 @@
 // Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.2.6 generiert 
 // Siehe <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
-// Generiert: 2013.06.21 um 08:34:28 PM CEST 
+// Generiert: 2013.06.22 um 03:38:57 PM CEST 
 //
 
 
@@ -55,7 +55,7 @@ public class Comment {
     @XmlElement(name = "Text", required = true)
     protected String text;
     @XmlElement(name = "Datetime", required = true)
-    @XmlSchemaType(name = "date")
+    @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar datetime;
     @XmlElement(name = "Liker", required = true)
     protected Liker liker;

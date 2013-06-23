@@ -1,26 +1,28 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Stickers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../xsd/Users.xsd">
-  <Sticker Owner="http://tempuri.org" Self="http://tempuri.org" Sticker_ID="0" User_ID="0">
-    <Title>Title</Title>
-    <Description>Description</Description>
-    <Datetime>2001-01-01</Datetime>
-    <RelatedPhotos>
-      <Link>http://tempuri.org</Link>
-    </RelatedPhotos>
-    <Liker>
-      <Link>http://tempuri.org</Link>
-    </Liker>
-    <Follower>
-      <Link>http://tempuri.org</Link>
-    </Follower>
-    <Comments>
-      <Comment Comment_ID="0" Owner="http://tempuri.org" User_ID="0">
-        <Text>Text</Text>
-        <Datetime>2001-01-01</Datetime>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Stickers>
+    <Sticker Sticker_ID="0" Self="http://tempuri.org" User_ID="0" Owner="http://tempuri.org">
+        <Title>Title</Title>
+        <Description>Description</Description>
+        <RelatedPhotos>
+            <Link>http://tempuri.org</Link>
+        </RelatedPhotos>
         <Liker>
-          <Link>http://tempuri.org</Link>
+            <Link>http://tempuri.org</Link>
         </Liker>
-      </Comment>
-    </Comments>
-  </Sticker>
+        <Follower>
+            <Link>http://tempuri.org</Link>
+        </Follower>
+        <Comments>
+            <Comment Comment_ID="0" User_ID="0" Owner="http://tempuri.org">
+                <Text>Text</Text>
+                <Liker>
+                    <Link>http://tempuri.org</Link>
+                </Liker>
+            </Comment>
+            <Comment Comment_ID="1" User_ID="0" Owner="localhost:4434/stickers/0">
+                <Text>DerBobo</Text>
+                <Datetime>2013-06-23T16:14:54.857+02:00</Datetime>
+            </Comment>
+        </Comments>
+    </Sticker>
 </Stickers>

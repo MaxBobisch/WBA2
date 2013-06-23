@@ -20,5 +20,6 @@
 	<classpathentry kind="lib" path="F:/max.bobisch@gmx.de/Dropbox/Mabert on the Rox/Sticker-App/Material/smack_3_3_0/smackx.jar"/>
 	<classpathentry kind="lib" path="F:/max.bobisch@gmx.de/Dropbox/Mabert on the Rox/Sticker-App/Material/smack_3_3_0/smackx-debug.jar"/>
 	<classpathentry kind="lib" path="F:/max.bobisch@gmx.de/Dropbox/Mabert on the Rox/Sticker-App/Material/smack_3_3_0/smackx-jingle.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/NetBeans 7.1.2/platform/modules/ext/swing-layout-1.0.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
