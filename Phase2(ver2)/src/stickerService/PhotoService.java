@@ -366,7 +366,7 @@ Photos photos = xmlAuslesen();
 //	@POST
 //	@Path ("/{PhotoID}")
 //	@Produces ( " application/xml" )
-	public Photo updateTitle(@PathParam("Photo_ID") int PhotoID,
+	public Photo updateTitleFromPhoto(@PathParam("Photo_ID") int PhotoID,
 			@QueryParam("Title") String title) 
 			throws JAXBException, IOException {
 		Photos photos = xmlAuslesen();
@@ -392,7 +392,7 @@ Photos photos = xmlAuslesen();
 //	@POST
 //	@Path ("/{PhotoID}")
 //	@Produces ( " application/xml" )
-	public Photo updatePhotolink(@PathParam("Photo_ID") int PhotoID,
+	public Photo updatePhotolinkFromPhoto(@PathParam("Photo_ID") int PhotoID,
 			@QueryParam("Title") String photoLink) 
 			throws JAXBException, IOException {
 		Photos photos = xmlAuslesen();
@@ -418,7 +418,7 @@ Photos photos = xmlAuslesen();
 //	@POST
 //	@Path ("/{PhotoID}")
 //	@Produces ( " application/xml" )
-	public Photo updateDescription(@PathParam("Photo_ID") int PhotoID,
+	public Photo updateDescriptionFromPhoto(@PathParam("Photo_ID") int PhotoID,
 			@QueryParam("Description") String description) 
 			throws JAXBException, IOException {
 		Photos photos = xmlAuslesen();
@@ -444,7 +444,7 @@ Photos photos = xmlAuslesen();
 //	@POST
 //	@Path ("/{PhotoID}")
 //	@Produces ( " application/xml" )
-	public Photo updateRelatedSticker(@PathParam("Photo_ID") int PhotoID,
+	public Photo updateRelatedStickerFromPhoto(@PathParam("Photo_ID") int PhotoID,
 			@QueryParam("Description") String relatedSticker) 
 			throws JAXBException, IOException {
 		Photos photos = xmlAuslesen();

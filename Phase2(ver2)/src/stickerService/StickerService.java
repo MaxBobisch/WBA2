@@ -148,8 +148,8 @@ public class StickerService
 		Sticker sticker = new Sticker();
 		int id = nextIndex(stickers);
 		sticker.setStickerID(new BigInteger(""+id));
-		sticker.setTitle(title);
-		sticker.setDescription(description);
+		if(!"".equals(title))sticker.setTitle(title);
+		if(!"".equals(description))sticker.setDescription(description);
 		Liker liker = new Liker();
 		Follower follower = new Follower();
 		Comments comments = new Comments();

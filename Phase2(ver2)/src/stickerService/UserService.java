@@ -275,7 +275,7 @@ public class UserService
 //	@POST
 //	@Path ("/{UserID}")
 //	@Produces ( " application/xml" )
-	public Liker addLiker(@PathParam("User_ID") int UserID) 
+	public Liker addLikerToUser(@PathParam("User_ID") int UserID) 
 			throws JAXBException, IOException {
 		Users users = xmlAuslesen();
 		

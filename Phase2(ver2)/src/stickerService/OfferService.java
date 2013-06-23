@@ -315,7 +315,7 @@ Offers offers = xmlAuslesen();
 	/*@POST
 	@Path ("/{OfferID}")
 	@Produces ( " application/xml" )*/
-	public Offer updateTitle(@PathParam("Offer_ID") int OfferID,
+	public Offer updateTitleFromOffer(@PathParam("Offer_ID") int OfferID,
 			@QueryParam("Title") String title) 
 			throws JAXBException, IOException {
 		Offers offers = xmlAuslesen();

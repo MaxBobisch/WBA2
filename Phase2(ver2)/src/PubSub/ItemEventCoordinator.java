@@ -20,15 +20,13 @@ import org.jivesoftware.smackx.pubsub.listener.ItemEventListener;
 @SuppressWarnings("rawtypes")
 public class ItemEventCoordinator<T> implements ItemEventListener {
 	
-	public static int leaf = -1;
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public void handlePublishedItems(ItemPublishEvent items) {
 		String[] ausgabe;
 		
 		// ANFANG leaf = Comment
-		if(leaf==0) {
+		if(Publisher.leaf==0) {
 			if (items.getNodeId().contains("Stickers")) {
 				List<T> itemList = items.getItems();
 				for(T item : itemList) {
@@ -48,20 +46,13 @@ public class ItemEventCoordinator<T> implements ItemEventListener {
 			}
 			
 			if (items.getNodeId().contains("Collections")) {
-				System.out.println(1);
 				List<T> itemList = items.getItems();
-				System.out.println(2);
 				for(T item : itemList) {
-					System.out.println(3);
 					String now = item.toString();
-					System.out.println(4);
 					String[] stickerString = now.split(">");
-					System.out.println(5);
 					ausgabe = stickerString[2].split("<");
-					System.out.println(6);
 					String namespace = "Collections";
 					try {
-						System.out.println(7);
 						new CollectionService().addCommentToCollection(Publisher.ID, ausgabe[0]);
 						System.out.println(8);
 					} catch (JAXBException e) {
@@ -127,6 +118,170 @@ public class ItemEventCoordinator<T> implements ItemEventListener {
 				}
 			}
 			// ENDE leaf = Comment
+			
+			
+			// ANFANG leaf = Like
+			if(Publisher.leaf==1) {
+				if (items.getNodeId().contains("Stickers")) {
+					List<T> itemList = items.getItems();
+					for(T item : itemList) {
+						String now = item.toString();
+						String[] stickerString = now.split(">");
+						ausgabe = stickerString[2].split("<");
+						String namespace = "Stickers";
+						try {
+							new StickerService().addLikerToSticker(Integer.parseInt(ausgabe[0]));
+						} catch (JAXBException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+				
+				if (items.getNodeId().contains("Collections")) {
+					List<T> itemList = items.getItems();
+					for(T item : itemList) {
+						String now = item.toString();
+						String[] stickerString = now.split(">");
+						ausgabe = stickerString[2].split("<");
+						String namespace = "Collections";
+						try {
+							new CollectionService().addLikerToCollection(Integer.parseInt(ausgabe[0]));
+							System.out.println(8);
+						} catch (JAXBException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+				
+				if (items.getNodeId().contains("Offers")) {
+					List<T> itemList = items.getItems();
+					for(T item : itemList) {
+						String now = item.toString();
+						String[] stickerString = now.split(">");
+						ausgabe = stickerString[2].split("<");
+						String namespace = "Offers";
+						try {
+							new OfferService().addLikerToOffer(Integer.parseInt(ausgabe[0]));
+						} catch (JAXBException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+				
+				if (items.getNodeId().contains("Photos")) {
+					List<T> itemList = items.getItems();
+					for(T item : itemList) {
+						String now = item.toString();
+						String[] stickerString = now.split(">");
+						ausgabe = stickerString[2].split("<");
+						String namespace = "Photos";
+						try {
+							new PhotoService().addLikerToPhoto(Integer.parseInt(ausgabe[0]));
+						} catch (JAXBException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+				
+				if (items.getNodeId().contains("Users")) {
+					List<T> itemList = items.getItems();
+					for(T item : itemList) {
+						String now = item.toString();
+						String[] stickerString = now.split(">");
+						ausgabe = stickerString[2].split("<");
+						String namespace = "Users";
+						try {
+							new UserService().addLikerToUser(Integer.parseInt(ausgabe[0]));
+						} catch (JAXBException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+				// ENDE leaf = Like
+				
+			// ANFANG leaf = updateTitle
+				if(Publisher.leaf==2) {
+					if (items.getNodeId().contains("Stickers")) {
+						List<T> itemList = items.getItems();
+						for(T item : itemList) {
+							String now = item.toString();
+							String[] stickerString = now.split(">");
+							ausgabe = stickerString[2].split("<");
+							String namespace = "Stickers";
+							try {
+								new StickerService().updateTitleFromSticker(Helper.getUserID(), ausgabe[0]);
+							} catch (JAXBException e) {
+								e.printStackTrace();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+					
+					if (items.getNodeId().contains("Collections")) {
+						List<T> itemList = items.getItems();
+						for(T item : itemList) {
+							String now = item.toString();
+							String[] stickerString = now.split(">");
+							ausgabe = stickerString[2].split("<");
+							String namespace = "Collections";
+							try {
+								new CollectionService().updateTitleFromCollection(Helper.getUserID(), ausgabe[0]);
+								System.out.println(8);
+							} catch (JAXBException e) {
+								e.printStackTrace();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+					
+					if (items.getNodeId().contains("Offers")) {
+						List<T> itemList = items.getItems();
+						for(T item : itemList) {
+							String now = item.toString();
+							String[] stickerString = now.split(">");
+							ausgabe = stickerString[2].split("<");
+							String namespace = "Offers";
+							try {
+								new OfferService().updateTitleFromOffer(Helper.getUserID(), ausgabe[0]);
+								} catch (JAXBException e) {
+								e.printStackTrace();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+					
+					if (items.getNodeId().contains("Photos")) {
+						List<T> itemList = items.getItems();
+						for(T item : itemList) {
+							String now = item.toString();
+							String[] stickerString = now.split(">");
+							ausgabe = stickerString[2].split("<");
+							String namespace = "Photos";
+							try {
+								new PhotoService().updateTitleFromPhoto(Helper.getUserID(), ausgabe[0]);
+								} catch (JAXBException e) {
+								e.printStackTrace();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+					// ENDE leaf = updateTitle
+				}
+			}
 			
 			
 		}

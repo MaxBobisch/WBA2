@@ -299,7 +299,7 @@ Collections collections = xmlAuslesen();
 	/*@POST
 	@Path ("/{CollectionID}")
 	@Produces ( " application/xml" )*/
-	public Collection updateTitle(@PathParam("Collection_ID") int CollectionID,
+	public Collection updateTitleFromCollection(@PathParam("Collection_ID") int CollectionID,
 			@QueryParam("Title") String title) 
 			throws JAXBException, IOException {
 		Collections collections = xmlAuslesen();
